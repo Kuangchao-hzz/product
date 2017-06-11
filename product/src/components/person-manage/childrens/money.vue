@@ -7,7 +7,7 @@
             <el-form-item>
               <el-select v-model="formValue.value" filterable placeholder="请选择">
                 <el-option-group
-                  v-for="group in orderOption.country"
+                  v-for="group in searchOption.country"
                   :key="group.label"
                   :label="group.label">
                   <el-option
@@ -24,7 +24,7 @@
             <el-form-item>
               <el-select v-model="formValue.value" filterable placeholder="请选择">
                 <el-option-group
-                  v-for="group in orderOption.country"
+                  v-for="group in searchOption.country"
                   :key="group.label"
                   :label="group.label">
                   <el-option
@@ -41,7 +41,7 @@
             <el-form-item>
               <el-select v-model="formValue.value" filterable placeholder="请选择">
                 <el-option-group
-                  v-for="group in orderOption.country"
+                  v-for="group in searchOption.country"
                   :key="group.label"
                   :label="group.label">
                   <el-option
@@ -58,7 +58,7 @@
             <el-form-item>
               <el-select v-model="formValue.value" filterable placeholder="请选择">
                 <el-option-group
-                  v-for="group in orderOption.country"
+                  v-for="group in searchOption.country"
                   :key="group.label"
                   :label="group.label">
                   <el-option
@@ -101,7 +101,7 @@
             <el-form-item>
               <el-select v-model="formValue.selectedOrderType" placeholder="结算状态">
                 <el-option
-                  v-for="item in orderOption.moneyStatus"
+                  v-for="item in searchOption.moneyStatus"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -109,7 +109,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="3">
             <el-form-item>
               <el-button type="primary" @click="submitForm">查询</el-button>
             </el-form-item>
@@ -187,19 +187,18 @@
 <script>
   /*
   * ===================================
-  * searchOption: 查询下拉菜单
-  * ─────────────────────────────────
+  * searchOption: 查询下拉菜单OPTIONS
+  *      ├──country:      城市
+  *      ├──moneyStatus:  结算状态
   * ─────────────────────────────────
   * searchName: 查询name字段
-  * ─────────────────────────────────
   *      ├──country:      城市
-  *      ├──name:         配送员名字
+  *      ├──personName:   配送员名字
   *      ├──mobile:       配送员联系方式
   *      ├──timeBetween:  查询时间段
   *      ├──orderNum:     订单号
   * ─────────────────────────────────
   * tableData: 表格数据
-  * ─────────────────────────────────
   *      ├──order:        订单号
   *      ├──orderTime:    订单时间
   *      ├──money:        佣金
@@ -215,7 +214,7 @@
   export default {
     data () {
       return {
-        orderOption: {
+        searchOption: {
           moneyStatus: [{
             value: '',
             label: '结算状态'

@@ -6,9 +6,9 @@
           <el-row :gutter="10">
             <el-col :span="3">
               <el-form-item>
-                <el-select v-model="formValue.value" filterable placeholder="请选择">
+                <el-select v-model="searchName.country" filterable placeholder="请选择">
                   <el-option-group
-                    v-for="group in orderOption.country"
+                    v-for="group in searchOption.country"
                     :key="group.label"
                     :label="group.label">
                     <el-option
@@ -23,9 +23,9 @@
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-select v-model="formValue.value" filterable placeholder="请选择">
+                <el-select v-model="searchName.country" filterable placeholder="请选择">
                   <el-option-group
-                    v-for="group in orderOption.country"
+                    v-for="group in searchOption.country"
                     :key="group.label"
                     :label="group.label">
                     <el-option
@@ -40,9 +40,9 @@
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-select v-model="formValue.value" filterable placeholder="请选择">
+                <el-select v-model="searchName.country" filterable placeholder="请选择">
                   <el-option-group
-                    v-for="group in orderOption.country"
+                    v-for="group in searchOption.country"
                     :key="group.label"
                     :label="group.label">
                     <el-option
@@ -57,9 +57,9 @@
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-select v-model="formValue.value" filterable placeholder="请选择">
+                <el-select v-model="searchName.country" filterable placeholder="请选择">
                   <el-option-group
-                    v-for="group in orderOption.country"
+                    v-for="group in searchOption.country"
                     :key="group.label"
                     :label="group.label">
                     <el-option
@@ -76,24 +76,24 @@
           <el-row :gutter="10">
             <el-col :span="3">
               <el-form-item>
-                <el-input v-model="formValue.personName" placeholder="配送员姓名"></el-input>
+                <el-input v-model="searchName.personName" placeholder="配送员姓名"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-input v-model="formValue.personName" placeholder="配送员工号"></el-input>
+                <el-input v-model="searchName.personId" placeholder="配送员工号"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-input v-model="formValue.personPhone" placeholder="配送员身份证号"></el-input>
+                <el-input v-model="searchName.personIdNum" placeholder="配送员身份证号"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-select v-model="formValue.selectedOrderType" placeholder="类别">
+                <el-select v-model="searchName.orderType" placeholder="类别">
                   <el-option
-                    v-for="item in orderOption.orderType"
+                    v-for="item in searchOption.orderType"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -192,10 +192,36 @@
 </template>
 
 <script>
+  /*
+   * ===================================
+   * searchOption: 查询下拉菜单OPTIONS
+   *      ├──country:       城市
+   *      ├──orderType:     类别
+   * ─────────────────────────────────
+   * searchName: 查询name字段
+   *      ├──country:       城市
+   *      ├──orderType:     类别
+   *      ├──personName:    配送员姓名
+   *      ├──personId:      配送员工号
+   *      ├──personIdNum:   配送员身份证号
+   * ─────────────────────────────────
+   * tableData: 表格数据
+   *      ├──order:        订单号
+   *      ├──orderTime:    订单时间
+   *      ├──money:        佣金
+   *      ├──person:       配送员
+   *      ├──mobile:       联系方式
+   *      ├──category:     类别
+   *      ├──level:        等级
+   *      ├──place:        门店
+   *      ├──moneyMethod:  结算方式
+   * ─────────────────────────────────
+   * ===================================
+   * */
   export default {
     data () {
       return {
-        orderOption: {
+        searchOption: {
           orderType: [{
             value: '',
             label: '类别'
@@ -208,48 +234,6 @@
             value: '2',
             label: '社会人'
 
-          }],
-          level: [{
-            value: '',
-            label: '等级'
-          }, {
-            value: '1',
-            label: '一级'
-          }, {
-            value: '2',
-            label: '二级'
-          }, {
-            value: '3',
-            label: '三级'
-          }, {
-            value: '4',
-            label: '四级'
-          }, {
-            value: '5',
-            label: '五级'
-          }],
-          workStatus: [{
-            value: '',
-            label: '工作状态'
-          }, {
-            value: '1',
-            label: '抢单中'
-          }, {
-            value: '2',
-            label: '休息中'
-          }, {
-            value: '3',
-            label: '配送中'
-          }],
-          accountStatus: [{
-            value: '',
-            label: '账号状态'
-          }, {
-            value: '1',
-            label: '正常'
-          }, {
-            value: '2',
-            label: '冻结'
           }],
           country: [{
             label: '热门城市',
@@ -277,14 +261,12 @@
             }]
           }]
         },
-        formValue: {
-          value: '',
-          selectedOrderType: '',
-          selectedLevel: '',
-          workStatus: '',
-          accountStatus: '',
+        searchName: {
+          country: '',
+          orderType: '',
           personName: '',
-          personPhone: ''
+          personId: '',
+          personIdNum: ''
         },
         tableData: [{
           name: '何周泽',
@@ -311,7 +293,7 @@
     },
     methods: {
       submitForm () {
-        alert(JSON.stringify(this.formValue))
+        alert(JSON.stringify(this.searchName))
       }
     }
   }
