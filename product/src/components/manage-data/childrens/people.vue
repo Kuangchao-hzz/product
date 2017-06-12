@@ -1,5 +1,12 @@
 <template>
   <div class="delivery-people">
+    <div class="country-select">
+      <span>区域 : </span>
+      <el-cascader
+        :options="this.$store.state.select.country"
+        change-on-select
+      ></el-cascader>
+    </div>
     <div class="box-card-group">
       <el-card class="box-card">
         <div class="card-content">
@@ -149,6 +156,9 @@
 
 <style lang="scss" type="text/scss">
 .delivery-people{
+  .country-select{
+    margin-bottom: 20px;
+  }
   .box-card-group{
     display: flex;
     justify-content: space-between;

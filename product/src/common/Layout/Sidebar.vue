@@ -94,19 +94,19 @@
             title: '配送管理',
             subs: [
               {
-                index: 'baseform',
+                index: '/delivery/store',
                 title: '门店管理'
               },
               {
-                index: 'vueeditor',
+                index: '/delivery/money',
                 title: '费用设置'
               },
               {
-                index: 'markdown',
+                index: '/delivery/level',
                 title: '配送等级设置'
               },
               {
-                index: 'upload',
+                index: '/delivery/rule',
                 title: '推送规则设置'
               }
             ]

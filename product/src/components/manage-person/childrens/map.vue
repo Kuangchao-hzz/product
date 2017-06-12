@@ -2,7 +2,7 @@
   <div class="person-map">
     <header>
       <label>区域: </label>
-      <citySelect></citySelect>
+      <countrySelect></countrySelect>
     </header>
     <div class="content-map">
       <div class="map-box-card">
@@ -57,11 +57,8 @@
 </template>
 
 <script>
-  import citySelect from '@/common/citySelect'
   export default {
-    components: {
-      citySelect
-    }
+
   }
 </script>
 

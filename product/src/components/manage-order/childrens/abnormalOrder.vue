@@ -1,75 +1,55 @@
 <template>
   <div class="wait-abnormal-order">
-    <el-form :inline="true">
-      <el-select v-model="value" filterable placeholder="请选择">
-        <el-option-group
-          v-for="group in options"
-          :key="group.label"
-          :label="group.label">
-          <el-option
-            v-for="item in group.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-option-group>
-      </el-select>
-      <el-select v-model="value" filterable placeholder="请选择">
-        <el-option-group
-          v-for="group in options"
-          :key="group.label"
-          :label="group.label">
-          <el-option
-            v-for="item in group.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-option-group>
-      </el-select>
-      <el-select v-model="value" filterable placeholder="请选择">
-        <el-option-group
-          v-for="group in options"
-          :key="group.label"
-          :label="group.label">
-          <el-option
-            v-for="item in group.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-option-group>
-      </el-select>
-      <el-select v-model="value" filterable placeholder="请选择">
-        <el-option-group
-          v-for="group in options"
-          :key="group.label"
-          :label="group.label">
-          <el-option
-            v-for="item in group.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-option-group>
-      </el-select>
-      <el-select v-model="value" placeholder="订单类型">
-        <el-option-group
-          v-for="group in options"
-          :key="group.label"
-          :label="group.label">
-          <el-option
-            v-for="item in group.options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-option-group>
-      </el-select>
-      <el-form-item>
-        <el-button type="primary">查询</el-button>
-      </el-form-item>
-    </el-form>
+    <div class="search-table">
+      <el-form :inline="true">
+        <el-row :gutter="10">
+          <el-col :span="3">
+            <el-form-item>
+              <div class="country-select">
+                <el-cascader
+                  :options="this.$store.state.select.country"
+                  change-on-select
+                ></el-cascader>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">
+            <el-form-item>
+              <el-select v-model="searchData.abnormalType" placeholder="订单类型">
+                <el-option
+                  v-for="item in this.$store.state.select.abnormalType"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">
+            <el-form-item>
+              <el-select v-model="searchData.disposeType" placeholder="处理状态">
+                <el-option
+                  v-for="item in this.$store.state.select.disposeType"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">
+            <el-form-item>
+              <el-input v-model="searchData.personMobile" placeholder="配送员联系方式"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">
+            <el-form-item>
+              <el-button type="primary" @click="submitForm">查询</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
     <div class="wait-abnormal-tag">
       <el-tag class="info-row-abnormal">异常状态一</el-tag>
       <el-tag class="info-row-error">异常状态二</el-tag>
@@ -145,32 +125,12 @@
   export default {
     data () {
       return {
-        options: [{
-          label: '热门城市',
-          options: [{
-            value: 'Shanghai',
-            label: '上海'
-          }, {
-            value: 'Beijing',
-            label: '北京'
-          }]
-        }, {
-          label: '城市名',
-          options: [{
-            value: 'Chengdu',
-            label: '成都'
-          }, {
-            value: 'Shenzhen',
-            label: '深圳'
-          }, {
-            value: 'Guangzhou',
-            label: '广州'
-          }, {
-            value: 'Dalian',
-            label: '大连'
-          }]
-        }],
-        value: '',
+        searchData: {
+          orderType: '',
+          abnormalType: '',
+          disposeType: '',
+          personMobile: ''
+        },
         tableData: [{
           date: '201705220001',
           name: '普通',
@@ -213,6 +173,9 @@
           return 'info-row-error'
         }
         return ''
+      },
+      submitForm () {
+        alert(JSON.stringify(this.searchData))
       }
     }
   }

@@ -1,9 +1,5 @@
 <template>
   <div class="view-delivery">
-    <header>
-      <span>区域: </span>
-      <citySelect></citySelect>
-    </header>
     <div class="container-body">
       <router-view></router-view>
     </div>
@@ -11,11 +7,8 @@
 </template>
 
 <script>
-  import citySelect from '@/common/citySelect'
   export default {
-    components: {
-      citySelect
-    }
+
   }
 </script>
 
@@ -24,11 +17,10 @@
     width: 100%;
     header{
       color: #fff;
+      margin-bottom: 20px;
     }
     .container-body{
       position: relative;
-      margin-top: 20px;
     }
-
   }
 </style>
