@@ -31,8 +31,6 @@
       this.myChart = echarts.init(document.querySelector('.multipleColumn .main'))
       this.myChart.setOption({
         title: {
-          text: '某站点用户访问来源',
-          subtext: '纯属虚构',
           x: 'center'
         },
         tooltip: {
@@ -92,6 +90,7 @@
     height: 500px;
     margin-top: 20px;
     border: 1px #ddd solid;
+    background: #fff;
     .main{
       height:100%;
     }

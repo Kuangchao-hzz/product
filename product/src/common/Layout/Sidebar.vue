@@ -117,27 +117,27 @@
             title: '系统设置',
             subs: [
               {
-                index: 'baseform',
+                index: '/system/notice',
                 title: '公告管理'
               },
               {
-                index: 'vueeditor',
+                index: '/system/user',
                 title: '用户管理'
               },
               {
-                index: 'markdown',
+                index: '/system/role',
                 title: '角色管理'
               },
               {
-                index: 'upload',
+                index: '/system/staff',
                 title: '员工排班管理'
               },
               {
-                index: 'upload',
+                index: '/system/service',
                 title: '客服管理'
               },
               {
-                index: 'upload',
+                index: '/system/app',
                 title: 'APP版本管理'
               },
               {
@@ -156,11 +156,10 @@
     },
     methods: {
       handleOpen (key, keyPath) {
-        console.log('key===>' + key)
-        console.log('key===>' + keyPath)
+
       },
       handleClose (key, keyPath) {
-        console.log(key, keyPath)
+
       }
     }
   }

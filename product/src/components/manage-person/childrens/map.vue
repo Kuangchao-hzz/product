@@ -1,9 +1,12 @@
 <template>
   <div class="person-map">
-    <header>
-      <label>区域: </label>
-      <countrySelect></countrySelect>
-    </header>
+    <div class="country-select">
+      <span>区域 : </span>
+      <el-cascader
+        :options="this.$store.state.select.country"
+        change-on-select
+      ></el-cascader>
+    </div>
     <div class="content-map">
       <div class="map-box-card">
         <el-card class="box-card">
@@ -64,7 +67,7 @@
 
 <style lang="scss" type="text/scss">
   .person-map{
-    header{
+    .country-select{
       margin-bottom: 20px;
     }
     .map-box-card{

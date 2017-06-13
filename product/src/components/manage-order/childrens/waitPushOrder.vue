@@ -33,7 +33,7 @@
         </el-row>
       </el-form>
     </div>
-    <div class="wait-send-table">
+    <div class="wait-push-table">
       <el-table
         ref="multipleTable"
         :data="tableData"
@@ -81,7 +81,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div class="wait-send-pagination">
+    <div class="wait-push-pagination">
       <div class="other-btn">
         <el-button :plain="true" type="info">回退邮包</el-button>
         <el-button :plain="true" type="info">手工推送</el-button>
@@ -134,7 +134,10 @@
   .wait-push-order{
     margin-bottom: 20px;
   }
-  .wait-send-pagination{
+  .wait-push-table{
+    margin-bottom: 20px;
+  }
+  .wait-push-pagination{
     display: flex;
     justify-content: space-between;
     align-items: center;

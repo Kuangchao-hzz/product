@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'app'
 }
@@ -12,10 +13,11 @@ export default {
 
 <style lang="scss" type="text/scss">
   @import "../static/css/reset.css";
+  @import "../static/css/global";
   html,body,#app{
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     width: 100%;
     height: 100%;
-    color: #48576a;
     .country-select{
       color: #fff;
     }
@@ -29,6 +31,12 @@ export default {
               width: 100%;
             }
           }
+        }
+      }
+      .country-select{
+        width: 100%;
+        >div, span{
+          width: 100%;
         }
       }
     }

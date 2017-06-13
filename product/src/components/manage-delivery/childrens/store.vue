@@ -121,5 +121,9 @@
 </script>
 
 <style lang="scss" type="text/scss">
-
+  .delivery-store{
+    .content-table{
+      margin-bottom: 20px;
+    }
+  }
 </style>

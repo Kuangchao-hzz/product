@@ -201,6 +201,16 @@ const select = {
     }, {
       value: '2',
       label: '冻结'
+    }],
+    idStatus: [{
+      value: '',
+      label: '账号状态'
+    }, {
+      value: '1',
+      label: '已注册'
+    }, {
+      value: '2',
+      label: '未注册'
     }]
   },
   mutations: {

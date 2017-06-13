@@ -80,8 +80,7 @@
         <el-table-column label="操作">
           <template scope="scope">
             <el-button type="text"
-              size="small"
-              >查看详情</el-button>
+              size="small" @click="lookDetails(scope.row.id)">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -115,7 +114,8 @@
           date1: '201705220001',
           name1: '普通',
           address1: '上海-新村门店',
-          date2: '201705220001'
+          date2: '201705220001',
+          id: '001'
         }, {
           date: '201705220001',
           name: '普通',
@@ -123,13 +123,126 @@
           date1: '201705220001',
           name1: '普通',
           address1: '上海-新村门店',
-          date2: '201705220001'
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
+        }, {
+          date: '201705220001',
+          name: '普通',
+          address: '上海-新村门店',
+          date1: '201705220001',
+          name1: '普通',
+          address1: '上海-新村门店',
+          date2: '201705220001',
+          id: '002'
         }]
       }
     },
     methods: {
       submitForm () {
         alert(JSON.stringify(this.searchData))
+      },
+      lookDetails ($item) {
+        console.log($item)
+        this.$router.push('/order/details')
       }
     }
   }
