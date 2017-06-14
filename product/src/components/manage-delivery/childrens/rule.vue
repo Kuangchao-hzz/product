@@ -75,6 +75,11 @@
           edit: false
         }]
       }
+    },
+    methods: {
+      inlineEditRow ($item) {
+        alert($item)
+      }
     }
   }
 </script>

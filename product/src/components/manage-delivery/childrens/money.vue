@@ -123,8 +123,7 @@
     },
     methods: {
       inlineEditRow ($item) {
-        console.log($item)
-        alert($item.start)
+        alert($item)
       }
     }
   }

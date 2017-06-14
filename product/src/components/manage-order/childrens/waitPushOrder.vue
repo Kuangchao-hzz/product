@@ -76,6 +76,7 @@
           <template scope="scope">
             <el-button type="text"
                        size="small"
+                       @click="lookDetails(scope.row.id)"
             >查看详情</el-button>
           </template>
         </el-table-column>
@@ -125,6 +126,9 @@
     methods: {
       submitForm () {
         alert(JSON.stringify(this.searchData))
+      },
+      lookDetails ($item) {
+        this.$router.push('/order/details')
       }
     }
   }

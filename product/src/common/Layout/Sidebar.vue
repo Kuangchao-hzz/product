@@ -1,6 +1,7 @@
 <template>
   <div class="sidebar">
     <el-menu :default-active="onRoutes"
+             theme="dark"
              @open="handleOpen"
              @close="handleClose"
              class="el-menu-vertical-demo" unique-opened router>

@@ -241,7 +241,6 @@
         alert(JSON.stringify(this.searchData))
       },
       lookDetails ($item) {
-        console.log($item)
         this.$router.push('/order/details')
       }
     }

@@ -45,7 +45,9 @@
         </div>
       </el-card>
     </div>
-    <echart></echart>
+    <div class="echart-group">
+      <echart></echart>
+    </div>
   </div>
 </template>
 
@@ -126,6 +128,15 @@
           }
         }
       }
+    }
+    .echart-group{
+      width: 100%;
+      height: 500px;
+      display: inline-table;
+      margin-right: 20px;
+      margin-top: 20px;
+      border-radius: 5px;
+      overflow: hidden;
     }
   }
 </style>

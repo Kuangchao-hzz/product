@@ -33,7 +33,7 @@
           <hr>
           <div class="info-item">
             <label>配送:</label>
-            <span>张三</span>
+            <span><router-link to="/">张三</router-link></span>
           </div>
           <div class="info-item">
             <label>手机:</label>

@@ -87,8 +87,7 @@
 
 <style lang="scss" type="text/scss">
   .multipleColumn{
-    height: 500px;
-    margin-top: 20px;
+    height: 100%;
     border: 1px #ddd solid;
     background: #fff;
     .main{

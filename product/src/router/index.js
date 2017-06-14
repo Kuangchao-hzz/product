@@ -59,6 +59,16 @@ export default new Router({
               path: 'details',
               name: '订单详情',
               component: resolve => require(['../components/details/order.vue'], resolve)
+            },
+            {
+              path: 'abnormalDetails',
+              name: '异常订单详情',
+              component: resolve => require(['../components/details/abnormal.vue'], resolve)
+            },
+            {
+              path: 'allDetails',
+              name: '异常订单详情',
+              component: resolve => require(['../components/details/all.vue'], resolve)
             }
           ]
         },

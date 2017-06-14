@@ -32,6 +32,7 @@
     width: 100%;
     height: 100%;
     background: #5a5050;
+    overflow: auto;
     .content{
       margin-left: 250px;
       padding: 20px;
