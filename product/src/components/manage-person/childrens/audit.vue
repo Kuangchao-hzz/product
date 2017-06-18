@@ -109,7 +109,7 @@
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            >查看详情</el-button>
+            ><router-link to="/person/auditDetails">查看详情</router-link></el-button>
           </template>
         </el-table-column>
       </el-table>

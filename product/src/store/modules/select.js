@@ -70,6 +70,16 @@ const select = {
       value: '7',
       label: '商城退换货'
     }],
+    abnormalStart: [{
+      value: '',
+      label: '异常状态'
+    }, {
+      value: '1',
+      label: '异常订单'
+    }, {
+      value: '2',
+      label: '正常订单'
+    }],
     disposeType: [{
       value: '',
       label: '处理状态'
@@ -211,6 +221,19 @@ const select = {
     }, {
       value: '2',
       label: '未注册'
+    }],
+    timeBetween: [{
+      value: '',
+      label: '时间范围'
+    }, {
+      value: '1',
+      label: '最近7天'
+    }, {
+      value: '2',
+      label: '最近730天'
+    }, {
+      value: '3',
+      label: '全部'
     }]
   },
   mutations: {

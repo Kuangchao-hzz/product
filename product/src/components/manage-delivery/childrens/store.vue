@@ -70,7 +70,7 @@
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            >编辑</el-button>
+            ><router-link to="/delivery/storeDetails">编辑</router-link></el-button>
           </template>
         </el-table-column>
       </el-table>

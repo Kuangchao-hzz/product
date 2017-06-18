@@ -7,6 +7,7 @@
 <script>
   import echarts from 'echarts'
   export default {
+    name: 'echart',
     data () {
       return {
         legendArr: [],
@@ -88,8 +89,6 @@
 <style lang="scss" type="text/scss">
   .multipleColumn{
     height: 100%;
-    border: 1px #ddd solid;
-    background: #fff;
     .main{
       height:100%;
     }

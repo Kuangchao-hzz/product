@@ -47,11 +47,11 @@
     position: relative;
     box-sizing: border-box;
     width: 100%;
-    height: 70px;
+    height: 50px;
     font-size: 22px;
-    line-height: 70px;
-    color: #fff;
-    background: #00d1b2;
+    line-height: 50px;
+    color: #666;
+    background: #fff;
     .logo {
       float: left;
       width: 250px;
@@ -65,7 +65,6 @@
       .el-btn-link {
         position: relative;
         display: inline-block;
-        color: #fff;
         cursor: pointer;
         vertical-align: middle;
         .el-dropdown-link{
@@ -73,7 +72,8 @@
           .user-logo {
             position: absolute;
             left: 0;
-            top: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             width: 40px;
             height: 40px;
             border-radius: 50%;

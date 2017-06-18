@@ -32,9 +32,6 @@
   .view-service{
     form{
       width: 300px;
-      label{
-        color: #fff !important;
-      }
     }
   }
 </style>

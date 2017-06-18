@@ -1,15 +1,18 @@
 <template>
   <div class="wrapper">
     <v-head></v-head>
-    <v-sidebar></v-sidebar>
     <div class="content">
-      <div class="breadcrumb">
-        <v-breadcrumb></v-breadcrumb>
+      <v-sidebar></v-sidebar>
+      <div class="content-content">
+        <div>
+          <div class="breadcrumb">
+            <v-breadcrumb></v-breadcrumb>
+          </div>
+          <transition name="move" mode="out-in">
+            <router-view></router-view>
+          </transition>
+        </div>
       </div>
-
-      <transition name="move" mode="out-in">
-        <router-view></router-view>
-      </transition>
     </div>
   </div>
 </template>
@@ -31,16 +34,33 @@
   .wrapper{
     width: 100%;
     height: 100%;
-    background: #5a5050;
+    background: #ddd;
     overflow: auto;
     .content{
-      margin-left: 250px;
-      padding: 20px;
-      .breadcrumb{
-        padding: 10px 20px;
+      width: 1300px;
+      min-height: 100%;
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      padding-top: 70px;
+      display: table;
+      .content-content{
+        width: 98%;
+        display: table-cell;
+        float: right;
         background: #fff;
-        margin-bottom: 20px;
-        border-radius: 5px;
+        >div{
+          padding: 20px;
+          overflow: hidden;
+        }
+        .breadcrumb{
+          padding: 10px 20px;
+          background: #fff;
+          margin-bottom: 20px;
+          border-bottom: 1px #ddd solid;
+        }
       }
     }
   }

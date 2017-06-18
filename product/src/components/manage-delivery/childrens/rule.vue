@@ -42,12 +42,14 @@
           </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column
-        label="操作">
-        <el-table-column>
+      <el-table-column>
+        <el-table-column
+          label="操作"
+          width="200"
+          align="center">
           <template scope="scope">
-            <el-button v-show='!scope.row.edit' type="primary" @click='scope.row.edit=true' size="small" icon="edit">编辑</el-button>
-            <el-button v-show='scope.row.edit' type="success" @click='scope.row.edit=false, inlineEditRow(scope.row)' size="small" icon="check">完成</el-button>
+            <el-button v-if='!scope.row.edit' type="primary" @click='scope.row.edit=true' size="small" icon="edit">编辑</el-button>
+            <el-button v-if='scope.row.edit' type="success" @click='scope.row.edit=false, inlineEditRow(scope.row)' size="small" icon="check">完成</el-button>
             <el-button type="success" size="small" icon="delete">禁用</el-button>
           </template>
         </el-table-column>

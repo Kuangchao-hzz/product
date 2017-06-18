@@ -1,7 +1,7 @@
 <template>
   <div class="order-details">
     <div class="details-title">
-      订单详情
+      异常订单详情
     </div>
     <div class="details-content">
       <div class="content-body">
@@ -88,13 +88,13 @@
               <el-col :span="4"></el-col>
               <el-col :span="20">
                 <el-row :gutter="20">
-                  <el-col :span="3">
+                  <el-col :span="5">
                     <el-button type="info">退单</el-button>
                   </el-col>
-                  <el-col :span="3">
+                  <el-col :span="5">
                     <el-button type="info">关闭订单</el-button>
                   </el-col>
-                  <el-col :span="3">
+                  <el-col :span="5">
                     <el-button type="info">人工处理</el-button>
                   </el-col>
                 </el-row>
@@ -181,14 +181,13 @@
 
 <style lang="scss" type="text/scss">
   .order-details{
-    color: #fff;
+    color: #666;
     .details-title{
-      border-bottom: 1px #fff solid;
+      border-bottom: 1px #ddd solid;
       padding: 10px;
       font-size: 24px;
     }
     .content-body{
-      padding: 20px 0;
       .base-info{
         background: #fff;
         color: #666;

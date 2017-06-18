@@ -1,7 +1,7 @@
 <template>
   <div class="order-details">
     <div class="details-title">
-      订单详情
+      全部订单详情
     </div>
     <div class="details-content">
       <div class="content-body">
@@ -90,10 +90,10 @@
               <el-col :span="4"></el-col>
               <el-col :span="20">
                 <el-row :gutter="20">
-                  <el-col :span="3">
+                  <el-col :span="5">
                     <el-button type="info" @click="outOrderDialog = true">退单</el-button>
                   </el-col>
-                  <el-col :span="3">
+                  <el-col :span="5">
                     <el-button type="info" @click="closeOrderDialog = true">关闭订单</el-button>
                   </el-col>
                 </el-row>
@@ -164,15 +164,16 @@
       title="退单"
       :visible.sync="outOrderDialog"
       size="tiny"
+      :modal="false"
       :before-close="handleClose">
       <el-form ref="form" :model="outOrderForm" label-width="80px">
-        <el-form-item label="特殊资源">
+        <el-form-item label="推送目标至">
           <el-radio-group v-model="outOrderForm.send">
-            <el-radio label="1">线上品牌商赞助</el-radio>
-            <el-radio label="2">线下场地免费</el-radio>
+            <el-radio label="1">第三方物流</el-radio>
+            <el-radio label="2">抢单系统</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="活动形式">
+        <el-form-item label="退单备注">
           <el-input type="textarea" v-model="outOrderForm.remake"></el-input>
         </el-form-item>
         <el-form-item>
@@ -185,11 +186,12 @@
       title="关闭订单"
       :visible.sync="closeOrderDialog"
       size="tiny"
+      :modal="false"
       :before-close="handleClose">
       <el-form ref="form" :model="closeOrderForm" label-width="80px">
         <el-form-item label="关闭原因">
-          <el-select v-model="closeOrderForm.region" placeholder="请选择活动区域">
-            <el-option label="" value="1">客户拒单</el-option>
+          <el-select v-model="closeOrderForm.send" placeholder="请选择活动区域">
+            <el-option label="客户拒单" value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关闭备注">
@@ -237,14 +239,13 @@
 
 <style lang="scss" type="text/scss">
   .order-details{
-    color: #fff;
+    color: #666;
     .details-title{
-      border-bottom: 1px #fff solid;
+      border-bottom: 1px #ddd solid;
       padding: 10px;
       font-size: 24px;
     }
     .content-body{
-      padding: 20px 0;
       .base-info{
         background: #fff;
         color: #666;

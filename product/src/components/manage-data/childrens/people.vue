@@ -69,12 +69,12 @@
           <el-table-column
             prop="date"
             label="姓名"
-            width="180">
+            width="80">
           </el-table-column>
           <el-table-column
             prop="name"
             label="类别"
-            width="180">
+            width="80">
           </el-table-column>
           <el-table-column
             prop="address"
@@ -94,12 +94,12 @@
           <el-table-column
             prop="date"
             label="姓名"
-            width="180">
+            width="80">
           </el-table-column>
           <el-table-column
             prop="name"
             label="类别"
-            width="180">
+            width="80">
           </el-table-column>
           <el-table-column
             prop="address"

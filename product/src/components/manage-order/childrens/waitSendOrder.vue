@@ -37,6 +37,7 @@
       <el-table
         ref="multipleTable"
         :data="tableData"
+        :height="600"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -46,34 +47,36 @@
         </el-table-column>
         <el-table-column
           label="订单编号">
-          <template scope="scope">{{ scope.row.date }}</template>
+          <template scope="scope">
+            {{ scope.row.order }}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="orderType"
           label="订单类别">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="tihuomengdian"
           label="提货门店"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="songhuodiduan"
           label="送货地点"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="name1"
+          prop="dingdanshijian"
           label="订单时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="songdashijian"
           label="预计推送时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="songdashijian"
           label="需要送达时间"
           show-overflow-tooltip>
         </el-table-column>
@@ -101,140 +104,22 @@
 </template>
 
 <script>
+  import api from '@/api/index'
   export default {
     data () {
       return {
         searchData: {
           orderType: ''
         },
-        tableData: [{
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '001'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001',
-          id: '002'
-        }]
+        tableData: []
       }
+    },
+    mounted () {
+      var self = this
+      api.data_table().then((response) => {
+        console.log(response)
+        self.tableData = response.data.list
+      })
     },
     methods: {
       submitForm () {

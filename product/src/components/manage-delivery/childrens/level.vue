@@ -32,7 +32,7 @@
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            >编辑</el-button>
+            ><a href="javascript:" @click="dialogEditOrderForm.status = true">编辑</a></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -74,11 +74,78 @@
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            >编辑</el-button>
+            ><a href="javascript:" @click="dialogEditLevelForm.status = true">编辑</a></el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <div class="dialog-group"></div>
+    <!-- dialog (配送等级接单规则-编辑) -->
+    <el-dialog
+      title="等级设置"
+      :visible.sync="dialogEditOrderForm.status"
+      size="tiny"
+      :before-close="handleClose">
+      <el-form ref="form" :model="dialogEditOrderForm" label-width="100px">
+        <el-form-item label="活动名称">
+          <el-input v-model="dialogEditOrderForm.level" class="reset-border" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="订单类别">
+          <el-checkbox-group v-model="dialogEditOrderForm.orderClass">
+            <el-checkbox label="普通" name="type"></el-checkbox>
+            <el-checkbox label="水果" name="type"></el-checkbox>
+            <el-checkbox label="海鲜" name="type"></el-checkbox>
+            <el-checkbox label="冻品" name="type"></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
+        <el-form-item label="订单总价上限">
+          <el-input v-model="dialogEditOrderForm.orderTotal"></el-input>
+        </el-form-item>
+        <el-form-item label="每日订单上限">
+          <el-input v-model="dialogEditOrderForm.orderEverDay"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogEditOrderForm.status = false">取 消</el-button>
+        <el-button type="primary" @click="dialogEditOrderForm.status = false">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- dialog (配送等级自动升级规则-编辑) -->
+    <el-dialog
+      title="等级设置"
+      :visible.sync="dialogEditLevelForm.status"
+      size="tiny"
+      :before-close="handleClose">
+      <el-form ref="form" :model="dialogEditLevelForm" label-width="100px">
+        <el-form-item label="活动名称">
+          <el-input v-model="dialogEditLevelForm.level" class="reset-border" readonly></el-input>
+        </el-form-item>
+        <el-form-item label="工作年限">
+          <el-input v-model="dialogEditLevelForm.workTime">
+            <template slot="append">月</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="订单量">
+          <el-input v-model="dialogEditLevelForm.orderNum">
+            <template slot="append">单</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="准达率">
+          <el-input v-model="dialogEditLevelForm.successNum">
+            <template slot="append">%</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="退单率">
+          <el-input v-model="dialogEditLevelForm.loserNum">
+            <template slot="append">%</template>
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogEditLevelForm.status = false">取 消</el-button>
+        <el-button type="primary" @click="dialogEditLevelForm.status = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,6 +153,23 @@
   export default {
     data () {
       return {
+        dialogEditOrderForm: {
+          status: false,
+          level: '一级',
+          orderClass: [],
+          orderTotal: '',
+          orderEverDay: ''
+
+        },
+        dialogEditLevelForm: {
+          status: false,
+          level: '一级',
+          workTime: '',
+          orderNum: '',
+          successNum: '',
+          loserNum: ''
+
+        },
         tableData: [{
           order: '48911891891',
           orderTime: '20170302',
@@ -97,6 +181,15 @@
           place: '上海市-宝山区',
           moneyMethod: '已结算'
         }]
+      }
+    },
+    methods: {
+      handleClose (done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done()
+          })
+          .catch(_ => {})
       }
     }
   }

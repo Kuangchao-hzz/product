@@ -58,10 +58,10 @@
                   <el-col :span="4" class="text-right">￥60.00</el-col>
                 </el-row>
                 <el-row class="check-item-row" :gutter="10">
-                  <el-col :span="3">
+                  <el-col :span="5">
                     <el-button type="info">回退邮包</el-button>
                   </el-col>
-                  <el-col :span="3">
+                  <el-col :span="5">
                     <el-button type="info">手工推送</el-button>
                   </el-col>
                 </el-row>
@@ -137,14 +137,13 @@
 
 <style lang="scss" type="text/scss">
   .order-details{
-    color: #fff;
+    color: #666;
     .details-title{
-      border-bottom: 1px #fff solid;
+      border-bottom: 1px #ddd solid;
       padding: 10px;
       font-size: 24px;
     }
     .content-body{
-      padding: 20px 0;
       .base-info{
         background: #fff;
         color: #666;
@@ -169,7 +168,7 @@
       }
       .details-notice{
         margin-bottom: 20px;
-        background: #fff;
+        border: 1px #ddd solid;
         padding: 10px 0;
         border-radius: 5px;
         color: #666;

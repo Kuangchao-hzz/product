@@ -1,7 +1,7 @@
 <template>
   <div class="view-app">
     <div class="app-group">
-      <el-button>添加新版本</el-button>
+      <el-button @click="createDialogForm.type = true">添加新版本</el-button>
     </div>
     <div class="system-app-table">
       <el-table
@@ -48,6 +48,42 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog
+      title="发布新版本"
+      :visible.sync="createDialogForm.type"
+      size="small"
+      :modal="false"
+      :before-close="handleClose">
+      <el-form
+        :model="createDialogForm"
+        label-width="80px">
+        <el-form-item label="版本号: ">
+          <el-input v-model="createDialogForm.version"></el-input>
+        </el-form-item>
+        <el-form-item label="版本代号: ">
+          <el-input v-model="createDialogForm.exVersion"></el-input>
+        </el-form-item>
+        <el-form-item label="类型: ">
+          <el-select v-model="createDialogForm.facility" placeholder="请选择类型">
+            <el-option label="ios" value="ios"></el-option>
+            <el-option label="android" value="android"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="下载地址: ">
+          <el-input v-model="createDialogForm.address"></el-input>
+        </el-form-item>
+        <el-form-item label="是否强制: ">
+          <el-select v-model="createDialogForm.constraint" placeholder="请选择类型">
+            <el-option label="是" value="1"></el-option>
+            <el-option label="否" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">确定</el-button>
+          <el-button @click="createDialogForm.type = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -65,7 +101,24 @@
           level: '二级',
           place: '上海市-宝山区',
           moneyMethod: '已结算'
-        }]
+        }],
+        createDialogForm: {
+          type: false,
+          version: '',
+          exVersion: '',
+          facility: '',
+          address: '',
+          constraint: ''
+        }
+      }
+    },
+    methods: {
+      handleClose (done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done()
+          })
+          .catch(_ => {})
       }
     }
   }

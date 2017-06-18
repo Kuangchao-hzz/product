@@ -1,7 +1,6 @@
 <template>
   <div class="sidebar">
     <el-menu :default-active="onRoutes"
-             theme="dark"
              @open="handleOpen"
              @close="handleClose"
              class="el-menu-vertical-demo" unique-opened router>
@@ -142,7 +141,7 @@
                 title: 'APP版本管理'
               },
               {
-                index: 'upload',
+                index: '/system/help',
                 title: '使用帮助'
               }
             ]
@@ -169,14 +168,14 @@
 
 <style lang="scss" type="text/scss">
   .sidebar{
-    display: block;
-    position: absolute;
+    display: table-cell;
     width: 250px;
-    left: 0;
-    top: 70px;
     bottom:0;
     z-index: 1;
-    background: #2E363F;
+    background: #FFF;
+    .el-submenu{
+      background: #fff;
+    }
     > ul {
       height:100%;
     }

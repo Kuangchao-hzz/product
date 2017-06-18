@@ -67,14 +67,13 @@ export default new Router({
             },
             {
               path: 'allDetails',
-              name: '异常订单详情',
+              name: '全部订单详情',
               component: resolve => require(['../components/details/all.vue'], resolve)
             }
           ]
         },
         {
           path: '/person',
-          name: '配送员管理',
           component: resolve => require(['../components/manage-person/index.vue'], resolve),
           children: [
             {
@@ -96,6 +95,16 @@ export default new Router({
               path: 'money',
               name: '财务结算',
               component: resolve => require(['../components/manage-person/childrens/money.vue'], resolve)
+            },
+            {
+              path: 'personDetails',
+              name: '配送员详情',
+              component: resolve => require(['../components/details/person.vue'], resolve)
+            },
+            {
+              path: 'auditDetails',
+              name: '审核详情',
+              component: resolve => require(['../components/details/audit.vue'], resolve)
             }
           ]
         },
@@ -123,6 +132,11 @@ export default new Router({
               path: 'rule',
               name: '推送规则设置',
               component: resolve => require(['../components/manage-delivery/childrens/rule.vue'], resolve)
+            },
+            {
+              path: 'storeDetails',
+              name: '门店详情',
+              component: resolve => require(['../components/details/store.vue'], resolve)
             }
           ]
         },
@@ -160,8 +174,17 @@ export default new Router({
               path: 'app',
               name: 'APP版本管理',
               component: resolve => require(['../components/manage-system/childrens/app.vue'], resolve)
+            },
+            {
+              path: 'help',
+              name: '使用帮助',
+              component: resolve => require(['../components/manage-system/childrens/help.vue'], resolve)
+            },
+            {
+              path: 'noticeDetails',
+              name: '公告详情',
+              component: resolve => require(['../components/details/notice.vue'], resolve)
             }
-
           ]
         }
       ]

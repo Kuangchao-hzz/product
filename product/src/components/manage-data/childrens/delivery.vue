@@ -8,42 +8,65 @@
       ></el-cascader>
     </div>
     <div class="box-card-group">
-      <el-card class="box-card">
-        <div class="card-content">
-          <div class="card-item">
-            <label>待配送订单：</label>
-            <span>{{cardData.success.wait}}</span>
-          </div>
-          <div class="card-item">
-            <label>配送中订单：</label>
-            <span>{{cardData.success.ongoing}}</span>
-          </div>
-          <div class="card-item">
-            <label>今日已送达订单：</label>
-            <span>{{cardData.success.totalTotal}}</span>
-          </div>
-        </div>
-      </el-card>
-      <el-card class="box-card">
-        <div class="card-content">
-          <div class="card-item">
-            <label>异常订单：</label>
-            <span>{{cardData.error.wait}}</span>
-          </div>
-          <div class="card-item">
-            <label>今日回退邮包：</label>
-            <span>{{cardData.error.ongoing}}</span>
-          </div>
-          <div class="card-item">
-            <label>今日超时未送：</label>
-            <span>{{cardData.error.totalTotal}}</span>
-          </div>
-          <div class="card-item">
-            <label>今日超时未达：</label>
-            <span>{{cardData.error.totalTotal}}</span>
-          </div>
-        </div>
-      </el-card>
+      <el-row>
+        <el-col :span="24">
+          工作台
+        </el-col>
+        <el-col :span="24">
+          <el-card class="box-card">
+            <el-row>
+              <el-col :span="5">
+                <div class="card-item">
+                  <label>待配送订单：</label>
+                  <span>{{cardData.success.wait}}</span>
+                </div>
+              </el-col>
+              <el-col :span="5">
+                <div class="card-item">
+                  <label>配送中订单：</label>
+                  <span>{{cardData.success.ongoing}}</span>
+                </div>
+              </el-col>
+              <el-col :span="5">
+                <div class="card-item">
+                  <label>今日已送达订单：</label>
+                  <span>{{cardData.success.totalTotal}}</span>
+                </div>
+              </el-col>
+            </el-row>
+          </el-card>
+        </el-col>
+        <el-col :span="24">
+          <el-card class="box-card">
+            <el-row>
+              <el-col :span="5">
+                <div class="card-item">
+                  <label>异常订单：</label>
+                  <span>{{cardData.error.wait}}</span>
+                </div>
+              </el-col>
+              <el-col :span="5">
+                <div class="card-item">
+                  <label>今日回退邮包：</label>
+                  <span>{{cardData.error.ongoing}}</span>
+                </div>
+              </el-col>
+              <el-col :span="5">
+                <div class="card-item">
+                  <label>今日超时未送：</label>
+                  <span>{{cardData.error.totalTotal}}</span>
+                </div>
+              </el-col>
+              <el-col :span="5">
+                <div class="card-item">
+                  <label>今日超时未达：</label>
+                  <span>{{cardData.error.totalTotal}}</span>
+                </div>
+              </el-col>
+            </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
     <div class="echart-group">
       <echart></echart>
@@ -52,7 +75,6 @@
 </template>
 
 <script>
-  import echart from '@/common/echart/demo'
   export default {
     data () {
       return {
@@ -70,9 +92,6 @@
           }
         }
       }
-    },
-    components: {
-      echart
     }
   }
 </script>
@@ -81,17 +100,25 @@
   .delivery{
     .country-select{
       margin-bottom: 20px;
+      span{
+        color: #666;
+      }
     }
     .box-card-group{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       height: 170px;
+      >.el-row{
+        >.el-col{
+          &:first-child{
+            margin-bottom: 20px;
+          }
+        }
+      }
       .box-card{
-        width: 48%;
         height: 100%;
+        border: 0;
+        box-shadow: none;
         .el-card__body{
-          padding: 20px 0;
+          padding: 0 20px;
           .card-item{
             display: table;
             box-sizing: border-box;
@@ -103,6 +130,7 @@
             label{
               display: table-cell;
               text-align: left;
+              vertical-align: middle;
             }
             span{
               display: table-cell;
@@ -135,7 +163,6 @@
       display: inline-table;
       margin-right: 20px;
       margin-top: 20px;
-      border-radius: 5px;
       overflow: hidden;
     }
   }
