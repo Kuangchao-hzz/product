@@ -1,4 +1,4 @@
-
+﻿
 ## 路由
 
 ```
@@ -33,6 +33,6 @@
   ├──bu_ygpbgl (员工排版管理)
   ├──bu_kfgl (客服管理)
   ├──bu_appbbgl (APP版本管理)
-  ├──bu_subzgl (使用帮助)
+  ├──bu_sybz (使用帮助)
   ├──bu_gg_details (公告详情)
 ```
