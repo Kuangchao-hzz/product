@@ -168,16 +168,16 @@
 
 <style lang="scss" type="text/scss">
   .sidebar{
-    display: table-cell;
     width: 250px;
     bottom:0;
     z-index: 1;
     background: #FFF;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-top: 70px;
     .el-submenu{
       background: #fff;
-    }
-    > ul {
-      height:100%;
     }
   }
 </style>

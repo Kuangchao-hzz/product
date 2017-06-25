@@ -3,7 +3,7 @@
     <div class="search-table">
       <el-form :inline="true">
         <el-row :gutter="10">
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <div class="country-select">
                 <el-cascader
@@ -13,7 +13,7 @@
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <el-select v-model="searchData.orderType" placeholder="订单类型">
                 <el-option
@@ -36,7 +36,7 @@
     <div class="wait-send-table">
       <el-table
         ref="multipleTable"
-        :data="tableData"
+        :data="tableData.details"
         :height="600"
         border
         tooltip-effect="dark"
@@ -46,44 +46,55 @@
           width="55">
         </el-table-column>
         <el-table-column
+          align="center"
           label="订单编号">
           <template scope="scope">
-            {{ scope.row.order }}
+            {{ scope.row.order_no }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="orderType"
+          prop="order_type"
+          align="center"
           label="订单类别">
         </el-table-column>
         <el-table-column
-          prop="tihuomengdian"
+          prop="name"
           label="提货门店"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="songhuodiduan"
+          prop="receiver_address"
+          align="center"
           label="送货地点"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="dingdanshijian"
+          prop="mall_time"
+          align="center"
           label="订单时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="songdashijian"
+          prop="scheduled_time"
+          align="center"
           label="预计推送时间"
+          width="120"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="songdashijian"
+          prop="scheduled_push_time"
+          align="center"
           label="需要送达时间"
+          width="120"
           show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          align="center"
+          width="100"
+          label="操作">
           <template scope="scope">
             <el-button type="text"
-              size="small" @click="lookDetails(scope.row.id)">查看详情</el-button>
+              size="small"><router-link :to="{path: '/order/details', query: { orderNo: scope.row.order_no }}">查看详情</router-link></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -94,17 +105,17 @@
         <el-button :plain="true" type="info">全部导出excel</el-button>
       </div>
       <el-pagination
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="100"
+        @current-change="data_tableSendTable"
+        :page-sizes="[20]"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="tableData.totalPage">
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-  import api from '@/api/index'
+  import apiTable from '@/api/table'
   export default {
     data () {
       return {
@@ -115,19 +126,26 @@
       }
     },
     mounted () {
-      var self = this
-      api.data_table().then((response) => {
-        console.log(response)
-        self.tableData = response.data.list
-      })
+      this.data_tableSendTable()
     },
     methods: {
+      data_tableSendTable ($page) {
+        let self = this
+        let params = {
+          page: $page - 1 || 0,
+          orderType: this.searchData.orderType || '普通',
+          area: '1' || 1
+        }
+        apiTable.data_tableSendTable(params).then((response) => {
+          self.tableData = response.data.dat
+        })
+      },
       submitForm () {
         alert(JSON.stringify(this.searchData))
-      },
-      lookDetails ($item) {
-        this.$router.push('/order/details')
       }
+    },
+    filters: {
+
     }
   }
 </script>
@@ -144,7 +162,6 @@
       color: #fff;
     }
     .el-pagination__jump{
-      color: #fff;
       input{
         color: #666;
       }

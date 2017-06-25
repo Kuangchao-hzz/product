@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
     <v-head></v-head>
+    <v-sidebar></v-sidebar>
     <div class="content">
-      <v-sidebar></v-sidebar>
       <div class="content-content">
         <div>
           <div class="breadcrumb">
@@ -34,26 +34,19 @@
   .wrapper{
     width: 100%;
     height: 100%;
-    background: #ddd;
     overflow: auto;
     .content{
-      width: 1300px;
-      min-height: 100%;
-      overflow: hidden;
+      width: 100%;
+      height: 100%;
       position: absolute;
+      left: 0;
       top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      padding-top: 70px;
-      display: table;
       .content-content{
-        width: 98%;
-        display: table-cell;
-        float: right;
-        background: #fff;
+        padding: 70px 20px 0 270px;
         >div{
-          padding: 20px;
           overflow: hidden;
+          background: #fff;
+          padding: 0 20px 20px 20px;
         }
         .breadcrumb{
           padding: 10px 20px;

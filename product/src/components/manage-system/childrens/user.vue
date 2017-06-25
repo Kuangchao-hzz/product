@@ -60,7 +60,6 @@
       title="提示"
       :visible.sync="createDialogForm.type"
       size="small"
-      :modal="false"
       :before-close="handleClose">
       <el-form
         :model="createDialogForm"
@@ -93,7 +92,7 @@
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">确定</el-button>
+          <el-button type="primary">确定</el-button>
           <el-button @click="createDialogForm.type = false">取消</el-button>
         </el-form-item>
       </el-form>

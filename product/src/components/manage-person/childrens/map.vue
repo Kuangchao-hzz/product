@@ -1,7 +1,7 @@
 <template>
   <div class="person-map">
     <div class="country-select">
-      <span>区域 : </span>
+      <span>区域 </span>
       <el-cascader
         :options="this.$store.state.select.country"
         change-on-select
@@ -27,7 +27,11 @@
         </el-card>
       </div>
       <div class="map-box-content">
-        <div class="box-content-win"></div>
+        <div class="box-content-win">
+          <div class="amap-wrapper">
+            <el-amap :vid="'amap-vue'"></el-amap>
+          </div>
+        </div>
         <div class="box-content-info">
           <h5>配送员信息</h5>
           <hr>
@@ -60,15 +64,25 @@
 </template>
 
 <script>
+  import Vue from 'vue'
+  import AMap from 'vue-amap'
+  Vue.use(AMap)
+  AMap.initAMapApiLoader({
+    key: '4f77fb55df2ea2d761581bf83ff57acc',
+    plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor']
+  })
   export default {
 
   }
 </script>
 
-<style lang="scss" type="text/scss">
+<style lang="scss" type="text/scss" scope>
   .person-map{
     .country-select{
       margin-bottom: 20px;
+      span{
+        color: #666;
+      }
     }
     .map-box-card{
       width: 800px;
@@ -103,9 +117,13 @@
       justify-content: space-between;
       border-radius: 5px;
       .box-content-win{
-        width: 800px;
+        overflow: hidden;
         background: #fff;
         border-radius: 5px;
+        >div{
+          width: 800px;
+          height: 500px;
+        }
       }
       .box-content-info{
         width: 280px;

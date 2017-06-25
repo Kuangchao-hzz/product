@@ -3,7 +3,7 @@
     <div class="search-table">
       <el-form>
         <el-row :gutter="10">
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <div class="country-select">
                 <el-cascader
@@ -13,7 +13,7 @@
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <el-input v-model="searchData.store" placeholder="店铺"></el-input>
             </el-form-item>

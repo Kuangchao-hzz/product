@@ -3,7 +3,7 @@
     <div class="search-table">
       <el-form :inline="true" ref="form">
         <el-row :gutter="10">
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <div class="country-select">
                 <el-cascader
@@ -11,28 +11,6 @@
                   change-on-select
                 ></el-cascader>
               </div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="3">
-            <el-form-item>
-              <el-select v-model="searchData.payStatus" placeholder="结算状态">
-                <el-option
-                  v-for="item in this.$store.state.select.payStatus"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="3">
-            <el-form-item>
-              <el-input v-model="searchData.personName" placeholder="配送员姓名"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="3">
-            <el-form-item>
-              <el-input v-model="searchData.personMobile" placeholder="配送员联系方式"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -44,7 +22,31 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="4">
+            <el-form-item>
+              <el-select v-model="searchData.payStatus" placeholder="结算状态">
+                <el-option
+                  v-for="item in this.$store.state.select.payStatus"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item>
+              <el-input v-model="searchData.personName" placeholder="配送员姓名"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item>
+              <el-input v-model="searchData.personMobile" placeholder="配送员联系方式"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
             <el-form-item>
               <el-input v-model="searchData.order" placeholder="订单编号"></el-input>
             </el-form-item>
@@ -111,8 +113,25 @@
     </div>
     <div class="person-manage-pagination">
       <div class="other-btn">
-        <el-button :plain="true" type="info">导出excel</el-button>
-        <el-button :plain="true" type="info">导入excel</el-button>
+        <el-row>
+          <el-col :span="4">
+            <el-button :plain="true" type="info">导出excel</el-button>
+          </el-col>
+          <el-col :span="10">
+            <el-upload
+              class="upload-demo"
+              ref="upload"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :file-list="fileList"
+              :auto-upload="false">
+              <el-button slot="trigger" type="primary">选取文件</el-button>
+              <el-button style="margin-left: 10px;" type="success" @click="submitUpload">上传到服务器</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-col>
+        </el-row>
       </div>
       <el-pagination
         :page-sizes="[10, 20, 30, 40]"
@@ -128,6 +147,7 @@
   export default {
     data () {
       return {
+        fileList: [],
         searchData: {
           order: '',
           payStatus: '',
@@ -149,8 +169,17 @@
       }
     },
     methods: {
+      submitUpload () {
+        this.$refs.upload.submit()
+      },
       submitForm () {
         alert(JSON.stringify(this.searchData))
+      },
+      handleRemove (file, fileList) {
+        console.log(file, fileList)
+      },
+      handlePreview (file) {
+        console.log(file)
       }
     }
   }
@@ -178,14 +207,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      .el-pagination__total{
-        color: #fff;
-      }
-      .el-pagination__jump{
-        color: #fff;
-        input{
-          color: #666;
-        }
+      >div{
+        width: 50%;
       }
     }
   }

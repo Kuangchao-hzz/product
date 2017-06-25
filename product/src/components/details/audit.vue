@@ -67,7 +67,7 @@
       :visible.sync="passwordDialog.windowStatus"
       size="tiny"
       :before-close="handleClose">
-      <el-form :model="passwordDialog" class="demo-form-inline">
+      <el-form :model="passwordDialog" label-width="80px" class="demo-form-inline">
         <el-form-item label="密码：">
           <el-input v-model="passwordDialog.password" placeholder="请输入密码"></el-input>
         </el-form-item>

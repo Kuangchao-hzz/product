@@ -163,10 +163,9 @@
     <el-dialog
       title="退单"
       :visible.sync="outOrderDialog"
-      size="tiny"
-      :modal="false"
+      size="small"
       :before-close="handleClose">
-      <el-form ref="form" :model="outOrderForm" label-width="80px">
+      <el-form ref="form" :model="outOrderForm" label-width="100px">
         <el-form-item label="推送目标至">
           <el-radio-group v-model="outOrderForm.send">
             <el-radio label="1">第三方物流</el-radio>
@@ -186,7 +185,6 @@
       title="关闭订单"
       :visible.sync="closeOrderDialog"
       size="tiny"
-      :modal="false"
       :before-close="handleClose">
       <el-form ref="form" :model="closeOrderForm" label-width="80px">
         <el-form-item label="关闭原因">

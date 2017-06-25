@@ -154,10 +154,13 @@
   }
 </script>
 
-<style lang="scss" type="text/scss">
+<style lang="scss" type="text/scss" scope>
 .delivery-people{
   .country-select{
     margin-bottom: 20px;
+    span{
+      color: #666;
+    }
   }
   .box-card-group{
     display: flex;

@@ -4,7 +4,7 @@
       <el-form :inline="true" ref="form">
         <el-form>
           <el-row :gutter="10">
-            <el-col :span="3">
+            <el-col :span="5">
               <el-form-item>
                 <div class="country-select">
                   <el-cascader
@@ -31,12 +31,12 @@
                 <el-input v-model="searchData.personName" placeholder="配送员姓名"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="3">
+            <el-col :span="5">
               <el-form-item>
                 <el-input v-model="searchData.personNum" placeholder="配送员工号"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="3">
+            <el-col :span="5">
               <el-form-item>
                 <el-input v-model="searchData.personIdCard" placeholder="配送员身份证"></el-input>
               </el-form-item>
@@ -58,58 +58,70 @@
         tooltip-effect="dark"
         style="width: 100%">
         <el-table-column
+          align="center"
           type="selection"
           width="55">
         </el-table-column>
         <el-table-column
-          prop="name"
+          align="center"
+          prop="realName"
           label="姓名">
         </el-table-column>
         <el-table-column
-          prop="mobile"
+          align="center"
+          prop="phone"
           label="联系方式">
         </el-table-column>
         <el-table-column
-          prop="type"
+          align="center"
+          prop="userType"
           label="类别"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="id"
+          align="center"
+          prop="employeeId"
           label="工号"
           width="70"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="IDNumber"
+          align="center"
+          prop="idCard"
           label="身份证号"
           width="200">
         </el-table-column>
         <el-table-column
-          prop="place"
+          align="center"
+          prop="district"
           label="常驻地区"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="loginTime"
+          align="center"
+          prop="regTime"
           label="注册时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="ip"
+          align="center"
+          prop="regIp"
           label="ip"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="ipPlace"
+          align="center"
+          prop="regArea"
           label="ip地区"
           show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          align="center"
+          label="操作">
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            ><router-link to="/person/auditDetails">查看详情</router-link></el-button>
+            ><router-link :to="{path: '/person/auditDetails', query: { id: scope.row.id }}">查看详情</router-link></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -122,6 +134,7 @@
         <el-button :plain="true" type="info">账号解冻</el-button>
       </div>
       <el-pagination
+        @current-change="data_tableAuditTable"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
@@ -132,6 +145,7 @@
 </template>
 
 <script>
+  import apiTable from '@/api/table'
   export default {
     data () {
       return {
@@ -164,9 +178,25 @@
         }]
       }
     },
+    mounted () {
+      this.data_tableAuditTable()
+    },
     methods: {
       submitForm () {
         alert(JSON.stringify(this.searchData))
+      },
+      data_tableAuditTable ($page) {
+        let self = this
+        let params = {
+          page: $page - 1 || 0
+        }
+        apiTable.data_tableAuditTable(params).then((response) => {
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          } else {
+            alert(response.data.msg)
+          }
+        })
       }
     }
   }

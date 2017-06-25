@@ -160,7 +160,6 @@
       title="员工排版"
       :visible.sync="createDialogForm.type"
       size="small"
-      :modal="false"
       :close-on-press-escape="false"
       :before-close="handleClose">
       <el-form

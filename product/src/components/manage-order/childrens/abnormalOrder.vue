@@ -3,7 +3,7 @@
     <div class="search-table">
       <el-form :inline="true">
         <el-row :gutter="10">
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <div class="country-select">
                 <el-cascader
@@ -13,7 +13,7 @@
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <el-select v-model="searchData.abnormalType" placeholder="订单类型">
                 <el-option
@@ -25,7 +25,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <el-select v-model="searchData.disposeType" placeholder="处理状态">
                 <el-option
@@ -37,7 +37,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="5">
             <el-form-item>
               <el-input v-model="searchData.personMobile" placeholder="配送员联系方式"></el-input>
             </el-form-item>
@@ -71,34 +71,42 @@
 
         </el-table-column>
         <el-table-column
+          align="center"
           label="订单编号">
           <template scope="scope">{{ scope.row.date }}</template>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="name"
           label="订单类别">
         </el-table-column>
         <el-table-column
           prop="address"
+          align="center"
           label="提货门店"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="address"
           label="送货地点"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="name1"
           label="订单时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
+          align="center"
           prop="address"
           label="需要送达时间"
           show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          align="center"
+          label="操作">
           <template scope="scope">
             <el-button type="text"
                        size="small"
