@@ -29,30 +29,30 @@
     <div class="content-table">
       <el-table
         ref="multipleTable"
-        :data="tableData"
+        :data="tableData.details"
         border
         tooltip-effect="dark"
         style="width: 100%">
         <el-table-column
-          label="配送员">
-          <template scope="scope">{{ scope.row.date }}</template>
+          label="地区">
+          <template scope="scope">{{ scope.row.area}}</template>
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="storeNo"
           label="门店号">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="name"
           label="门店名称"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="contactPerson"
           label="联系人"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="name1"
+          prop="contact"
           label="联系方式"
           show-overflow-tooltip>
         </el-table-column>
@@ -62,7 +62,7 @@
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="remark"
           label="备注"
           show-overflow-tooltip>
         </el-table-column>
@@ -70,51 +70,54 @@
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            ><router-link to="/delivery/storeDetails">编辑</router-link></el-button>
+            ><router-link :to="{path: '/delivery/storeDetails',  query: { id: scope.row.id }}">编辑</router-link></el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="content-table-pagination">
       <el-pagination
-        :page-sizes="[10, 20, 30, 40]"
+        :page-sizes="[20]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="tableData.totalPage">
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
+  import apiTable from '@/api/table'
   export default {
     data () {
       return {
         searchData: {
           store: ''
         },
-        tableData: [{
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001'
-        }]
+        tableData: []
       }
+    },
+    mounted () {
+      this.data_tableStore()
     },
     methods: {
       submitForm () {
         alert(JSON.stringify(this.searchData))
+      },
+      data_tableStore ($page) {
+        let self = this
+        let params = {
+          page: $page - 1 || 0,
+          name: self.store,
+          province: '',
+          city: '',
+          district: '',
+          orderType: this.searchData.orderType || '普通',
+          area: '1' || 1
+        }
+        apiTable.data_tableStoreTable(params).then((response) => {
+          self.tableData = response.data.dat
+        })
       }
     }
   }

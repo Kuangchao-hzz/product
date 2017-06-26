@@ -44,6 +44,7 @@
       height: this.height || '50',
       font: this.font || '16',
       text: this.text || '',
+      width: this.width || 1,
       /*
       format: this.format,
       width: this.width,

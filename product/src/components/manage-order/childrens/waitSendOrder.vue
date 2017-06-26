@@ -94,7 +94,7 @@
           label="操作">
           <template scope="scope">
             <el-button type="text"
-              size="small"><router-link :to="{path: '/order/details', query: { orderNo: scope.row.order_no }}">查看详情</router-link></el-button>
+              size="small"><router-link :to="{path: '/order/details', query: { orderId: scope.row.id }}">查看详情</router-link></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -129,7 +129,7 @@
       this.data_tableSendTable()
     },
     methods: {
-      data_tableSendTable ($page) {
+      data_tableStoreTable ($page) {
         let self = this
         let params = {
           page: $page - 1 || 0,

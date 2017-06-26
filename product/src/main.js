@@ -8,11 +8,19 @@ import axios from './api/index'
 import common from './common/index'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+import 'vue-awesome/icons'
+import Icon from 'vue-awesome/components/Icon'
+import AMap from 'vue-amap'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(common)
+Vue.use(AMap)
 
+AMap.initAMapApiLoader({
+  key: '4f77fb55df2ea2d761581bf83ff57acc'
+})
+Vue.component('icon', Icon)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

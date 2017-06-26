@@ -64,13 +64,6 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import AMap from 'vue-amap'
-  Vue.use(AMap)
-  AMap.initAMapApiLoader({
-    key: '4f77fb55df2ea2d761581bf83ff57acc',
-    plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor']
-  })
   export default {
 
   }

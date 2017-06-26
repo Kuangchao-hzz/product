@@ -9,29 +9,29 @@
           <el-col :span="15" class="base-info">
             <el-row class="data-item">
               <el-col :span="4">订单编号：</el-col>
-              <el-col :span="18">{{detailsData.orderNo}}</el-col>
+              <el-col :span="18">{{detailsData.orderNo?detailsData.orderNo : '- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="4">订单类型：</el-col>
-              <el-col :span="6">{{detailsData.orderType}}</el-col>
+              <el-col :span="6">{{detailsData.orderType?detailsData.orderType : '- -'}}</el-col>
               <el-col :span="6">订单状态：</el-col>
-              <el-col :span="6">{{detailsData.orderStatus}}</el-col>
+              <el-col :span="6">{{detailsData.orderStatus?detailsData.orderStatus : '- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="4">订单时间：</el-col>
-              <el-col :span="6">{{detailsData.mall_time}}</el-col>
+              <el-col :span="6">{{detailsData.mallTime?detailsData.mallTime:'- -'}}</el-col>
               <el-col :span="6">期望送达时间：</el-col>
-              <el-col :span="6">{{detailsData.scheduled_time}}</el-col>
+              <el-col :span="6">{{detailsData.scheduledTime?detailsData.scheduledTime:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="4">收货人：</el-col>
-              <el-col :span="6">{{detailsData.receiverName}}</el-col>
+              <el-col :span="6">{{detailsData.receiverName?detailsData.receiverName:'- -'}}</el-col>
               <el-col :span="6">联系方式：</el-col>
-              <el-col :span="6">{{detailsData.receiverPhone}}</el-col>
+              <el-col :span="6">{{detailsData.receiverPhone?detailsData.receiverPhone:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="4">收货地址：</el-col>
-              <el-col :span="18">{{detailsData.receiverAddress}}</el-col>
+              <el-col :span="18">{{detailsData.receiverAddress?detailsData.receiverAddress:'--'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="4">商品明细：</el-col>
@@ -40,21 +40,23 @@
                         type="flex"
                         align="middle"
                 v-for="($item, $index) in detailsData.details">
-                  <el-col :span="12" class="text-center">
-                    <barcode value="$item.barcode" :text="$item.barcode"></barcode>
+                  <el-col :lg="8">
+                    <barcode :value="$item.barcode" :text="$item.barcode" ></barcode>
                   </el-col>
-                  <el-col :span="4" class="text-center">{{$item.name}}</el-col>
-                  <el-col :span="2" class="text-center">{{}}</el-col>
-                  <el-col :span="2" class="text-center">x{{$item.amount}}</el-col>
-                  <el-col :span="2" class="text-center">￥{{$item.price}}</el-col>
-                  <el-col :span="2" class="text-right">￥{{$item.amount * $item.price}}</el-col>
+                  <el-col :lg="6" class="text-center">{{$item.name}}</el-col>
+                  <el-col :lg="4" class="text-center">{{$item.volume}}</el-col>
+                  <el-col :lg="2" class="text-center">x{{$item.amount}}</el-col>
+                  <el-col :lg="4" class="text-center">￥{{$item.price}}</el-col>
+                  <el-col :lg="4" class="text-right">￥{{$item.amount * $item.price}}</el-col>
                 </el-row>
-                <el-row class="check-item-row total-row">
-                  <el-col :span="16"><strong>合计</strong></el-col>
-                  <el-col :span="2" class="text-center">2.5KG</el-col>
-                  <el-col :span="2" class="text-center">x2</el-col>
-                  <el-col :span="2" class="text-center">￥60.00</el-col>
-                  <el-col :span="2" class="text-right">￥60.00</el-col>
+                <el-row class="check-item-row total-row"
+                type="flex"
+                align="middle">
+                  <el-col :lg="14"><strong>合计</strong></el-col>
+                  <el-col :lg="4" class="text-center">{{detailsData.weight}}KG</el-col>
+                  <el-col :lg="2" class="text-center">x2</el-col>
+                  <el-col :lg="4" class="text-center">￥60.00</el-col>
+                  <el-col :lg="4" class="text-right">￥60.00</el-col>
                 </el-row>
                 <el-row class="check-item-row" :gutter="10">
                   <el-col :span="5">
@@ -74,32 +76,32 @@
               </el-row>
               <el-row>
                 <el-col :span="8">地区</el-col>
-                <el-col :span="16">{{detailsData.storeArea}}</el-col>
+                <el-col :span="16">{{detailsData.storeInfo.area}}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="8">门店:</el-col>
-                <el-col :span="16">{{detailsData.storeName}}</el-col>
+                <el-col :span="16">{{detailsData.storeInfo.name?detailsData.storeInfo.name:'- -'}}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="8">地址:</el-col>
-                <el-col :span="16">{{detailsData.storeRemark}}</el-col>
+                <el-col :span="16">{{detailsData.storeInfo.address?detailsData.storeInfo.address:'- -'}}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="8">客服:</el-col>
-                <el-col :span="16">{{detailsData.storeContactPerson}}</el-col>
+                <el-col :span="16">{{detailsData.storeInfo.contactPerson?detailsData.storeInfo.contactPerson:'- -'}}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="8">电话:</el-col>
-                <el-col :span="16">{{detailsData.storeContact}}</el-col>
+                <el-col :span="16">{{detailsData.storeInfo.contact?detailsData.storeInfo.contact:'- -'}}</el-col>
               </el-row>
             </el-row>
             <el-row class="details-notice">
               <el-row class="title">
                 <el-col :span="24">推送记录:</el-col>
               </el-row>
-              <el-row>
-                <el-col :span="16">{{}}</el-col>
-                <el-col :span="8">{{}}</el-col>
+              <el-row v-for="($item, $index) in detailsData.pushInfo">
+                <el-col :span="16">{{$item.pushTime?$item.pushTime:'- -'}}</el-col>
+                <el-col :span="8">{{$item.pushUsers?$item.pushUsers:'- -'}}</el-col>
               </el-row>
             </el-row>
           </el-col>
@@ -137,10 +139,14 @@
       details_tableSendTable ($params) {
         let self = this
         let params = {
-          orderNo: $params
+          orderId: $params
         }
         apiDetails.details_tableSendTable(params).then((response) => {
-          self.detailsData = response.data.dat
+          if (response.data.code === 1) {
+            self.detailsData = response.data.dat
+          } else {
+            alert(response.data.msg)
+          }
         })
       }
     },
@@ -148,7 +154,7 @@
       console.log(to)
       if (to.query) {
         next(vm => {
-          vm.details_tableSendTable(to.query.orderNo)
+          vm.details_tableSendTable(to.query.orderId)
         })
       }
     }
