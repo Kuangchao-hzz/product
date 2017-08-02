@@ -1,11 +1,8 @@
 <template>
   <div class="delivery-people">
     <div class="country-select">
-      <span>区域 : </span>
-      <el-cascader
-        :options="this.$store.state.select.country"
-        change-on-select
-      ></el-cascader>
+      <span>区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
+      <a href="javascript:;" @click="treeDialog.type = true">切换</a>
     </div>
     <div class="box-card-group">
       <el-card class="box-card">
@@ -13,15 +10,15 @@
           <h5>本地新增</h5>
           <div class="card-item">
             <label>本地注册配送员：</label>
-            <span>{{cardData.success.wait}}</span>
+            <span>{{tableData.all}}</span>
           </div>
           <div class="card-item">
             <label>本地社会配送员：</label>
-            <span>{{cardData.success.ongoing}}</span>
+            <span>{{tableData.sh}}</span>
           </div>
           <div class="card-item">
             <label>本地员工您配送员：</label>
-            <span>{{cardData.success.totalTotal}}</span>
+            <span>{{tableData.yg}}</span>
           </div>
         </div>
       </el-card>
@@ -30,15 +27,15 @@
           <h5>当日新增</h5>
           <div class="card-item">
             <label>本日新增注册：</label>
-            <span>{{cardData.error.wait}}</span>
+            <span>{{tableData.jrxz}}</span>
           </div>
           <div class="card-item">
             <label>本日新增社会注册：</label>
-            <span>{{cardData.error.ongoing}}</span>
+            <span>{{tableData.jrxzsh}}</span>
           </div>
           <div class="card-item">
             <label>本日新增员工注册：</label>
-            <span>{{cardData.error.totalTotal}}</span>
+            <span>{{tableData.jrxzyg}}</span>
           </div>
         </div>
       </el-card>
@@ -47,108 +44,166 @@
           <h5>本月新增</h5>
           <div class="card-item">
             <label>本月新增注册：</label>
-            <span>{{cardData.error.wait}}</span>
+            <span>{{tableData.jyxz}}</span>
           </div>
           <div class="card-item">
             <label>本月新增社会注册：</label>
-            <span>{{cardData.error.ongoing}}</span>
+            <span>{{tableData.jyxzsh}}</span>
           </div>
           <div class="card-item">
             <label>本月新增员工注册：</label>
-            <span>{{cardData.error.totalTotal}}</span>
+            <span>{{tableData.jyxzyg}}</span>
           </div>
         </div>
       </el-card>
     </div>
     <div class="box-table-group">
       <div class="box-table-item">
-        <h5>本月接单配送员TOP5</h5>
+        <h5>本月接单配送员TOP{{tableData.ordersRank.length < 5? '5' : tableData.ordersRank.length}}</h5>
         <el-table
-          :data="tableData"
+          :data="tableData.ordersRank"
           style="width: 100%">
           <el-table-column
-            prop="date"
+            prop="realName"
+            align="center"
             label="姓名"
             width="80">
           </el-table-column>
           <el-table-column
-            prop="name"
+            align="center"
             label="类别"
             width="80">
+            <template scope="scope">
+              {{ scope.row.userType == '1'? '员工' : '' }}
+              {{ scope.row.userType == '2'? '社会' : '' }}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="orderAmount"
+            align="center"
             label="接单">
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="ontimeRate"
+            align="center"
             label="准达率">
           </el-table-column>
         </el-table>
       </div>
       <div class="box-table-item">
-        <h5>本月准达配送员TOP5</h5>
+        <h5>本月准达配送员TOP{{tableData.rateRank.length < 5 ? '5': tableData.rateRank.length}}</h5>
         <el-table
-          :data="tableData"
+          :data="tableData.rateRank"
           style="width: 100%">
           <el-table-column
-            prop="date"
+            prop="realName"
+            align="center"
             label="姓名"
             width="80">
           </el-table-column>
           <el-table-column
-            prop="name"
+            align="center"
             label="类别"
             width="80">
+            <template scope="scope">
+              {{ scope.row.userType == '1'? '员工' : '' }}
+              {{ scope.row.userType == '2'? '社会' : '' }}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="orderAmount"
+            align="center"
             label="接单">
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="ontimeRate"
+            align="center"
             label="准达率">
           </el-table-column>
         </el-table>
       </div>
     </div>
+    <el-dialog
+      title="选择区域"
+      :visible.sync="treeDialog.type"
+      size="small"
+      :before-close="handleClose">
+      <el-form
+        :model="treeDialog"
+        label-width="80px">
+        <el-form-item label="选择区域: " class="area-box">
+          <el-tree
+            :data="treeDialog.routerAuth"
+            show-checkbox
+            node-key="id"
+            ref="tree"
+            :props="defaultProps">
+          </el-tree>
+        </el-form-item>
+        <el-form-item style="text-align: right">
+          <el-button @click="handleClose">取消</el-button>
+          <el-button type="primary" @click="getCheckedNodes">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+  import apiTable from '@/api/table'
   export default {
     data () {
       return {
-        cardData: {
-          success: {
-            wait: '20',
-            ongoing: '30',
-            totalTotal: '100'
-          },
-          error: {
-            wait: '10',
-            ongoing: '20',
-            totalTotal: '80',
-            outTotalTotal: '100'
-          }
+        searchData: {
+          country: []
         },
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        tableData: [],
+        treeDialog: {
+          type: false,
+          name: '',
+          routerAuth: this.$store.state.select.treeCountry
+        },
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        },
+        countryText: []
+      }
+    },
+    mounted () {
+      this.data_table()
+    },
+    computed: {
+      handlerCountryText () {
+        return this.countryText.join('/')
+      }
+    },
+    methods: {
+      getCheckedNodes () {
+        let data = this.$refs.tree.getCheckedNodes()
+        let self = this
+        self.countryText = []
+        data.forEach(function ($item, $index) {
+          self.countryText.push($item.label)
+          self.handleClose()
+        })
+      },
+      handleClose (done) {
+        this.treeDialog.type = false
+      },
+      data_table () {
+        let self = this
+        apiTable.data_dataPeopleTable({
+          city: self.searchData.country[0] || '1',
+          province: self.searchData.country[1] || '1',
+          district: self.searchData.country[2] || '1'
+        }).then((response) => {
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          } else {
+            swal(response.data.msg)
+          }
+        })
       }
     }
   }
@@ -172,9 +227,8 @@
         padding: 0 0 20px 0;
         h5{
           text-align: center;
-          width: 100%;
           font-size: 24px;
-          padding: 20px;
+          padding: 10px 0;
           background: #ddd;
           margin-bottom: 10px;
         }
@@ -211,12 +265,19 @@
       border-radius: 5px;
       overflow: hidden;
       h5 {
-        width: 100%;
         background: #ddd;
         text-align: center;
         font-size: 28px;
         padding: 10px 0;
       }
+    }
+  }
+  .area-box{
+    .el-tree{
+      height: 200px;
+      overflow-y: auto;
+      border: 1px #ddd solid;
+      border-radius: 4px;
     }
   }
 }

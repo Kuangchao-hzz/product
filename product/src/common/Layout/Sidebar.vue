@@ -1,166 +1,39 @@
 <template>
   <div class="sidebar">
-    <el-menu :default-active="onRoutes"
+    <el-menu theme="dark"
+             mode="vertical"
+             :unique-opened="true"
+             :default-active="this.$route.path"
              @open="handleOpen"
              @close="handleClose"
-             class="el-menu-vertical-demo" unique-opened router>
-      <template v-for="item in items">
-        <template v-if="item.subs">
-          <el-submenu :index="item.index">
-            <template slot="title"><i :class="item.icon"></i>{{ item.title }}</template>
-            <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.index">{{ subItem.title }}
-            </el-menu-item>
-          </el-submenu>
-        </template>
-        <template v-else>
-          <el-menu-item :index="item.index">
-            <i :class="item.icon"></i>{{ item.title }}
-          </el-menu-item>
-        </template>
-      </template>
+             :collapse="isCollapse"
+             class="el-menu-vertical-demo"
+             router>
+      <sidebarItem :routes="routes"></sidebarItem>
     </el-menu>
   </div>
 </template>
 
 <script>
+  import sidebarItem from './SidebarItem'
+  import { asyncRouterMap } from '../../router/index'
   export default {
     data () {
       return {
-        items: [
-          {
-            icon: 'el-icon-menu',
-            index: '2',
-            title: '数据统计',
-            subs: [
-              {
-                index: '/delivery/delivery',
-                title: '配送统计'
-              },
-              {
-                index: '/delivery/people',
-                title: '配送员统计'
-              }
-            ]
-          },
-          {
-            icon: 'el-icon-date',
-            index: '3',
-            title: '订单管理',
-            subs: [
-              {
-                index: '/order/waitSendOrder',
-                title: '待推订单'
-              },
-              {
-                index: '/order/waitPushOrder',
-                title: '待抢订单'
-              },
-              {
-                index: '/order/abnormalOrder',
-                title: '异常订单'
-              },
-              {
-                index: '/order/allOrder',
-                title: '全部订单'
-              }
-            ]
-          },
-          {
-            icon: 'el-icon-star-on',
-            index: '4',
-            title: '配送员管理',
-            subs: [
-              {
-                index: '/person/map',
-                title: '配送地图'
-              },
-              {
-                index: '/person/manage',
-                title: '配送员管理'
-              },
-              {
-                index: '/person/audit',
-                title: '资格审核'
-              },
-              {
-                index: '/person/money',
-                title: '财务结算'
-              }
-            ]
-          },
-          {
-            icon: 'el-icon-star-on',
-            index: '5',
-            title: '配送管理',
-            subs: [
-              {
-                index: '/delivery/store',
-                title: '门店管理'
-              },
-              {
-                index: '/delivery/money',
-                title: '费用设置'
-              },
-              {
-                index: '/delivery/level',
-                title: '配送等级设置'
-              },
-              {
-                index: '/delivery/rule',
-                title: '推送规则设置'
-              }
-            ]
-          },
-          {
-            icon: 'el-icon-star-on',
-            index: '6',
-            title: '系统设置',
-            subs: [
-              {
-                index: '/system/notice',
-                title: '公告管理'
-              },
-              {
-                index: '/system/user',
-                title: '用户管理'
-              },
-              {
-                index: '/system/role',
-                title: '角色管理'
-              },
-              {
-                index: '/system/staff',
-                title: '员工排班管理'
-              },
-              {
-                index: '/system/service',
-                title: '客服管理'
-              },
-              {
-                index: '/system/app',
-                title: 'APP版本管理'
-              },
-              {
-                index: '/system/help',
-                title: '使用帮助'
-              }
-            ]
-          }
-        ]
-      }
-    },
-    computed: {
-      onRoutes () {
-        return this.$route.path
+        routes: asyncRouterMap,
+        isCollapse: true
       }
     },
     methods: {
       handleOpen (key, keyPath) {
-
+        console.log(key, keyPath)
       },
       handleClose (key, keyPath) {
-
+        console.log(key, keyPath)
       }
+    },
+    components: {
+      sidebarItem
     }
   }
 </script>
@@ -171,13 +44,31 @@
     width: 250px;
     bottom:0;
     z-index: 1;
-    background: #FFF;
+    background: #2a2c36;
     position: absolute;
     left: 0;
     top: 0;
     margin-top: 70px;
     .el-submenu{
-      background: #fff;
+      background: #2a2c36;
+      div.el-submenu__title{
+        color: #fff;
+        &:hover{
+          background: #30333e;
+        }
+      }
+      ul.el-menu{
+        background: #2a2c36;
+        li.el-menu-item{
+          color: #fff;
+          &.is-active{
+            color: #20a0ff;
+          }
+          &:hover{
+            background: #30333e;
+          }
+        }
+      }
     }
   }
 </style>

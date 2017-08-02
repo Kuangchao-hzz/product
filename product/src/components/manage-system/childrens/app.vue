@@ -12,33 +12,40 @@
         style="width: 100%">
         <el-table-column
           prop="order"
+          align="center"
           label="版本号">
         </el-table-column>
         <el-table-column
           prop="orderTime"
+          align="center"
           label="版本代号">
         </el-table-column>
         <el-table-column
           prop="money"
+          align="center"
           label="类型"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="person"
+          align="center"
           label="下载地址"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="person"
+          align="center"
           label="是否强制升级"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="person"
+          align="center"
           label="上传时间"
           show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作"
+                         align="center">
           <template scope="scope">
             <el-button
               type="text"

@@ -1,129 +1,228 @@
 <template>
   <div class="content-table">
     <el-table
-      :data="tableData"
+      :data="tableData.dat"
+      :max-height="tabHeight"
+      :height="tabHeight"
       border
       style="width: 100%">
       <el-table-column
-        prop="date"
-        label=""
-        width="150">
-        <el-table-column
-          label="订单类别">
-          <template scope="scope">
-            <el-input v-show="scope.row.edit" size="small" v-model="scope.row.orderCategory"></el-input>
-            <span v-show="!scope.row.edit">{{ scope.row.orderCategory }}</span>
-          </template>
-        </el-table-column>
+        width="100"
+        align="center"
+        prop="orderType"
+        label="订单类别">
+        <template scope="scope">
+          <span>{{ scope.row.orderType }}</span>
+        </template>
       </el-table-column>
       <el-table-column
-        label="距离">
+        align="center"
+        label="距离(km)">
         <el-table-column
-          label="起步距离(km)">
+          align="center"
+          label="起步">
           <template scope="scope">
-            <el-input v-show="scope.row.edit" size="small" v-model="scope.row.distance.start"></el-input>
-            <span v-show="!scope.row.edit">{{ scope.row.distance.start }}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_dj_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.jl_qs }}</span>
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           label="首费">
           <template scope="scope">
-            <el-input v-show="scope.row.edit" size="small" v-model="scope.row.distance.money"></el-input>
-            <span v-show="!scope.row.edit">{{ scope.row.distance.money }}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_jl_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.fee_jl_qs }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          label="续里程(km)">
+          align="center"
+          label="续里程">
           <template scope="scope">
-            <el-input v-show="scope.row.edit" size="small" v-model="scope.row.distance.exStart"></el-input>
-            <span v-show="!scope.row.edit">{{ scope.row.distance.exStart }}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].jl_x"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.jl_x }}</span>
           </template>
         </el-table-column>
         <el-table-column
+          align="center"
           label="续费">
           <template scope="scope">
-            <el-input v-show="scope.row.edit" size="small" v-model="scope.row.distance.exMoney"></el-input>
-            <span v-show="!scope.row.edit">{{ scope.row.distance.exMoney }}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_jl_x"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.fee_jl_x }}</span>
           </template>
         </el-table-column>
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="重量">
+        align="center"
+        label="重量(kg)">
         <el-table-column
-          prop="date"
-          label="首重(kg)">
+          align="center"
+          label="首重">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].zl_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.zl_qs }}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="date"
+          align="center"
           label="首费">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_zl_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.fee_zl_qs }}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="date"
-          label="续重(kg)">
+          align="center"
+          label="续重">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].zl_x"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.zl_x }}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="date"
+          align="center"
           label="续费">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_zl_x"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.fee_zl_x }}</span>
+          </template>
         </el-table-column>
       </el-table-column>
       <el-table-column
         prop="date"
+        align="center"
         label="等级">
         <el-table-column
-          prop="date"
+          width="100"
+          align="center"
           label="起始等级">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_jl_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.fee_jl_qs }}</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="date"
+          align="center"
           label="首费">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].dj_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.dj_qs }}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="date"
+          align="center"
           label="续级">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].dj_x"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.dj_x }}</span>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="date"
+          align="center"
           label="续费">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_dj_x"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.fee_dj_x }}</span>
+          </template>
         </el-table-column>
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="操作">
-        <el-table-column>
-          <template scope="scope">
-            <el-button v-show='!scope.row.edit' type="primary" @click='scope.row.edit=true' size="small" icon="edit">编辑</el-button>
-            <el-button v-show='scope.row.edit' type="success" @click='scope.row.edit=false, inlineEditRow(scope.row)' size="small" icon="check">完成</el-button>
-          </template>
-        </el-table-column>
+        width="260"
+        align="center"
+        label="操作"
+        fit
+        fixed="right">
+        <template scope="scope">
+          <el-button v-if='!scope.row.editable' type="primary" size="small" icon="edit" @click="editRow(scope.row)">编辑</el-button>
+          <el-button v-if='scope.row.editable' type="success" size="small" icon="check" @click="submitEditRow(copyRow.dat[scope.$index])">完成</el-button>
+          <el-button v-if='scope.row.editable' type="success" size="small" icon="delete" @click="matchRow(scope.row)">取消</el-button>
+          <el-button v-if='scope.row.isEnabled == 1 && scope.row.orderType!=="默认"' type="success" size="small" icon="delete" @click="enable_row(scope.row, 0)">禁用</el-button>
+          <el-button v-if='scope.row.isEnabled == 0 && scope.row.orderType!=="默认"' type="success" size="small" icon="delete" @click="enable_row(scope.row, 1)">启用</el-button>
+        </template>
       </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
+  import apiTable from '@/api/table'
   export default {
     data () {
       return {
-        tableData: [{
-          orderCategory: '默认',
-          distance: {
-            start: '2',
-            money: '￥250',
-            exStart: '20',
-            exMoney: '￥250'
-          },
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333,
-          edit: false
-        }]
+        tableData: [],
+        copyRow: [],
+        tableInlineData: {}
       }
     },
+    computed: {
+      tabHeight () {
+        return this.$store.state.include.tableHeight - 220
+      }
+    },
+    mounted () {
+      this.data_table()
+    },
     methods: {
+      editRow ($row) {
+        this.tableData.dat.forEach(($item, $index) => {
+          $item.editable = 0
+        })
+        this.matchRow($row)
+        $row.editable = 1
+      },
+      matchRow ($row) {
+        $row.editable = 0
+        let copyData = JSON.stringify(this.tableData)
+        this.copyRow = JSON.parse(copyData)
+      },
+      submitEditRow ($row) {
+        apiTable.edit_personMoneyEdit($row).then((response) => {
+          if (response.data.code !== 1) {
+            swal(response.data.msg)
+          } else {
+            swal('操作成功！')
+            this.data_table()
+          }
+        })
+      },
+      tableInlineEdit ($row) {
+        this.tableInlineData = Object.assign({}, $row)
+      },
+      data_table ($page) {
+        let self = this
+        apiTable.data_deliveryMoneyTable({
+          page: $page - 1 || 0
+        }).then((response) => {
+          if (response.data.code !== 1) {
+            self.swal(response.data.msg)
+          } else {
+            self.tableData = response.data
+            let copyData = JSON.stringify(self.tableData)
+            self.copyRow = JSON.parse(copyData)
+          }
+        }).catch(() => {
+          /* eslint-disable no-undef */
+          swal('服务器错误')
+        })
+      },
+      enable_row ($row, $type) {
+        apiTable.edit_personMoneyEnable({
+          id: $row.id,
+          isEnabled: $type
+        }).then((response) => {
+          if (response.data.code !== 1) {
+            swal(response.data.msg)
+          } else {
+            swal({
+              title: '操作成功！',
+              width: 300
+            })
+            this.data_table()
+          }
+        })
+      },
       inlineEditRow ($item) {
-        alert($item)
+
       }
     }
   }

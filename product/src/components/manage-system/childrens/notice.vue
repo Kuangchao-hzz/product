@@ -1,95 +1,157 @@
 <template>
   <div class="view-notice">
     <div class="notice-group">
-      <el-button @click="createDialogForm.type = true">发布公告</el-button>
+      <el-button @click="createDialogForm.isShow = true">发布公告</el-button>
     </div>
     <div class="system-notice-table">
       <el-table
         ref="multipleTable"
-        :data="tableData"
+        :data="tableData.details"
         border
         tooltip-effect="dark"
         style="width: 100%">
         <el-table-column
-          prop="order"
+          prop="title"
+          align="center"
           label="标题">
         </el-table-column>
         <el-table-column
-          prop="orderTime"
+          prop="content"
+          align="center"
+          :show-overflow-tooltip=true
           label="内容">
         </el-table-column>
         <el-table-column
-          prop="money"
+          prop="creator"
+          align="center"
           label="目标人群"
           show-overflow-tooltip>
+          <template scope="scope">
+            {{scope.row.type === 0? '所有人':''}}
+            {{scope.row.type === 1? '员工':''}}
+            {{scope.row.type === 2? '社会人':''}}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="person"
+          prop="pubTime"
+          align="center"
           label="发送时间"
           show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="操作">
-          <template scope="scope">
+        <el-table-column
+          align="center"
+          label="操作">
+          <template scope="scope"
+                    align="center">
             <el-button type="text"
                        size="small"
-            ><router-link to="/system/noticeDetails">查看详情</router-link></el-button>
+                       @click="localStorage_details(scope.row)"
+            >查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog
-        title="发布公告"
-        :visible.sync="createDialogForm.type"
-        size="small"
-        :before-close="handleClose">
-        <el-form
-          :model="createDialogForm"
-          label-width="80px">
-          <el-form-item label="公告标题: ">
-            <el-input v-model="createDialogForm.name"></el-input>
-          </el-form-item>
-          <el-form-item label="目标人群">
-            <el-radio-group v-model="createDialogForm.resource">
-              <el-radio label="1">所有人</el-radio>
-              <el-radio label="2">员工</el-radio>
-              <el-radio label="3">社会人</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="公告内容">
-            <el-input type="textarea" v-model="createDialogForm.desc"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary">确定</el-button>
-            <el-button @click="createDialogForm.type = false">取消</el-button>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
     </div>
+    <div class="system-notice-pagination">
+      <el-pagination
+        @current-change="data_table"
+        :page-sizes="[20]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.rowsCount">
+      </el-pagination>
+    </div>
+    <el-dialog
+      title="发布公告"
+      :visible.sync="createDialogForm.isShow"
+      size="small"
+      :before-close="handleClose">
+      <el-form
+        ref="createDialogForm"
+        :model="createDialogForm"
+        label-width="100px">
+        <el-form-item label="公告标题: "
+                      prop="title"
+                      :rules="{required: true, message: '标题不能为空', trigger: 'blur'}">
+          <el-input v-model="createDialogForm.title"></el-input>
+        </el-form-item>
+        <el-form-item label="目标人群">
+          <el-radio-group v-model="createDialogForm.type">
+            <el-radio :label="0">所有人</el-radio>
+            <el-radio :label="1">员工</el-radio>
+            <el-radio :label="2">社会人</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="公告内容"
+                      prop="content"
+                      :rules="{required: true, message: '公告内容不能为空', trigger: 'blur'}">
+          <el-input type="textarea" v-model="createDialogForm.content"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="add_tableData">确定</el-button>
+          <el-button @click="createDialogForm.isShow = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+  import apiTable from '@/api/table'
   export default {
     data () {
       return {
         createDialogForm: {
-          type: false,
-          resource: '1',
-          desc: ''
+          isShow: false,
+          type: 0,
+          title: '',
+          content: ''
         },
-        tableData: [{
-          order: '48911891891',
-          orderTime: '20170302',
-          money: '￥1564',
-          person: '007',
-          mobile: '187*******',
-          category: '已结算',
-          level: '二级',
-          place: '上海市-宝山区',
-          moneyMethod: '已结算'
-        }]
+        tableData: []
       }
     },
+    mounted () {
+      this.data_table()
+    },
     methods: {
+      localStorage_details ($item) {
+        this.$router.push('/system/noticeDetails')
+        localStorage.setItem('details_notice', JSON.stringify($item))
+      },
+      data_table ($page) {
+        let self = this
+        apiTable.data_noticeTable({
+          page: $page - 1 || 0
+        }).then((response) => {
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          } else {
+            self.swal(response.data.msg)
+          }
+        })
+      },
+      add_tableData () {
+        this.$refs['createDialogForm'].validate((valid) => {
+          if (valid) {
+            apiTable.edit_systemNoticeTable({
+              type: this.createDialogForm.type,
+              title: this.createDialogForm.title,
+              content: this.createDialogForm.content
+            }).then(
+              (response) => {
+                if (response.data.code === 1) {
+                  swal('发布成功!')
+                  this.createDialogForm.isShow = false
+                  this.data_table()
+                } else {
+                  self.swal(response.data.msg)
+                }
+              }
+            )
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      },
       handleClose (done) {
         this.$confirm('确认关闭？')
           .then(_ => {
@@ -105,6 +167,12 @@
   .view-notice{
     .notice-group{
       margin-bottom: 20px;
+    }
+    .system-notice-table{
+      margin-bottom: 20px;
+    }
+    .system-notice-pagination{
+      text-align: right;
     }
   }
 </style>

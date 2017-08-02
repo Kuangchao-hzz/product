@@ -11,28 +11,39 @@
         tooltip-effect="dark"
         style="width: 100%">
         <el-table-column
-          prop="order"
+          align="center"
           label="等级">
+          <template scope="scope">
+            {{ scope.row.level + '级' }}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="orderTime"
+          prop="orderType"
+          align="center"
           label="订单类别">
         </el-table-column>
         <el-table-column
-          prop="money"
+          prop="priceLimit"
+          align="center"
           label="订单价格上限"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="person"
+          prop="amountLimit"
+          align="center"
           label="订单每日上限"
           show-overflow-tooltip>
         </el-table-column>
-        <el-table-column label="操作">
-          <template scope="scope">
-            <el-button type="text"
-                       size="small"
-            ><a href="javascript:" @click="dialogEditOrderForm.status = true">编辑</a></el-button>
+        <el-table-column
+          align="center"
+          label="操作">
+          <template
+            scope="scope">
+            <el-button
+              type="text"
+              size="small">
+              <a href="javascript:" @click="edit_tableDialog(scope.row)">编辑</a>
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -43,147 +54,215 @@
     <div class="delivery-level-table">
       <el-table
         ref="multipleTable"
-        :data="tableData"
+        :data="tableDataAuto"
         border
         tooltip-effect="dark"
         style="width: 100%">
         <el-table-column
-          prop="order"
+          align="center"
           label="等级">
+          <template scope="scope">
+            {{ scope.row.level + '级' }}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="orderTime"
+          prop="month"
+          align="center"
           label="工作年限(月)">
         </el-table-column>
         <el-table-column
-          prop="money"
+          prop="orderAmount"
+          align="center"
           label="接单量"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="person"
+          prop="ontimeRate"
+          align="center"
           label="准达率"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="person"
+          align="center"
           label="退单率"
           show-overflow-tooltip>
+          <template scope="scope">
+            {{scope.row.backRate + '%'}}
+          </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          align="center"
+          label="操作">
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            ><a href="javascript:" @click="dialogEditLevelForm.status = true">编辑</a></el-button>
+            ><a href="javascript:" @click="edit_tableDialogAuto(scope.row)">编辑</a></el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="dialog-group"></div>
     <!-- dialog (配送等级接单规则-编辑) -->
     <el-dialog
-      title="等级设置"
-      :visible.sync="dialogEditOrderForm.status"
+      title="配送等级接单规则设置"
+      :visible.sync="dialogEditOrder"
       size="tiny"
       :before-close="handleClose">
       <el-form ref="form" :model="dialogEditOrderForm" label-width="100px">
-        <el-form-item label="活动名称">
+        <el-form-item label="等级设置">
           <el-input v-model="dialogEditOrderForm.level" class="reset-border" readonly></el-input>
         </el-form-item>
         <el-form-item label="订单类别">
-          <el-checkbox-group v-model="dialogEditOrderForm.orderClass">
-            <el-checkbox label="普通" name="type"></el-checkbox>
-            <el-checkbox label="水果" name="type"></el-checkbox>
-            <el-checkbox label="海鲜" name="type"></el-checkbox>
-            <el-checkbox label="冻品" name="type"></el-checkbox>
+          <el-checkbox-group v-model="dialogEditOrderForm.orderType">
+            <el-checkbox :label="$item"
+                         name="type"
+                         v-for="($item, $index) in orderType"
+                         :key="$index"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="订单总价上限">
-          <el-input v-model="dialogEditOrderForm.orderTotal"></el-input>
+          <el-input v-model="dialogEditOrderForm.priceLimit"></el-input>
         </el-form-item>
         <el-form-item label="每日订单上限">
-          <el-input v-model="dialogEditOrderForm.orderEverDay"></el-input>
+          <el-input v-model="dialogEditOrderForm.amountLimit"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogEditOrderForm.status = false">取 消</el-button>
-        <el-button type="primary" @click="dialogEditOrderForm.status = false">确 定</el-button>
+        <el-button @click="dialogEditOrder = false">取 消</el-button>
+        <el-button type="primary" @click="edit_table">确 定</el-button>
       </span>
     </el-dialog>
     <!-- dialog (配送等级自动升级规则-编辑) -->
     <el-dialog
-      title="等级设置"
-      :visible.sync="dialogEditLevelForm.status"
+      title="配送等级自动升级规则设置"
+      :visible.sync="dialogEditLevel"
       size="tiny"
       :before-close="handleClose">
       <el-form ref="form" :model="dialogEditLevelForm" label-width="100px">
-        <el-form-item label="活动名称">
+        <el-form-item label="等级设置">
           <el-input v-model="dialogEditLevelForm.level" class="reset-border" readonly></el-input>
         </el-form-item>
         <el-form-item label="工作年限">
-          <el-input v-model="dialogEditLevelForm.workTime">
+          <el-input v-model="dialogEditLevelForm.month">
             <template slot="append">月</template>
           </el-input>
         </el-form-item>
         <el-form-item label="订单量">
-          <el-input v-model="dialogEditLevelForm.orderNum">
+          <el-input v-model="dialogEditLevelForm.orderAmount">
             <template slot="append">单</template>
           </el-input>
         </el-form-item>
         <el-form-item label="准达率">
-          <el-input v-model="dialogEditLevelForm.successNum">
+          <el-input v-model="dialogEditLevelForm.ontimeRate">
             <template slot="append">%</template>
           </el-input>
         </el-form-item>
         <el-form-item label="退单率">
-          <el-input v-model="dialogEditLevelForm.loserNum">
+          <el-input v-model="dialogEditLevelForm.backRate">
             <template slot="append">%</template>
           </el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogEditLevelForm.status = false">取 消</el-button>
-        <el-button type="primary" @click="dialogEditLevelForm.status = false">确 定</el-button>
+        <el-button @click="dialogEditLevel = false">取 消</el-button>
+        <el-button type="primary" @click="edit_tableAuto">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+  import apiTable from '@/api/table'
   export default {
     data () {
       return {
-        dialogEditOrderForm: {
-          status: false,
-          level: '一级',
-          orderClass: [],
-          orderTotal: '',
-          orderEverDay: ''
-
-        },
-        dialogEditLevelForm: {
-          status: false,
-          level: '一级',
-          workTime: '',
-          orderNum: '',
-          successNum: '',
-          loserNum: ''
-
-        },
-        tableData: [{
-          order: '48911891891',
-          orderTime: '20170302',
-          money: '￥1564',
-          person: '007',
-          mobile: '187*******',
-          category: '已结算',
-          level: '二级',
-          place: '上海市-宝山区',
-          moneyMethod: '已结算'
-        }]
+        orderType: ['普通', '水果', '海鲜', '冻品'],
+        dialogEditOrder: false,
+        dialogEditLevel: false,
+        dialogEditOrderForm: {},
+        dialogEditLevelForm: {},
+        tableData: [],
+        tableDataAuto: []
       }
     },
+    mounted () {
+      this.data_table()
+      this.data_tableAuto()
+    },
     methods: {
+      data_table ($page) {
+        let self = this
+        apiTable.data_deliveryLevelTable({
+          page: $page - 1 || 0
+        }).then((response) => {
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          } else {
+            self.swal(response.data.msg)
+          }
+        }).catch(() => {
+          swal('服务器错误')
+        })
+      },
+      data_tableAuto ($page) {
+        let self = this
+        apiTable.data_deliveryLevelTableAuto({
+          page: $page - 1 || 0
+        }).then((response) => {
+          if (response.data.code === 1) {
+            self.tableDataAuto = response.data.dat
+          } else {
+            self.swal(response.data.msg)
+          }
+        }).catch(() => {
+          /* eslint-disable no-undef */
+          swal('服务器错误')
+        })
+      },
+      edit_tableDialog ($row) {
+        this.dialogEditOrder = true
+        this.dialogEditOrderForm = Object.assign({}, $row)
+
+        if (this.dialogEditOrderForm.orderType === '所有') {
+          this.dialogEditOrderForm.orderType = ['普通', '水果', '海鲜', '冻品']
+        } else {
+          this.dialogEditOrderForm.orderType = this.dialogEditOrderForm.orderType.split('、')
+        }
+      },
+      edit_tableDialogAuto ($row) {
+        this.dialogEditLevel = true
+        this.dialogEditLevelForm = Object.assign({}, $row)
+      },
+      edit_table () {
+        let self = this
+        /* eslint-disable eqeqeq */
+        console.log(self.dialogEditOrderForm.orderType.join('、'))
+        console.log(self.orderType.join('、'))
+        self.dialogEditOrderForm.orderType.join('、') === self.orderType.join('、') ? self.dialogEditOrderForm.orderType = '所有' : self.dialogEditOrderForm.orderType = self.dialogEditOrderForm.orderType.join('、')
+
+        apiTable.edit_deliveryLevelTable(self.dialogEditOrderForm).then((response) => {
+          if (response.data.code === 1) {
+            self.dialogEditOrder = false
+            /* eslint-disable no-undef */
+            swal('编辑成功！')
+            self.data_table()
+          } else {
+            /* eslint-disable no-undef */
+            swal(response.data.msg)
+          }
+        })
+      },
+      edit_tableAuto () {
+        let self = this
+        apiTable.edit_deliveryLevelTableAuto(self.dialogEditLevelForm).then((response) => {
+          if (response.data.code === 1) {
+            self.dialogEditLevel = false
+            swal('编辑成功！')
+            self.data_tableAuto()
+          } else {
+            swal(response.data.msg)
+          }
+        })
+      },
       handleClose (done) {
         this.$confirm('确认关闭？')
           .then(_ => {

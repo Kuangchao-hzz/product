@@ -45,6 +45,7 @@
       font: this.font || '16',
       text: this.text || '',
       width: this.width || 1,
+      background: this.background || '#f1f1f1',
       /*
       format: this.format,
       width: this.width,

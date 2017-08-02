@@ -9,3 +9,10 @@
     border: 0 !important;
   }
 }
+.el-form-item__label{
+  &::before{
+    content: '' !important;
+    color: #ff4949;
+    margin-right: 4px;
+  }
+}

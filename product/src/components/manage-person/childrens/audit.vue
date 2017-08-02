@@ -31,7 +31,7 @@
                 <el-input v-model="searchData.personName" placeholder="配送员姓名"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="4">
               <el-form-item>
                 <el-input v-model="searchData.personNum" placeholder="配送员工号"></el-input>
               </el-form-item>
@@ -41,9 +41,10 @@
                 <el-input v-model="searchData.personIdCard" placeholder="配送员身份证"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="2">
+            <el-col :span="4">
               <el-form-item>
-                <el-button type="primary" @click="submitForm">查询</el-button>
+                <el-button type="primary" @click="data_table">查询</el-button>
+                <el-button type="primary" @click="resetForm">重置</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -53,9 +54,12 @@
     <div class="person-manage-table">
       <el-table
         ref="multipleTable"
-        :data="tableData"
+        :data="tableData.details"
         border
+        :max-height="tabHeight"
+        :height="tabHeight"
         tooltip-effect="dark"
+        @selection-change="handleSelectionChange"
         style="width: 100%">
         <el-table-column
           align="center"
@@ -65,24 +69,30 @@
         <el-table-column
           align="center"
           prop="realName"
+          fixed
+          width="150"
           label="姓名">
         </el-table-column>
         <el-table-column
           align="center"
           prop="phone"
+          width="150"
           label="联系方式">
         </el-table-column>
         <el-table-column
           align="center"
-          prop="userType"
           label="类别"
           show-overflow-tooltip>
+          <template scope="scope">
+            {{ scope.row.userType == '1'? '员工' : '' }}
+            {{ scope.row.userType == '2'? '社会' : '' }}
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
           prop="employeeId"
           label="工号"
-          width="70"
+          width="150"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
@@ -95,18 +105,21 @@
           align="center"
           prop="district"
           label="常驻地区"
+          width="100"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           align="center"
           prop="regTime"
           label="注册时间"
+          width="200"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           align="center"
           prop="regIp"
           label="ip"
+          width="200"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
@@ -117,28 +130,32 @@
         </el-table-column>
         <el-table-column
           align="center"
+          fixed="right"
           label="操作">
           <template scope="scope">
-            <el-button type="text"
-                       size="small"
-            ><router-link :to="{path: '/person/auditDetails', query: { id: scope.row.id }}">查看详情</router-link></el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="localStorage_details(scope.row)"
+            >
+              查看详情
+              <!--<router-link :to="{path: '/person/auditDetails', query: {details: scope.row}}">查看详情</router-link>-->
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="person-manage-pagination">
       <div class="other-btn">
-        <el-button :plain="true" type="info">升级</el-button>
-        <el-button :plain="true" type="info">降级</el-button>
-        <el-button :plain="true" type="info">冻结账号</el-button>
-        <el-button :plain="true" type="info">账号解冻</el-button>
+        <el-button :plain="true" type="info" @click="handlePersonUpDown(1)">审核通过</el-button>
+        <el-button :plain="true" type="info" @click="handlePersonUpDown(2)">审核不通过</el-button>
+        <el-button :plain="true" type="info">全部导出excel</el-button>
       </div>
       <el-pagination
-        @current-change="data_tableAuditTable"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="100"
+        @current-change="data_table"
+        :page-sizes="[20]"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :total="tableData.rowsCount">
       </el-pagination>
     </div>
   </div>
@@ -146,6 +163,7 @@
 
 <script>
   import apiTable from '@/api/table'
+  import apiDetails from '@/api/details'
   export default {
     data () {
       return {
@@ -155,42 +173,66 @@
           category: '',
           personIdCard: ''
         },
-        tableData: [{
-          name: '何周泽',
-          mobile: '187****5171',
-          type: '类别1',
-          id: '007',
-          IDNumber: '522123456678994561',
-          place: '上海-宝山区',
-          loginTime: '2017/6/11 15:15',
-          ip: '192.168.1.1',
-          ipPlace: '上海'
-        }, {
-          name: '何周泽',
-          mobile: '187****5171',
-          type: '类别1',
-          id: '007',
-          IDNumber: '522123456678994561',
-          place: '上海-宝山区',
-          loginTime: '2017/6/11 15:15',
-          ip: '192.168.1.1',
-          ipPlace: '上海'
-        }]
+        tableData: [],
+        multipleSelection: []
+      }
+    },
+    computed: {
+      tabHeight () {
+        return this.$store.state.include.tableHeight - 285
       }
     },
     mounted () {
-      this.data_tableAuditTable()
+      this.data_table()
     },
     methods: {
-      submitForm () {
-        alert(JSON.stringify(this.searchData))
+      resetForm () {
+        this.searchData.personName = ''
+        this.searchData.personNum = ''
+        this.searchData.category = ''
+        this.searchData.personIdCard = ''
       },
-      data_tableAuditTable ($page) {
-        let self = this
-        let params = {
-          page: $page - 1 || 0
+      handleSelectionChange ($row) {
+        this.multipleSelection = $row
+      },
+      handlePersonUpDown ($type) {
+        let $params = {
+          result: $type
         }
-        apiTable.data_tableAuditTable(params).then((response) => {
+        if (this.multipleSelection.length < 1) {
+          swal('请勾选需要处理的列表！')
+          return false
+        }
+        if (this.multipleSelection.length === 1) {
+          $params = Object.assign({}, $params, {
+            id: this.multipleSelection[0].id
+          })
+        } else {
+          let ids = this.multipleSelection.map(($item) => {
+            return $item.id
+          })
+          $params = Object.assign({}, $params, {
+            ids: ids
+          })
+        }
+        apiDetails.details_submitAudit($params).then((response) => {
+          if (response.data.code !== 1) {
+            swal(response.data.msg)
+          } else {
+            swal('操作成功！')
+            this.data_table()
+          }
+        })
+      },
+      localStorage_details ($item) {
+        this.$router.push('/person/auditDetails')
+        localStorage.setItem('details_audit', JSON.stringify($item))
+      },
+      data_table ($page) {
+        let self = this
+        apiTable.data_tableAuditTable({
+          page: $page - 1 || 0
+        }).then((response) => {
           if (response.data.code === 1) {
             self.tableData = response.data.dat
           } else {
@@ -225,15 +267,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      .el-pagination__total{
-        color: #fff;
-      }
-      .el-pagination__jump{
-        color: #fff;
-        input{
-          color: #666;
-        }
-      }
     }
   }
 

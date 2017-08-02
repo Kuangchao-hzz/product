@@ -1,61 +1,58 @@
 <template>
-  <div class="order-details">
+  <div class="audit-details">
     <div class="details-title">
-      订单详情
+      审核详情
     </div>
     <div class="details-content">
       <div class="content-body">
         <el-row type="flex" justify="space-between">
           <el-col :span="15" class="base-info">
             <el-row class="data-item">
-              <el-col :span="4">姓名：</el-col>
-              <el-col :span="6">张三</el-col>
-              <el-col :span="6">联系方式：</el-col>
-              <el-col :span="6">13918181818</el-col>
+              <el-col :span="3"><strong>姓名：</strong></el-col>
+              <el-col :span="6">{{detailsData.realName}}</el-col>
+              <el-col :span="3"><strong>联系方式：</strong></el-col>
+              <el-col :span="6">{{detailsData.phone}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="4">类别：</el-col>
-              <el-col :span="6">员工</el-col>
-              <el-col :span="6">工号：</el-col>
-              <el-col :span="6">00001</el-col>
+              <el-col :span="3"><strong>类别：</strong></el-col>
+              <el-col :span="6">
+                {{ detailsData.userType == '1'? '员工' : '' }}
+                {{ detailsData.userType == '2'? '社会' : '' }}
+              </el-col>
+              <el-col :span="3"><strong>工号：</strong></el-col>
+              <el-col :span="6">{{detailsData.employeeId?detailsData.employeeId:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="4">性别：</el-col>
-              <el-col :span="6">男</el-col>
-              <el-col :span="6">年龄：</el-col>
-              <el-col :span="6">27</el-col>
+              <el-col :span="3"><strong>性别：</strong></el-col>
+              <el-col :span="6">{{}}</el-col>
+              <el-col :span="3"><strong>年龄：</strong></el-col>
+              <el-col :span="6">{{}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="4">常驻地区：</el-col>
-              <el-col :span="6">上海-上海-普陀区</el-col>
+              <el-col :span="3"><strong>常驻地区：</strong></el-col>
+              <el-col :span="6">{{detailsData.district}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="4">设备型号：</el-col>
-              <el-col :span="6">苹果</el-col>
-              <el-col :span="4">注册时间：</el-col>
-              <el-col :span="6">2017/05/22 15:00:00</el-col>
+              <el-col :span="3"><strong>设备型号：</strong></el-col>
+              <el-col :span="6">{{}}</el-col>
+              <el-col :span="3"><strong>注册时间：</strong></el-col>
+              <el-col :span="6">{{detailsData.regTime}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="4">工作年限：</el-col>
-              <el-col :span="6">1年</el-col>
+              <el-col :span="3"><strong>注册ip：</strong></el-col>
+              <el-col :span="6">{{detailsData.regIp}}</el-col>
+              <el-col :span="3"><strong>ip地区：</strong></el-col>
+              <el-col :span="6">{{detailsData.ip}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="4">注册ip：</el-col>
-              <el-col :span="6">123.123.123.123</el-col>
-              <el-col :span="6">ip地区：</el-col>
-              <el-col :span="6">上海</el-col>
-            </el-row>
-            <el-row class="data-item">
-              <el-col :span="4">身份证：</el-col>
+              <el-col :span="3"><strong>身份证：</strong></el-col>
               <el-col :span="6"><a href="javascript:" @click="passwordDialog.windowStatus = true">显示身份证</a></el-col>
             </el-row>
-            <el-row class="data-item">
-              <el-col :span="5">
-                <el-button type="info" @click="outOrderDialog = true">审核通过</el-button>
-              </el-col>
-              <el-col :span="5">
-                <el-button type="info" @click="closeOrderDialog = true">审核不通过</el-button>
-              </el-col>
+            <el-row :gutter="10" class="data-item">
+
+              <el-button type="info" @click="details_submit(1)">审核通过</el-button>
+              <el-button type="info" @click="details_submit(2)">审核不通过</el-button>
+              <el-button type="info" @click="back">返回</el-button>
             </el-row>
           </el-col>
         </el-row>
@@ -67,81 +64,114 @@
       :visible.sync="passwordDialog.windowStatus"
       size="tiny"
       :before-close="handleClose">
-      <el-form :model="passwordDialog" label-width="80px" class="demo-form-inline">
-        <el-form-item label="密码：">
-          <el-input v-model="passwordDialog.password" placeholder="请输入密码"></el-input>
+      <el-form :model="passwordDialog"
+               ref="passwordDialog"
+               :rules="rules"
+               label-width="80px"
+               class="demo-form-inline">
+        <el-form-item label="密码："
+                      prop="password">
+          <el-input type="password" v-model="passwordDialog.password" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="身份证："
+                      v-if="idCarUrlHandle !== ''"
+                      class="idCar-box">
+          <img :src="idCarUrlHandle" :onerror="errorImg">
         </el-form-item>
         <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
-        <el-button type="primary" @click="passwordDialog.windowStatus = false">关闭</el-button>
+        <el-button type="primary" @click="viewIdCard">查看</el-button>
+        <el-button type="primary" @click="handleClose">关闭</el-button>
       </el-form-item>
-      </el-form
+      </el-form>
   </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+  import apiDetails from '@/api/details'
+  const qs = require('qs')
+  import md5 from 'js-md5'
   export default {
     data () {
       return {
+        detailsData: {},
+        idCarUrl: '',
+        errorImg: 'this.title="错误的图片"',
         passwordDialog: {
           windowStatus: false,
           password: ''
         },
-        searchData: {
-          category: '',
-          personLevel: '',
-          workStatus: '',
-          accountStatus: '',
-          personName: '',
-          personMobile: ''
-        },
-        tableData: [{
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001'
-        }, {
-          date: '201705220001',
-          name: '普通',
-          address: '上海-新村门店',
-          date1: '201705220001',
-          name1: '普通',
-          address1: '上海-新村门店',
-          date2: '201705220001'
-        }]
+        rules: {
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' }
+          ]
+        }
       }
     },
+    computed: {
+      idCarUrlHandle () {
+        return this.idCarUrl
+      }
+    },
+    mounted () {
+
+    },
     methods: {
-      submitForm () {
-        alert(JSON.stringify(this.searchData))
+      viewIdCard () {
+        this.$refs['passwordDialog'].validate((valid) => {
+          if (valid) {
+            this.idCarUrl = '/api/web/deliveryUserManage/viewIdCard?' + qs.stringify({
+              imgId: this.detailsData.idCardImg,
+              pwd: md5(this.passwordDialog.password)
+            })
+          } else {
+            return false
+          }
+        })
       },
-      onSubmit () {
-        console.log('submit!')
-        this.passwordDialog.windowStatus = false
+      back () {
+        this.$router.push('/person/audit')
+      },
+      details_submit ($params) {
+        apiDetails.details_submitAudit({
+          id: this.detailsData.id,
+          result: $params
+        }).then((response) => {
+          if (response.data.code === 1) {
+            swal(response.data.msg)
+            this.$router.push('/person/audit')
+          } else {
+            swal(response.data.msg)
+          }
+          localStorage.removeItem('details_audit')
+        })
       },
       handleClose (done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done()
-          })
-          .catch(_ => {})
+        this.passwordDialog.windowStatus = false
+        this.passwordDialog.password = ''
+        this.idCarUrl = ''
+        this.$refs['passwordDialog'].resetFields()
+      }
+    },
+    beforeRouteEnter (to, from, next) {
+      if (to.query) {
+        next(vm => {
+          vm.detailsData = JSON.parse(localStorage.getItem('details_audit'))
+        })
       }
     }
   }
 </script>
 
-<style lang="scss" type="text/scss">
-  .order-details{
+<style lang="scss" type="text/scss" scoped>
+  .audit-details{
     color: #666;
+    font-size: 12px;
     .details-title{
       border-bottom: 1px #ddd solid;
       padding: 10px;
-      font-size: 24px;
+      font-size: 18px;
     }
     .content-body{
       padding: 20px 0;
@@ -160,12 +190,18 @@
               border-top: 1px #666 solid;
               padding-top: 20px;
             }
-            .el-button{
-              width: 100%;
-            }
           }
         }
-
+      }
+    }
+    .el-dialog{
+      width: 500px;
+    }
+    .idCar-box{
+      width: 100%;
+      img{
+        width: 100%;
+        height: 100%;
       }
     }
   }

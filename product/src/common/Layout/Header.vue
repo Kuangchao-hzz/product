@@ -1,15 +1,16 @@
 
 <template>
   <div class="header">
-    <div class="logo">后台管理系统</div>
+    <div class="logo">
+      <img src="../../assets/img/logo.png">
+      <i></i>
+      <span>后台管理系统</span>
+    </div>
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand" class="el-btn-link">
         <span class="el-dropdown-link">
-            <img class="user-logo" src="http://work.omwteam.com/static/img/img.2aab7b4.jpg">
+            <img class="user-logo" src="../../assets/logo.png">
             {{username}}
-        </span>
-        <span class="el-logout-link">
-            注销
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="loginout">退出</el-dropdown-item>
@@ -52,10 +53,26 @@
     line-height: 50px;
     color: #666;
     background: #fff;
+    z-index: 999;
     .logo {
       float: left;
-      width: 250px;
-      text-align: center;
+      vertical-align: middle;
+      img{
+        width: 200px;
+        float: left;
+        margin-top: 5px;
+      }
+      i{
+        float: left;
+        width: 1px;
+        height: 20px;
+        background: #ddd;
+        margin: 0 20px;
+        margin-top: 15px;
+      }
+      span{
+        float: left;
+      }
     }
     .user-info {
       float: right;

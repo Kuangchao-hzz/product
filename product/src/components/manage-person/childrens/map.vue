@@ -29,33 +29,48 @@
       <div class="map-box-content">
         <div class="box-content-win">
           <div class="amap-wrapper">
-            <el-amap :vid="'amap-vue'"></el-amap>
+            <el-amap :vid="'amap-vue'"
+                     :zoom="zoom"
+                     :center="center">
+              <el-amap-marker v-for="(marker, $index) in userPoints"
+                              :position="marker.position"
+                              :events="marker.events"
+                              :visible="marker.visible"
+                              :draggable="marker.draggable"
+                              :key="$index"></el-amap-marker>
+            </el-amap>
           </div>
         </div>
-        <div class="box-content-info">
+        <div class="box-content-info" v-if="personInfoData.id">
           <h5>配送员信息</h5>
-          <hr>
           <div class="info-item">
             <label>配送:</label>
-            <span><router-link to="/">张三</router-link></span>
+            <span>
+              <router-link :to="{ path: '/person/personDetails', query: { id: personInfoData.id }}">{{personInfoData.realName}}</router-link>
+            </span>
           </div>
           <div class="info-item">
             <label>手机:</label>
-            <span>18701******</span>
+            <span>{{personInfoData.phone}}</span>
           </div>
           <div class="info-item">
             <label>等级:</label>
-            <span>3星</span>
+            <span>{{personInfoData.level + '级'}}</span>
           </div>
           <div class="info-item">
             <label>当前状态:</label>
-            <span>配送中</span>
+            <span v-if="personInfoData.workStatus">
+            {{ personInfoData.workStatus == '1'? '抢单中' : '' }}
+            {{ personInfoData.workStatus == '2'? '休息中' : '' }}
+            {{ personInfoData.workStatus == '3'? '配送中' : '' }}
+            </span>
+            <span v-else="">- -</span>
           </div>
           <div class="info-item">
             <label>当前订单:</label>
-            <span><router-link to="/person/map/detailsOrder">201705220001</router-link></span>
-            <span><router-link to="/person/map/detailsOrder">201705220001</router-link></span>
-            <span><router-link to="/person/map/detailsOrder">201705220001</router-link></span>
+            <span v-for="($item, $index) in personInfoData.orders">
+              <router-link :to="{path: '/order/orderDetails', query: { orderId: $item.orderId, detailsType: 1 }}">{{$item.orderNo}}</router-link>
+            </span>
           </div>
         </div>
       </div>
@@ -64,8 +79,86 @@
 </template>
 
 <script>
+  import apiTable from '@/api/table'
   export default {
-
+    data () {
+      return {
+        center: [121.5273285, 31.21515044],
+        zoom: 14,
+        mapData: {},
+        personInfoData: {}
+      }
+    },
+    computed: {
+      amapMapData () {
+        return this.mapData
+      },
+      userPoints () {
+        let self = this
+        let userPointsArr = []
+        if (this.amapMapData.userPoints) {
+          this.amapMapData.userPoints.forEach(function ($item, $index) {
+            userPointsArr.push({
+              position: [$item.loc.x, $item.loc.y],
+              events: {
+                click: () => {
+                  self.fetch_Data($item.id)
+                },
+                dragend: (e) => {
+                  this.markers[$index].position = [e.lnglat.lng, e.lnglat.lat]
+                }
+              },
+              visible: true,
+              draggable: false
+            })
+          })
+        }
+        return userPointsArr
+      },
+      orderLength () {
+        /* eslint-disable no-unneeded-ternary */
+        if (this.personInfoData.orders) {
+          return this.personInfoData.orders.length > '0' ? true : false
+        }
+      }
+    },
+    mounted () {
+      this.data_table()
+    },
+    methods: {
+      data_table () {
+        let self = this
+        apiTable.data_personMapTable({
+          storeId: '10'
+        }).then((response) => {
+          if (response.data.code === 1) {
+            self.mapData = response.data.dat
+          } else {
+            swal(response.data.msg)
+          }
+        })
+      },
+      fetch_Data ($id) {
+        let self = this
+        apiTable.data_personMapInfo({
+          id: $id
+        }).then((response) => {
+          self.personInfoData = response.data.dat
+        })
+      }
+    },
+    watch: {
+      mapData () {
+        if (this.mapData.point.x && this.mapData.point.y) {
+          this.center = []
+          this.center.push(this.mapData.point.x)
+          this.center.push(this.mapData.point.y)
+        }
+        setTimeout(() => {
+          this.data_table()
+        }, 30000)
+      }
+    }
   }
 </script>
 
@@ -78,7 +171,7 @@
       }
     }
     .map-box-card{
-      width: 800px;
+      width: 700px;
       margin-bottom: 20px;
       .card-content{
         display: flex;
@@ -104,33 +197,44 @@
       }
     }
     .map-box-content{
-      width: 1100px;
-      height: 500px;
+      width: 100%;
       display: flex;
-      justify-content: space-between;
       border-radius: 5px;
       .box-content-win{
         overflow: hidden;
         background: #fff;
-        border-radius: 5px;
         >div{
-          width: 800px;
-          height: 500px;
+          width: 700px;
+          height: 450px;
+          border-radius: 4px;
+          margin-right: 20px;
         }
       }
       .box-content-info{
         width: 280px;
         height: 300px;
-        background: #fff;
-        border-radius: 5px;
+        background: #c2e1f7;
+        color: #012b6b;
         h5{
-          padding: 10px;
-          text-align: center;
-          font-size: 24px;
+          padding: 20px 0 20px 20px;
+          font-size: 18px;
+          position: relative;
+          font-weight: normal;
+          &::before{
+            content: '';
+            display: block;
+            width: 4px;
+            height: 30px;
+            background: #012b6b;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+          }
         }
         .info-item{
           display: table;
-          padding: 0 10px;
+          padding: 5px 10px;
           overflow: hidden;
           vertical-align: middle;
           label{
@@ -139,7 +243,6 @@
           }
           span{
             display: block;
-            padding: 5px 0;
           }
         }
       }

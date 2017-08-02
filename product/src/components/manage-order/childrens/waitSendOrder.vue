@@ -1,12 +1,13 @@
 <template>
   <div class="wait-send-order">
     <div class="search-table">
-      <el-form :inline="true">
+      <el-form :inline="true" :model="searchData" ref="searchData">
         <el-row :gutter="10">
           <el-col :span="5">
             <el-form-item>
               <div class="country-select">
                 <el-cascader
+                  v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   change-on-select
                 ></el-cascader>
@@ -25,9 +26,10 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="4">
             <el-form-item>
-              <el-button type="primary" @click="submitForm">查询</el-button>
+              <el-button type="primary" @click="data_table">查询</el-button>
+              <el-button type="primary" @click="resetForm">重置</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -37,9 +39,11 @@
       <el-table
         ref="multipleTable"
         :data="tableData.details"
-        :height="600"
+        :height="tabHeight"
+        :max-height="tabHeight"
         border
         tooltip-effect="dark"
+        @selection-change="handleSelectionChange"
         style="width: 100%">
         <el-table-column
           type="selection"
@@ -47,6 +51,8 @@
         </el-table-column>
         <el-table-column
           align="center"
+          min-width="200"
+          fixed
           label="订单编号">
           <template scope="scope">
             {{ scope.row.order_no }}
@@ -55,60 +61,65 @@
         <el-table-column
           prop="order_type"
           align="center"
-          label="订单类别">
+          min-width="80"
+          label="类型">
         </el-table-column>
         <el-table-column
           prop="name"
           label="提货门店"
+          min-width="210"
+          align="center"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="receiver_address"
           align="center"
           label="送货地点"
+          min-width="210"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="mall_time"
           align="center"
+          min-width="180"
           label="订单时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="scheduled_time"
           align="center"
+          min-width="180"
           label="预计推送时间"
-          width="120"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           prop="scheduled_push_time"
           align="center"
+          min-width="180"
           label="需要送达时间"
-          width="120"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           align="center"
-          width="100"
+          min-width="100"
+          fixed="right"
           label="操作">
           <template scope="scope">
-            <el-button type="text"
-              size="small"><router-link :to="{path: '/order/details', query: { orderId: scope.row.id }}">查看详情</router-link></el-button>
+            <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 1 }}">查看详情</router-link>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="wait-send-pagination">
       <div class="other-btn">
-        <el-button :plain="true" type="info">回退邮包</el-button>
-        <el-button :plain="true" type="info">全部导出excel</el-button>
+        <el-button :plain="true" type="info" @click="handleOrderBackToYb">回退邮包</el-button>
+        <el-button :plain="true" type="info" @click="downloadExcel">全部导出excel</el-button>
       </div>
       <el-pagination
-        @current-change="data_tableSendTable"
+        @current-change="data_table"
         :page-sizes="[20]"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.totalPage">
+        :total="tableData.rowsCount">
       </el-pagination>
     </div>
   </div>
@@ -116,36 +127,89 @@
 
 <script>
   import apiTable from '@/api/table'
+  import apiDetails from '@/api/details'
   export default {
     data () {
       return {
         searchData: {
+          country: [],
           orderType: ''
         },
-        tableData: []
+        tableData: [],
+        multipleSelection: []
+      }
+    },
+    computed: {
+      tabHeight () {
+        return this.$store.state.include.tableHeight - 285
       }
     },
     mounted () {
-      this.data_tableSendTable()
+      this.data_table()
     },
     methods: {
-      data_tableStoreTable ($page) {
-        let self = this
-        let params = {
-          page: $page - 1 || 0,
-          orderType: this.searchData.orderType || '普通',
-          area: '1' || 1
+      handleOrderBackToYb () {
+        let $params = {}
+        if (this.multipleSelection.length < 1) {
+          swal('请勾选需要处理的列表！')
+          return false
         }
-        apiTable.data_tableSendTable(params).then((response) => {
-          self.tableData = response.data.dat
+        if (this.multipleSelection.length === 1) {
+          $params = Object.assign({}, $params, {
+            id: this.multipleSelection[0].id
+          })
+        } else {
+          let ids = this.multipleSelection.map(($item) => {
+            return $item.id
+          })
+          $params = Object.assign({}, $params, {
+            ids: ids
+          })
+        }
+        apiDetails.details_handleOrderBackToYb($params).then((response) => {
+          if (response.data.code !== 1) {
+            swal(response.data.msg)
+          } else {
+            swal('操作成功！')
+            this.data_table()
+          }
         })
       },
-      submitForm () {
-        alert(JSON.stringify(this.searchData))
+      handleSelectionChange ($row) {
+        this.multipleSelection = $row
+      },
+      resetForm () {
+        this.searchData.country = []
+        this.searchData.orderType = ''
+      },
+      downloadExcel () {
+        if (this.tableData.details.length < 1) {
+          swal('无数据可导出！')
+          return false
+        }
+        window.location.href = '/api/web/orderManage/exportDtOrder?'
+      },
+      data_table ($page) {
+        let self = this
+        let $params = {
+          page: $page - 1 || 0,
+          orderType: this.searchData.orderType
+        }
+        if (self.searchData.country.length > 0) {
+          Object.assign($params, {
+            city: self.searchData.country[0],
+            province: self.searchData.country[1],
+            district: self.searchData.country[2]
+          })
+        }
+        apiTable.data_orderSendTable($params).then((response) => {
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          } else {
+            self.swal(response.data.msg)
+          }
+        })
       }
-    },
-    filters: {
-
     }
   }
 </script>
@@ -158,13 +222,5 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    .el-pagination__total{
-      color: #fff;
-    }
-    .el-pagination__jump{
-      input{
-        color: #666;
-      }
-    }
   }
 </style>
