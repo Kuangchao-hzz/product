@@ -177,12 +177,8 @@
       },
       submitEditRow ($row) {
         apiTable.edit_personMoneyEdit($row).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-          }
+          this.$message('操作成功！')
+          this.data_table()
         })
       },
       tableInlineEdit ($row) {
@@ -193,13 +189,9 @@
         apiTable.data_deliveryMoneyTable({
           page: $page - 1 || 0
         }).then((response) => {
-          if (response.data.code !== 1) {
-            self.swal(response.data.msg)
-          } else {
-            self.tableData = response.data
-            let copyData = JSON.stringify(self.tableData)
-            self.copyRow = JSON.parse(copyData)
-          }
+          self.tableData = response.data
+          let copyData = JSON.stringify(self.tableData)
+          self.copyRow = JSON.parse(copyData)
         }).catch(() => {
           /* eslint-disable no-undef */
           swal('服务器错误')
@@ -210,15 +202,11 @@
           id: $row.id,
           isEnabled: $type
         }).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal({
-              title: '操作成功！',
-              width: 300
-            })
-            this.data_table()
-          }
+          swal({
+            title: '操作成功！',
+            width: 300
+          })
+          this.data_table()
         })
       },
       inlineEditRow ($item) {

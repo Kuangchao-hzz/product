@@ -78,11 +78,7 @@
           phone: this.ruleForm.phone,
           employeeId: this.ruleForm.uname
         }).then((response) => {
-          if (response.data.code === 1) {
-            this.start = true
-          } else {
-            swal(response.data.msg)
-          }
+          this.start = true
         })
       },
       submitForm (formName) {
@@ -95,11 +91,7 @@
               code: this.ruleForm.code,
               password: md5(this.ruleForm.password)
             }).then((response) => {
-              if (response.data.code === 1) {
-                self.$router.push('/login')
-              } else {
-                swal(response.data.msg)
-              }
+              self.$router.push('/login')
             })
           } else {
             console.log('error submit!!')

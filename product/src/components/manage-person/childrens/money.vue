@@ -9,6 +9,7 @@
                 <el-cascader
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
+                  :props="this.$store.state.select.defaultCountryProps"
                   change-on-select
                 ></el-cascader>
               </div>
@@ -250,16 +251,12 @@
           })
         }
         apiTable.data_personMoneyTable($params).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            this.tableData = response.data.dat
-          }
+          this.tableData = response.data.dat
         })
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
-          swal('无数据可导出！')
+          this.$message('无数据可导出！')
           return false
         }
         window.location.href = '/api/web/settlement/exportData?'

@@ -10,6 +10,7 @@
                   <el-cascader
                     v-model="searchData.country"
                     :options="this.$store.state.select.country"
+                    :props="this.$store.state.select.defaultCountryProps"
                     change-on-select
                   ></el-cascader>
                 </div>
@@ -136,6 +137,7 @@
               <el-cascader
                 v-model="exportData.country"
                 :options="this.$store.state.select.country"
+                :props="this.$store.state.select.defaultCountryProps"
                 change-on-select
               ></el-cascader>
             </div>
@@ -230,12 +232,8 @@
           })
         }
         apiTable.data_staffTable($params).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-            self.handleTableHeader()
-          } else {
-            swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
+          self.handleTableHeader()
         })
       },
       handleTableHeader () {
@@ -277,7 +275,7 @@
             if (this.$refs.upload.uploadFiles.length > 0) {
               this.$refs.upload.submit()
             } else {
-              swal('请添加员工排班文件')
+              this.$message('请添加员工排班文件')
             }
           } else {
             console.log('error submit!!')
@@ -287,7 +285,7 @@
       },
       upDataSuccess (response) {
         if (response.code === 1) {
-          swal('上传成功！')
+          this.$message('上传成功！')
           this.handleClose()
         }
       },

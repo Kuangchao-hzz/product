@@ -1,13 +1,13 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" :style="sidebarStyle">
+    <div class="zoom-sideBar" @click="toggleSideBar"></div>
     <el-menu theme="dark"
-             mode="vertical"
              :unique-opened="true"
-             :default-active="this.$route.path"
-             @open="handleOpen"
-             @close="handleClose"
+             :default-active="currentPath"
              :collapse="isCollapse"
-             class="el-menu-vertical-demo"
+             :default-openeds="[]"
+             class="side-bar-warps"
+             ref="elMenu"
              router>
       <sidebarItem :routes="routes"></sidebarItem>
     </el-menu>
@@ -21,15 +21,34 @@
     data () {
       return {
         routes: asyncRouterMap,
-        isCollapse: true
+        currentPath: this.$route.path,
+        isCollapse: false
+      }
+    },
+    computed: {
+      realTime_currentPath () {
+        return this.currentPath
+      },
+      sidebarStyle () {
+        return {
+          height: (this.$store.state.include.tableHeight - 50) + 'px'
+        }
       }
     },
     methods: {
-      handleOpen (key, keyPath) {
-        console.log(key, keyPath)
-      },
-      handleClose (key, keyPath) {
-        console.log(key, keyPath)
+      toggleSideBar () {
+        this.isCollapse = !this.isCollapse
+      }
+    },
+    watch: {
+      isCollapse () {
+        if (this.isCollapse) {
+          this.currentPath = '/aaa'
+          this.$store.dispatch('captureBrowserSize', 64)
+        } else {
+          this.currentPath = this.$route.path
+          this.$store.dispatch('captureBrowserSize', 240)
+        }
       }
     },
     components: {
@@ -39,16 +58,18 @@
 </script>
 
 
-<style lang="scss" type="text/scss">
+<style lang="scss" rel="stylesheet/scss" type="text/scss">
   .sidebar{
-    width: 250px;
-    bottom:0;
-    z-index: 1;
-    background: #2a2c36;
-    position: absolute;
-    left: 0;
-    top: 0;
-    margin-top: 70px;
+    background-color: #324157;
+    position: relative;
+    .el-menu{
+      width: 250px;
+      min-width: 250px;
+      &.el-menu--collapse{
+        width: 64px;
+        min-width: 64px;
+      }
+    }
     .el-submenu{
       background: #2a2c36;
       div.el-submenu__title{
@@ -68,6 +89,37 @@
             background: #30333e;
           }
         }
+      }
+    }
+    .zoom-sideBar{
+      width: 8px;
+      height: 70px;
+      background: #324157;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-left: 1px #666 solid;
+      cursor: pointer;
+      opacity: 0;
+      transition: all .5s;
+      position: absolute;
+      right: -20px;
+      top: 80%;
+      transform: translateY(-50%);
+      &::before{
+        content: '〈';
+        display: block;
+        color: #fff;
+        font-size: 12px;
+        position: absolute;
+        left: 10%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+    &:hover{
+      .zoom-sideBar{
+        opacity: 1;
+        right: -8px;
       }
     }
   }

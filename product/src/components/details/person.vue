@@ -344,11 +344,7 @@
           id: $params
         }).then((response) => {
           self.$nextTick(function () {
-            if (response.data.code === 1) {
-              self.detailsData = response.data.dat
-            } else {
-              swal(response.data.msg)
-            }
+            self.detailsData = response.data.dat
           })
         })
       },
@@ -362,11 +358,7 @@
           isAbnormal: self.searchData.isAbnormal,
           deliveryUserId: self.searchData.deliveryUserId
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            self.swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         }).catch(() => {
           swal('服务器错误')
         })
@@ -378,11 +370,7 @@
           direction: $params
         }).then((response) => {
           self.$nextTick(function () {
-            if (response.data.code === 1) {
-              swal(response.data.msg)
-            } else {
-              swal(response.data.msg)
-            }
+            this.$message(response.data.msg)
           })
         })
       },
@@ -393,11 +381,7 @@
           direction: $params
         }).then((response) => {
           self.$nextTick(function () {
-            if (response.data.code === 1) {
-              swal(response.data.msg)
-            } else {
-              swal(response.data.msg)
-            }
+            this.$message(response.data.msg)
           })
         })
       }

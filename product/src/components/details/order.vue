@@ -167,12 +167,8 @@
           orderId: $params
         }).then((response) => {
           self.$nextTick(function () {
-            if (response.data.code === 1) {
-              self.detailsData = response.data.dat
-              self.storeInfo = response.data.dat.storeInfo
-            } else {
-              swal(response.data.msg)
-            }
+            self.detailsData = response.data.dat
+            self.storeInfo = response.data.dat.storeInfo
           })
         })
       }

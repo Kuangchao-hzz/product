@@ -41,6 +41,7 @@
                 <el-cascader
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
+                  :props="this.$store.state.select.defaultCountryProps"
                   change-on-select
                 ></el-cascader>
               </div>
@@ -103,7 +104,7 @@
         </el-row>
       </el-form>
     </div>
-    <div class="wait-all-order">
+    <div class="wait-all-table">
       <el-table
         ref="multipleTable"
         :data="tableData.details"
@@ -311,13 +312,9 @@
       },
       closeOrder () {
         apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-            this.handleClose()
-          }
+          this.$message('操作成功！')
+          this.data_table()
+          this.handleClose()
         })
       },
       resetForm () {
@@ -335,7 +332,7 @@
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
-          swal('无数据可导出！')
+          this.$message('无数据可导出！')
           return false
         }
         window.location.href = '/api/web/orderManage/exportAllOrder?'
@@ -376,11 +373,7 @@
           })
         }
         apiTable.data_orderAllTable($params).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         })
       },
       Format (date, fmt) {
@@ -404,10 +397,10 @@
   }
 </script>
 
-<style lang="scss" type="text/scss" scoped>
+<style lang="scss" type="text/scss">
   .search-form{
   }
-  .wait-all-order{
+  .wait-all-table{
     margin-bottom: 20px;
   }
   .wait-send-pagination{

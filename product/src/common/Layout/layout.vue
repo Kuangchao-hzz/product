@@ -1,9 +1,9 @@
 <template>
   <div class="wrapper">
     <v-head></v-head>
-    <div class="content">
+    <div class="content-group">
       <v-sidebar></v-sidebar>
-      <div class="container">
+      <div class="container" :style="containerStyle">
         <div :style="containerHeight">
           <div class="breadcrumb">
             <v-breadcrumb></v-breadcrumb>
@@ -28,6 +28,11 @@
           height: (this.$store.state.include.tableHeight - 90) + 'px',
           overflow: this.$route.path === '/order/orderDetails' ? 'auto' : 'hidden'
         }
+      },
+      containerStyle () {
+        return {
+          width: (this.$store.state.include.tableWidth) - (this.$store.state.include.sidebarWidth) - 10 + 'px'
+        }
       }
     },
     mounted () {
@@ -41,25 +46,24 @@
   }
 </script>
 
-<style lang="scss" type="text/scss">
+<style lang="scss" rel="stylesheet/scss" type="text/scss">
   .wrapper{
     width: 100%;
     height: 100%;
-    overflow: auto;
-    .content{
+    .content-group{
       width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      top: 0;
+      position: relative;
+      top: -2px;
+      overflow: hidden;
+      .sidebar{
+        float: left;
+      }
       .container{
-        height: 100%;
+        float: right;
         overflow: hidden;
         box-sizing: border-box;
-        border-top: 70px solid transparent;
-        border-right: 20px solid transparent;
-        border-bottom: 20px solid transparent;
-        border-left: 270px solid transparent;
+        border: 20px solid transparent;
+        transition: all .5s;
         >div{
           overflow: hidden;
           background: #fff;

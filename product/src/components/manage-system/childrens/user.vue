@@ -116,11 +116,12 @@
           </el-tree>
         </el-form-item>
         <el-form-item style="margin: 0; text-align: right;">
-          <el-button @click="addUserForm.addUserIsShow = false">取消</el-button>
+          <el-button @click="handleClose">取消</el-button>
           <el-button type="primary" @click="save_dataTable">确定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
+
   </div>
 </template>
 
@@ -145,7 +146,7 @@
           treeDialog: {
             type: false,
             name: '',
-            routerAuth: this.$store.state.select.treeCountry,
+            routerAuth: [],
             checkedValue: []
           }
         },
@@ -214,44 +215,37 @@
       data_table () {
         let self = this
         apiTable.data_systemUserAll().then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         })
       },
       handler_dataTableLock ($row, $sta) {
         apiTable.edit_systemUserHandlerLock({
           userId: $row.id,
           lock: $sta
-        }).then((response) => {
-          if (response.data.code === 1) {
-            let str = $sta === 1 ? '你确定解冻该用户?' : '你确定冻结该用户?'
-            swal({
-              title: str,
-              type: 'warning',
-              showCancelButton: true,
-              reverseButtons: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: '确定!',
-              cancelButtonText: '取消'
-            }).then(() => {
-              this.data_table()
-              swal('操作成功！')
-            }, () => {
+        }).then(() => {
+          let str = $sta === 1 ? '你确定解冻该用户?' : '你确定冻结该用户?'
+          swal({
+            title: str,
+            type: 'warning',
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确定!',
+            cancelButtonText: '取消'
+          }).then(() => {
+            this.data_table()
+            this.$message('操作成功！')
+          }, () => {
 
-            })
-          } else {
-            swal(response.data.msg)
-          }
+          })
         })
       },
       handlerUserData_edit ($row) {
         this.addUserForm.addUserIsShow = true
+        this.get_allAreaAndStore()
         let self = this
-        self.$nextTick(function () {
+        self.$nextTick(() => {
           if ($row.id) {
             self.dialogTitle = '编辑用户'
             let roleIdsArr = $row.roleIds.split(',').map(($item) => {
@@ -288,12 +282,8 @@
           apiTable.data_systemUserDel({
             userId: $id
           }).then((response) => {
-            if (response.data.code === 1) {
-              this.data_table()
-              swal('操作成功！')
-            } else {
-              swal(response.data.msg)
-            }
+            this.data_table()
+            this.$message('操作成功！')
           })
         }, () => {
 
@@ -318,13 +308,10 @@
                 areaIds: roleIds.join('-'),
                 roleIds: this.addUserForm.roleIds.join(',')
               }).then((response) => {
-                if (response.data.code === 1) {
-                  this.data_table()
-                  this.handleClose()
-                  swal('操作成功！')
-                } else {
-                  swal(response.data.msg)
-                }
+                this.data_table()
+                this.handleClose()
+                this.$store.dispatch('fetch_allAreaAndStore')
+                this.$message('操作成功！')
               })
             } else {
               return false
@@ -357,6 +344,22 @@
             this.roleList = response.data.dat
           }
         })
+      },
+      get_allAreaAndStore () {
+        return new Promise(resolve => {
+          apiTable.fetch_allAreaAndStore().then((response) => {
+            this.addUserForm.treeDialog.routerAuth = response.data.dat
+            resolve()
+          })
+        })
+      }
+    },
+    watch: {
+      'this.addUserForm.addUserIsShow' () {
+        console.log(this.addUserForm.addUserIsShow)
+        if (this.addUserForm.addUserIsShow) {
+          this.get_allAreaAndStore()
+        }
       }
     }
   }

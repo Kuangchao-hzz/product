@@ -4,6 +4,7 @@
       <span>区域 </span>
       <el-cascader
         :options="this.$store.state.select.country"
+        :props="this.$store.state.select.defaultCountryProps"
         change-on-select
       ></el-cascader>
     </div>
@@ -131,11 +132,7 @@
         apiTable.data_personMapTable({
           storeId: '10'
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.mapData = response.data.dat
-          } else {
-            swal(response.data.msg)
-          }
+          self.mapData = response.data.dat
         })
       },
       fetch_Data ($id) {
@@ -162,7 +159,7 @@
   }
 </script>
 
-<style lang="scss" type="text/scss" scope>
+<style lang="scss" type="text/scss" scoped>
   .person-map{
     .country-select{
       margin-bottom: 20px;

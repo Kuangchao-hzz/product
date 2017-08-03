@@ -79,14 +79,10 @@
               uname: self.ruleForm.username,
               pwd: md5(self.ruleForm.password)
             }).then((response) => {
-              if (response.data.code === 1) {
-                localStorage.setItem('ms_username', self.ruleForm.username)
-                self.$store.dispatch('LoginByUser', self.ruleForm).then(() => {
-                  self.$router.push('/data/delivery')
-                })
-              } else {
-                swal(response.data.msg)
-              }
+              localStorage.setItem('ms_username', self.ruleForm.username)
+              self.$store.dispatch('LoginByUser', self.ruleForm).then(() => {
+                self.$router.push('/data/delivery')
+              })
             })
           } else {
             console.log('error submit!!')

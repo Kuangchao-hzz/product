@@ -9,6 +9,7 @@
                 <div class="country-select">
                   <el-cascader
                     :options="this.$store.state.select.country"
+                    :props="this.$store.state.select.defaultCountryProps"
                     change-on-select
                   ></el-cascader>
                 </div>
@@ -200,7 +201,7 @@
           result: $type
         }
         if (this.multipleSelection.length < 1) {
-          swal('请勾选需要处理的列表！')
+          this.$message('请勾选需要处理的列表！')
           return false
         }
         if (this.multipleSelection.length === 1) {
@@ -216,12 +217,8 @@
           })
         }
         apiDetails.details_submitAudit($params).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-          }
+          this.$message('操作成功！')
+          this.data_table()
         })
       },
       localStorage_details ($item) {

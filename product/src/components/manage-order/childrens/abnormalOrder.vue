@@ -9,6 +9,7 @@
                 <el-cascader
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
+                  :props="this.$store.state.select.defaultCountryProps"
                   change-on-select
                 ></el-cascader>
               </div>
@@ -71,7 +72,9 @@
         border
         style="width: 100%"
         :row-class-name="tableRowClassName">
-        <el-table-column type="expand">
+        <el-table-column
+          fixed
+          type="expand">
           <template scope="scope">
             <el-form label-position="left" inline class="demo-table-expand">
               <el-button type="primary">
@@ -255,11 +258,7 @@
         apiDetails.details_handleOrderManualHandle({
           id: $id
         }).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-          }
+          this.$message('操作成功！')
         })
       },
       HandleCloseOrder ($id) {
@@ -289,18 +288,14 @@
       },
       closeOrder () {
         apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-            this.handleClose()
-          }
+          this.$message('操作成功！')
+          this.data_table()
+          this.handleClose()
         })
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
-          swal('无数据可导出！')
+          this.$message('无数据可导出！')
           return false
         }
         window.location.href = '/api/web/orderManage/exportAbnormal?'
@@ -322,11 +317,7 @@
           })
         }
         apiTable.data_orderAbnormalTable($params).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            self.swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         })
       },
       lookDetails ($item) {

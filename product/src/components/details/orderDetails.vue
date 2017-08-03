@@ -129,30 +129,19 @@
                 <el-col :span="6">{{detailsData.cancelReason}}</el-col>
               </el-row>
             </div>
-
             <el-row class="data-item">
               <el-row :gutter="10" v-if="detailsSource === '1'">
                 <el-button type="info" @click="handleOrderBackToYb">回退邮包</el-button>
                 <el-button type="info" @click="handleOrderRePush">手工推送</el-button>
               </el-row>
               <el-row :gutter="10" v-else-if="detailsSource === '2'">
-                <el-col :span="5">
-                  <el-button type="info" @click="outOrderDialog = true">退单</el-button>
-                </el-col>
-                <el-col :span="5">
-                  <el-button type="info" @click="closeOrderDialog = true">关闭订单</el-button>
-                </el-col>
-                <el-col :span="5">
-                  <el-button type="info" @click="manualHandle(detailsData.id)">人工处理</el-button>
-                </el-col>
+                <el-button type="info" @click="outOrderDialog = true">退单</el-button>
+                <el-button type="info" @click="closeOrderDialog = true">关闭订单</el-button>
+                <el-button type="info" @click="manualHandle(detailsData.id)">人工处理</el-button>
               </el-row>
               <el-row :gutter="10" v-else-if="detailsSource === '3'">
-                <el-col :span="5">
-                  <el-button type="info" @click="outOrderDialog = true">退单</el-button>
-                </el-col>
-                <el-col :span="5">
-                  <el-button type="info" @click="closeOrderDialog = true">关闭订单</el-button>
-                </el-col>
+                <el-button type="info" @click="outOrderDialog = true">退单</el-button>
+                <el-button type="info" @click="closeOrderDialog = true">关闭订单</el-button>
               </el-row>
             </el-row>
           </el-col>

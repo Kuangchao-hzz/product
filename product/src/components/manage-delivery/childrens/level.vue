@@ -194,11 +194,7 @@
         apiTable.data_deliveryLevelTable({
           page: $page - 1 || 0
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            self.swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         }).catch(() => {
           swal('服务器错误')
         })
@@ -208,11 +204,7 @@
         apiTable.data_deliveryLevelTableAuto({
           page: $page - 1 || 0
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.tableDataAuto = response.data.dat
-          } else {
-            self.swal(response.data.msg)
-          }
+          self.tableDataAuto = response.data.dat
         }).catch(() => {
           /* eslint-disable no-undef */
           swal('服务器错误')
@@ -240,27 +232,18 @@
         self.dialogEditOrderForm.orderType.join('、') === self.orderType.join('、') ? self.dialogEditOrderForm.orderType = '所有' : self.dialogEditOrderForm.orderType = self.dialogEditOrderForm.orderType.join('、')
 
         apiTable.edit_deliveryLevelTable(self.dialogEditOrderForm).then((response) => {
-          if (response.data.code === 1) {
-            self.dialogEditOrder = false
-            /* eslint-disable no-undef */
-            swal('编辑成功！')
-            self.data_table()
-          } else {
-            /* eslint-disable no-undef */
-            swal(response.data.msg)
-          }
+          self.dialogEditOrder = false
+          /* eslint-disable no-undef */
+          this.$message('编辑成功！')
+          self.data_table()
         })
       },
       edit_tableAuto () {
         let self = this
         apiTable.edit_deliveryLevelTableAuto(self.dialogEditLevelForm).then((response) => {
-          if (response.data.code === 1) {
-            self.dialogEditLevel = false
-            swal('编辑成功！')
-            self.data_tableAuto()
-          } else {
-            swal(response.data.msg)
-          }
+          self.dialogEditLevel = false
+          this.$message('编辑成功！')
+          self.data_tableAuto()
         })
       },
       handleClose (done) {

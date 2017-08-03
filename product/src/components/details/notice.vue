@@ -6,15 +6,15 @@
     <div class="details-content">
       <div class="content-body">
         <el-row>
-          <el-col :span="2" style="width: 80px">公告标题: </el-col>
+          <el-col :span="2" style="width: 80px">公告标题:</el-col>
           <el-col :span="16">{{detailsData.title}}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="2" style="width: 80px">发送时间: </el-col>
+          <el-col :span="2" style="width: 80px">发送时间:</el-col>
           <el-col :span="16">{{detailsData.pubTime}}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="2" style="width: 80px">目标人群: </el-col>
+          <el-col :span="2" style="width: 80px">目标人群:</el-col>
           <el-col :span="16">
             {{detailsData.type === 0? '所有人':''}}
             {{detailsData.type === 1? '员工':''}}
@@ -22,7 +22,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="2" style="width: 80px">公告内容: </el-col>
+          <el-col :span="2" style="width: 80px">公告内容:</el-col>
           <el-col :span="16">{{detailsData.content}}</el-col>
         </el-row>
       </div>
@@ -53,17 +53,22 @@
 </script>
 
 <style lang="scss" type="text/scss" scoped>
-  .order-details{
+  .order-details {
     color: #666;
-    .details-title{
-      border-bottom: 1px #ddd solid;
-      padding: 10px;
-      font-size: 24px;
-    }
-    .content-body{
-      >.el-row{
-        margin-top: 20px;
-      }
-    }
+
+  .details-title {
+    border-bottom: 1px #ddd solid;
+    padding: 10px;
+    font-size: 24px;
+  }
+
+  .content-body {
+
+  >
+  .el-row {
+    margin-top: 20px;
+  }
+
+  }
   }
 </style>

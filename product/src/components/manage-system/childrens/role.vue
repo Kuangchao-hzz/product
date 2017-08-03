@@ -131,11 +131,7 @@
       data_table () {
         let self = this
         apiTable.data_roleTable().then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         })
       },
       // 添加角色
@@ -154,11 +150,7 @@
             self.$refs.tree.setCheckedKeys([])
           }
           apiTable.data_systemRoleDate().then((response) => {
-            if (response.data.code === 1) {
-              self.roleList.routerAuth = response.data.dat
-            } else {
-              swal(response.data.msg)
-            }
+            self.roleList.routerAuth = response.data.dat
           })
         })
       },
@@ -179,13 +171,9 @@
                 roleName: this.roleList.name,
                 authIds: authIdsArr.join(',')
               }).then((response) => {
-                if (response.data.code === 1) {
-                  swal('保存成功！')
-                  this.handleClose()
-                  this.data_table()
-                } else {
-                  swal(response.data.msg)
-                }
+                this.$message('保存成功！')
+                this.handleClose()
+                this.data_table()
               })
             } else {
               console.log(this.roleList.checkedValue)
@@ -210,7 +198,7 @@
               cancelButtonText: '取消'
             }).then(() => {
               this.data_table()
-              swal('删除成功！')
+              this.$message('删除成功！')
             }, () => {
 
             })

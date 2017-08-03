@@ -9,7 +9,9 @@
           <span class="path3"></span>
           <span class="path4"></span>
           <span class="path5"></span>
-        </i>{{item.name}}</template>
+        </i>
+        <span>{{item.name}}</span>
+        </template>
         <template v-for="child in item.children">
           <sidebar-item v-if="child.children" :routes="[child]"></sidebar-item>
           <el-menu-item v-else :index="item.path + '/' + child.path"><i :class="child.icon" class="menu-icon small"></i>{{child.name}}</el-menu-item>
@@ -33,38 +35,58 @@
 </script>
 
 
-<style lang="scss" type="text/scss">
-  .menu-icon{
-    font-size: 20px;
-    position: relative;
-    top: 2px;
-    &.icon-japan{
-      margin: 0;
-    }
-    &.icon--early-warning{
-      margin: 0;
+<style lang="scss" rel="stylesheet/scss" type="text/scss">
+  .side-bar-warps{
+    .menu-icon{
+      font-size: 20px;
       position: relative;
-      left: -5px;
+      top: 2px;
+      &.icon-japan{
+        margin: 0;
+      }
+      &.icon--early-warning{
+        margin: 0;
+        position: relative;
+        left: -5px;
+      }
+      &.icon-associated{
+        margin: 0;
+        position: relative;
+        left: -8px;
+      }
+      &.icon-accounts{
+        font-size: 22px;
+        position: relative;
+        left: -2px;
+        margin-right: 4px;
+      }
+      &.icon-earth-other{
+        font-size: 26px;
+        margin: 0;
+        position: relative;
+        top: 4px;
+      }
+      small{
+        font-size: 14px;
+      }
+
     }
-    &.icon-associated{
+    &.el-menu--collapse>.el-menu-item span, &.el-menu--collapse>div>.el-submenu>.el-submenu__title span{
+      height: 0;
+      width: 0;
+      overflow: hidden;
+      visibility: hidden;
+      display: inline-block;
+    }
+    &.el-menu--collapse>.el-menu-item>div.el-submenu__icon-arrow, &.el-menu--collapse>div>.el-submenu>.el-submenu__title .el-submenu__icon-arrow {
+      display: none;
+    }
+    &.el-menu--collapse>.el-menu-item>div.menu-icon, &.el-menu--collapse>div>.el-submenu>.el-submenu__title .menu-icon {
       margin: 0;
-      position: relative;
-      left: -8px;
+      vertical-align: middle;
     }
-    &.icon-accounts{
-      font-size: 22px;
-      position: relative;
-      left: -2px;
-      margin-right: 4px;
-    }
-    &.icon-earth-other{
-      font-size: 26px;
-      margin: 0;
-      position: relative;
-      top: 4px;
-    }
-    small{
-      font-size: 14px;
+    i{
+      font-style: normal;
     }
   }
 </style>

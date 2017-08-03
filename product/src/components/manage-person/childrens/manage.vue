@@ -8,6 +8,7 @@
               <div class="country-select">
                 <el-cascader
                   :options="this.$store.state.select.country"
+                  :props="this.$store.state.select.defaultCountryProps"
                   change-on-select
                 ></el-cascader>
               </div>
@@ -243,11 +244,7 @@
           realName: self.searchData.realName,
           phone: self.searchData.phone
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            self.swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         }).catch(() => {
           swal('服务器错误')
         })
@@ -257,7 +254,7 @@
           direction: $type
         }
         if (this.multipleSelection.length < 1) {
-          swal('请勾选需要处理的列表！')
+          this.$message('请勾选需要处理的列表！')
           return false
         }
         if (this.multipleSelection.length === 1) {
@@ -273,12 +270,8 @@
           })
         }
         apiDetails.details_handlePersonUpDown($params).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-          }
+          this.$message('操作成功！')
+          this.data_table()
         })
       },
       handlePersonEnabled ($type) {
@@ -286,7 +279,7 @@
           direction: $type
         }
         if (this.multipleSelection.length < 1) {
-          swal('请勾选需要处理的列表！')
+          this.$message('请勾选需要处理的列表！')
           return false
         }
         if (this.multipleSelection.length === 1) {
@@ -302,12 +295,8 @@
           })
         }
         apiDetails.details_handlePersonEnabled($params).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-          }
+          this.$message('操作成功！')
+          this.data_table()
         })
       },
       handleSelectionChange ($row) {

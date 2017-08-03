@@ -8,15 +8,9 @@ const Layout = resolve => require(['../common/Layout/layout.vue'], resolve)
 export const includeRouterMap = [
   {
     path: '/',
-    name: '布局页',
     component: Layout,
     redirect: '/login',
     children: [
-      {
-        path: 'details',
-        name: '订单详情',
-        component: resolve => require(['../components/details/order.vue'], resolve)
-      },
       {
         path: 'abnormalDetails',
         name: '异常订单详情',
@@ -48,7 +42,7 @@ export const includeRouterMap = [
         component: resolve => require(['../components/details/audit.vue'], resolve)
       },
       {
-        path: 'system/noticeDetails',
+        path: '/system/noticeDetails',
         name: '公告详情',
         component: resolve => require(['../components/details/notice.vue'], resolve)
       }

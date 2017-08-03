@@ -185,18 +185,14 @@
           province: self.searchData.country[1] || '1',
           district: self.searchData.country[2] || '1'
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.deliveryData = response.data.dat
-          } else {
-            swal(response.data.msg)
-          }
+          self.deliveryData = response.data.dat
         })
       }
     }
   }
 </script>
 
-<style lang="scss" type="text/scss">
+<style lang="scss" type="text/scss" rel="stylesheet/scss">
   .delivery{
     .country-select{
       margin-bottom: 20px;

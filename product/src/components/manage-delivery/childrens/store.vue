@@ -9,6 +9,7 @@
                 <el-cascader
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
+                  :props="this.$store.state.select.defaultCountryProps"
                   change-on-select
                 ></el-cascader>
               </div>

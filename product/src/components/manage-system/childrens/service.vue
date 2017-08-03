@@ -28,11 +28,7 @@
       data_table () {
         let self = this
         apiTable.data_editService().then((response) => {
-          if (response.data.code === 1) {
-            self.serviceForm.kefu = response.data.dat
-          } else {
-            swal(response.data.msg)
-          }
+          self.serviceForm.kefu = response.data.dat
         })
       },
       submit_data () {
@@ -40,12 +36,8 @@
         apiTable.edit_editService({
           kufu: self.serviceForm.kefu
         }).then((response) => {
-          if (response.data.code === 1) {
-            swal('保存成功！')
-            self.data_table()
-          } else {
-            swal(response.data.msg)
-          }
+          this.$message('保存成功！')
+          self.data_table()
         })
       }
     }

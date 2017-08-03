@@ -9,6 +9,24 @@ export default {
       params: $baseData
     })
   },
+  // 全部地区(包含门店)
+  fetch_areaAndStore ($baseData) {
+    return instance.get('/web/user/areaAndStore', {
+      params: $baseData
+    })
+  },
+    // 全部地区(包含门店)
+  fetch_areaData ($baseData) {
+    return instance.get('/web/user/area', {
+      params: $baseData
+    })
+  },
+  // 门店
+  fetch_storeOfArea ($baseData) {
+    return instance.get('/web/user/storeOfArea', {
+      params: $baseData
+    })
+  },
   // 数据统计-配送统计
   data_dataDeliveryTable ($baseData) {
     return instance.get('/web/dataStats/order', {

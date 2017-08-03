@@ -120,23 +120,15 @@
           id: $params
         }).then((response) => {
           self.$nextTick(function () {
-            if (response.data.code === 1) {
-              self.detailsData = response.data.dat
-            } else {
-              swal(response.data.msg)
-            }
+            self.detailsData = response.data.dat
           })
         })
       },
       details_SubmitStore () {
         let self = this
         apiDetails.details_submitStore(self.detailsData).then((response) => {
-          if (response.data.code === 1) {
-            swal(response.data.msg)
-            self.$router.push('/delivery/store')
-          } else {
-            swal(response.data.msg)
-          }
+          this.$message(response.data.msg)
+          self.$router.push('/delivery/store')
         })
       },
       goBack () {

@@ -9,6 +9,7 @@
                 <el-cascader
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
+                  :props="this.$store.state.select.defaultCountryProps"
                   change-on-select
                 ></el-cascader>
               </div>
@@ -47,12 +48,12 @@
         style="width: 100%">
         <el-table-column
           type="selection"
+          fixed
           width="55">
         </el-table-column>
         <el-table-column
           align="center"
           min-width="200"
-          fixed
           label="订单编号">
           <template scope="scope">
             {{ scope.row.order_no }}
@@ -151,7 +152,7 @@
       handleOrderBackToYb () {
         let $params = {}
         if (this.multipleSelection.length < 1) {
-          swal('请勾选需要处理的列表！')
+          this.$message('请勾选需要处理的列表！')
           return false
         }
         if (this.multipleSelection.length === 1) {
@@ -167,12 +168,8 @@
           })
         }
         apiDetails.details_handleOrderBackToYb($params).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-          }
+          this.$message('操作成功！')
+          this.data_table()
         })
       },
       handleSelectionChange ($row) {
@@ -184,7 +181,7 @@
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
-          swal('无数据可导出！')
+          this.$message('无数据可导出！')
           return false
         }
         window.location.href = '/api/web/orderManage/exportDtOrder?'
@@ -203,11 +200,7 @@
           })
         }
         apiTable.data_orderSendTable($params).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            self.swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         })
       }
     }

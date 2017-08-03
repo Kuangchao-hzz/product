@@ -46,7 +46,8 @@
             <el-button type="text"
                        size="small"
                        @click="localStorage_details(scope.row)"
-            >查看详情</el-button>
+            >查看详情
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -121,11 +122,7 @@
         apiTable.data_noticeTable({
           page: $page - 1 || 0
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            self.swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         })
       },
       add_tableData () {
@@ -135,17 +132,11 @@
               type: this.createDialogForm.type,
               title: this.createDialogForm.title,
               content: this.createDialogForm.content
-            }).then(
-              (response) => {
-                if (response.data.code === 1) {
-                  swal('发布成功!')
-                  this.createDialogForm.isShow = false
-                  this.data_table()
-                } else {
-                  self.swal(response.data.msg)
-                }
-              }
-            )
+            }).then(() => {
+              this.$message('发布成功!')
+              this.createDialogForm.isShow = false
+              this.data_table()
+            })
           } else {
             console.log('error submit!!')
             return false
@@ -157,22 +148,27 @@
           .then(_ => {
             done()
           })
-          .catch(_ => {})
+          .catch(_ => {
+          })
       }
     }
   }
 </script>
 
 <style lang="scss" type="text/scss">
-  .view-notice{
-    .notice-group{
-      margin-bottom: 20px;
-    }
-    .system-notice-table{
-      margin-bottom: 20px;
-    }
-    .system-notice-pagination{
-      text-align: right;
-    }
+  .view-notice {
+
+  .notice-group {
+    margin-bottom: 20px;
+  }
+
+  .system-notice-table {
+    margin-bottom: 20px;
+  }
+
+  .system-notice-pagination {
+    text-align: right;
+  }
+
   }
 </style>

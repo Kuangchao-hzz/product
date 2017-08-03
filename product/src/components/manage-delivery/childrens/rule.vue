@@ -123,12 +123,8 @@
       },
       submitEditRow ($row) {
         apiTable.edit_personRuleEdit($row).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-            this.data_table()
-          }
+          this.$message('操作成功！')
+          this.data_table()
         })
       },
       resetForm () {
@@ -140,34 +136,21 @@
       data_table ($page, $sta) {
         let self = this
         apiTable.data_deliveryRuleTable().then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.smg)
-          } else {
-            self.tableData = response.data
-            let copyData = JSON.stringify(self.tableData)
-            self.copyRow = JSON.parse(copyData)
-          }
+          self.tableData = response.data
+          let copyData = JSON.stringify(self.tableData)
+          self.copyRow = JSON.parse(copyData)
         })
         if (!$sta) {
           apiTable.edit_SaveRuleTime({
             point: this.searchData.point
           }).then((response) => {
-            if (response.data.code === 1) {
 
-            } else {
-              self.swal(response.data.msg)
-            }
           })
         }
       },
       fetch_ruleTime ($page) {
-        let self = this
         apiTable.data_fetchRuleTime().then((response) => {
-          if (response.data.code === 1) {
-            this.searchData.point = response.data.dat.toString()
-          } else {
-            self.swal(response.data.msg)
-          }
+          this.searchData.point = response.data.dat.toString()
         })
       },
       enable_row ($row, $type) {
@@ -175,15 +158,11 @@
           id: $row.id,
           isEnabled: $type
         }).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal({
-              title: '操作成功！',
-              width: 300
-            })
-            this.data_table()
-          }
+          swal({
+            title: '操作成功！',
+            width: 300
+          })
+          this.data_table()
         })
       },
       handle_row ($item, $status) {

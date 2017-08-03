@@ -57,8 +57,8 @@
         </div>
       </el-card>
     </div>
-    <div class="box-table-group">
-      <div class="box-table-item">
+    <div class="box-table-group" >
+      <div class="box-table-item" v-if="tableData.ordersRank">
         <h5>本月接单配送员TOP{{tableData.ordersRank.length < 5? '5' : tableData.ordersRank.length}}</h5>
         <el-table
           :data="tableData.ordersRank"
@@ -90,7 +90,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="box-table-item">
+      <div class="box-table-item" v-if="tableData.rateRank">
         <h5>本月准达配送员TOP{{tableData.rateRank.length < 5 ? '5': tableData.rateRank.length}}</h5>
         <el-table
           :data="tableData.rateRank"
@@ -198,11 +198,7 @@
           province: self.searchData.country[1] || '1',
           district: self.searchData.country[2] || '1'
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            swal(response.data.msg)
-          }
+          self.tableData = response.data.dat
         })
       }
     }

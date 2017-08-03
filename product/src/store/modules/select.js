@@ -1,21 +1,12 @@
 import api from '../../api/table'
 const select = {
   state: {
-    country: [{
-      value: '1',
-      label: '上海',
-      children: [{
-        value: '1',
-        label: '上海市',
-        children: [{
-          value: '1',
-          label: '宝山区'
-        }, {
-          value: '2',
-          label: '徐汇区'
-        }]
-      }]
-    }],
+    country: [],
+    defaultCountryProps: {
+      value: 'id',
+      label: 'label',
+      children: 'children'
+    },
     treeCountry: [],
     orderType: [{
       value: '',
@@ -252,16 +243,27 @@ const select = {
   mutations: {
     SET_AREAANDSTORE ($state, $data) {
       $state.treeCountry = $data
+    },
+    SET_AREA ($state, $data) {
+      $state.country = $data
     }
   },
   actions: {
     fetch_allAreaAndStore ({ commit }) {
       return new Promise(resolve => {
-        api.fetch_allAreaAndStore().then((response) => {
+        api.fetch_areaAndStore().then((response) => {
           if (response.data.code !== 1) {
             swal(response.data.msg)
           } else {
             commit('SET_AREAANDSTORE', response.data.dat)
+            resolve()
+          }
+        })
+        api.fetch_areaData().then((response) => {
+          if (response.data.code !== 1) {
+            swal(response.data.msg)
+          } else {
+            commit('SET_AREA', response.data.dat)
             resolve()
           }
         })

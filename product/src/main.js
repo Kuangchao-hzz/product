@@ -22,14 +22,13 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(common)
 Vue.use(AMap)
-
 AMap.initAMapApiLoader({
   key: '4f77fb55df2ea2d761581bf83ff57acc'
 })
 router.beforeEach((to, from, next) => {
   if (store.state.include.tableWidth === '' && store.state.include.tableHeight === '') {
     store.dispatch('captureBrowserSize').then(() => {
-      if (store.state.select.treeCountry.length < 1) {
+      if (store.state.select.treeCountry.length < 1 && to.path !== '/login') {
         store.dispatch('fetch_allAreaAndStore')
         next()
       } else {

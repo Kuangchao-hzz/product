@@ -138,12 +138,8 @@
           id: this.detailsData.id,
           result: $params
         }).then((response) => {
-          if (response.data.code === 1) {
-            swal(response.data.msg)
-            this.$router.push('/person/audit')
-          } else {
-            swal(response.data.msg)
-          }
+          this.$message(response.data.msg)
+          this.$router.push('/person/audit')
           localStorage.removeItem('details_audit')
         })
       },

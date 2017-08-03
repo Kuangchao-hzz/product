@@ -52,7 +52,7 @@ export default {
 }
 </script>
 
-<style lang="scss" type="text/scss">
+<style lang="scss" type="text/scss" rel="stylesheet/scss">
   @import "../static/css/reset.css";
   @import "../static/css/global";
   @import "./assets/font/menu-icon.css";
@@ -60,6 +60,7 @@ export default {
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
     width: 100%;
     background: #ddd;
+    overflow: hidden;
     .country-select{
       color: #fff;
     }
@@ -87,11 +88,11 @@ export default {
         float: right;
       }
     }
-    .el-table--fit td.gutter, .el-table--fit th.gutter{
-      border-right-width: 0px;
-    }
     .swal2-container{
       z-index: 3000;
+    }
+    .el-message{
+      top: 50%;
     }
   }
 </style>

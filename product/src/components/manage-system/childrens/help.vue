@@ -34,24 +34,14 @@
       },
       fetch_data () {
         apiTable.data_fetchUserHelp().then((response) => {
-          if (response.data.code === 1) {
-            console.log(response.data.dat)
-            this.editor.setContent(response.data.dat)
-          } else {
-            self.swal(response.data.msg)
-          }
+          this.editor.setContent(response.data.dat)
         })
       },
       save_data () {
         apiTable.edit_userHelpSave({
           useHelp: this.editor.getContent()
         }).then((response) => {
-          if (response.data.code === 1) {
-            swal('保存成功！')
-            this.fetch_data()
-          } else {
-            self.swal(response.data.msg)
-          }
+          this.$message('保存成功！')
         })
       }
     }
