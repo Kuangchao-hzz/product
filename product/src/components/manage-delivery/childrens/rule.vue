@@ -122,10 +122,26 @@
         this.copyRow = JSON.parse(copyData)
       },
       submitEditRow ($row) {
-        apiTable.edit_personRuleEdit($row).then((response) => {
-          this.$message('操作成功！')
-          this.data_table()
+        Object.keys($row).forEach(($item, $index) => {
+          this.setNumber($row, $item)
         })
+        apiTable.edit_personRuleEdit($row).then((response) => {
+          if (response.data.code !== 1) {
+            this.$message(response.data.msg)
+          } else {
+            this.$message('操作成功！')
+            this.data_table()
+          }
+        })
+      },
+      setNumber ($data, $key) {
+        if (typeof $data[$key] === 'object') {
+          Object.keys($data[$key]).forEach(($item, $index) => {
+            this.setNumber($data[$key], $item)
+          })
+        } else if (typeof $data[$key] === 'string' && Number($data[$key])) {
+          $data[$key] = Number($data[$key])
+        }
       },
       resetForm () {
         this.searchData.orderType = ''

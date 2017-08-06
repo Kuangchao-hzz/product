@@ -161,7 +161,7 @@
         treeDialog: {
           type: false,
           name: '',
-          routerAuth: this.$store.state.select.treeCountry
+          routerAuth: this.$store.state.select.country
         },
         defaultProps: {
           children: 'children',

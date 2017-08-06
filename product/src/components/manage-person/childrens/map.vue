@@ -7,8 +7,7 @@
         :options="this.$store.state.select.country"
         :props="this.$store.state.select.defaultCountryProps"
         @change="fetchCityData"
-      ></el-cascader
-        v-model="country">
+      ></el-cascader>
     </div>
     <div class="content-map">
       <div class="map-box-card">
