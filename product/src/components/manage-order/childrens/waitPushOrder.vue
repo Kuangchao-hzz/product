@@ -10,20 +10,9 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
-                  @change="fetchStoreData1"
+                  @change="fetchStoreData"
                 ></el-cascader>
               </div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="5">
-            <el-form-item>
-              <el-select v-model="searchData.orderType" placeholder="订单类型">
-                <el-option
-                  v-for="($item, $index) in this.$store.state.select.orderType"
-                  :label="$item.label"
-                  :value="$item.value"
-                  :key="$index"></el-option>
-              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -34,6 +23,17 @@
                   :key="$index"
                   :label="$item.label"
                   :value="$item.val"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item>
+              <el-select v-model="searchData.orderType" placeholder="订单类型">
+                <el-option
+                  v-for="($item, $index) in this.$store.state.select.orderType"
+                  :label="$item.label"
+                  :value="$item.value"
+                  :key="$index"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -149,7 +149,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 285
+        return this.$store.state.include.tableHeight - 305
       }
     },
     mounted () {
@@ -157,9 +157,6 @@
     },
     methods: {
       fetchStoreData ($country) {
-
-      },
-      fetchStoreData1 ($country) {
         this.get_storeOfArea($country[$country.length - 1])
       },
       get_storeOfArea ($district) {
@@ -224,6 +221,7 @@
         this.multipleSelection = $row
       },
       resetForm () {
+        this.storeData = []
         this.searchData.country = []
         this.searchData.orderType = ''
         this.searchData.storeId = ''
@@ -240,12 +238,15 @@
         let $params = {
           page: $page - 1 || 0,
           orderType: this.searchData.orderType,
-          storeId: this.searchData.storeId
+          storeId: this.searchData.storeId,
+          city: '',
+          province: '',
+          district: ''
         }
         if (self.searchData.country.length > 0) {
           Object.assign($params, {
-            city: self.searchData.country[0],
-            province: self.searchData.country[1],
+            city: self.searchData.country[1],
+            province: self.searchData.country[0],
             district: self.searchData.country[2]
           })
         }

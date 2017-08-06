@@ -344,10 +344,11 @@
           reason: this.closeOrderForm.reason,
           remake: this.closeOrderForm.remake
         }).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
+          if (Number(response.data.code) !== 1) {
+            this.$message(response.data.msg)
           } else {
-            swal('操作成功！')
+            this.$message('操作成功！')
+            this.$router.go('-1')
           }
         })
       },
@@ -355,10 +356,11 @@
         apiDetails.details_handleOrderManualHandle({
           id: $id
         }).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
+          if (Number(response.data.code) !== 1) {
+            this.$message(response.data.msg)
           } else {
-            swal('操作成功！')
+            this.$message('操作成功！')
+            this.$router.go('-1')
           }
         })
       },

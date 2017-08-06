@@ -142,7 +142,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 285
+        return this.$store.state.include.tableHeight - 305
       }
     },
     mounted () {
@@ -190,12 +190,15 @@
         let self = this
         let $params = {
           page: $page - 1 || 0,
+          city: '',
+          province: '',
+          district: '',
           orderType: this.searchData.orderType
         }
         if (self.searchData.country.length > 0) {
           Object.assign($params, {
-            city: self.searchData.country[0],
-            province: self.searchData.country[1],
+            province: self.searchData.country[0],
+            city: self.searchData.country[1],
             district: self.searchData.country[2]
           })
         }

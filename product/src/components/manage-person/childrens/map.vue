@@ -3,10 +3,12 @@
     <div class="country-select">
       <span>区域 </span>
       <el-cascader
+        v-model="country"
         :options="this.$store.state.select.country"
         :props="this.$store.state.select.defaultCountryProps"
-        change-on-select
-      ></el-cascader>
+        @change="fetchCityData"
+      ></el-cascader
+        v-model="country">
     </div>
     <div class="content-map">
       <div class="map-box-card">
@@ -84,6 +86,7 @@
   export default {
     data () {
       return {
+        country: [],
         center: [121.5273285, 31.21515044],
         zoom: 14,
         mapData: {},
@@ -127,10 +130,15 @@
       this.data_table()
     },
     methods: {
+      fetchCityData ($country) {
+        this.data_table()
+      },
       data_table () {
         let self = this
         apiTable.data_personMapTable({
-          storeId: '10'
+          city: '',
+          province: '',
+          district: ''
         }).then((response) => {
           self.mapData = response.data.dat
         })

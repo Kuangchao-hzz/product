@@ -1,7 +1,7 @@
 <template>
   <div class="view-app">
     <div class="app-group">
-      <el-button @click="createDialogForm.type = true">添加新版本</el-button>
+      <el-button @click="handlerApp">添加新版本</el-button>
     </div>
     <div class="system-app-table">
       <el-table
@@ -50,6 +50,7 @@
             <el-button
               type="text"
               size="small"
+              @click="handlerApp(scope.row)"
             >编辑</el-button>
           </template>
         </el-table-column>
@@ -97,17 +98,7 @@
   export default {
     data () {
       return {
-        tableData: [{
-          order: '48911891891',
-          orderTime: '20170302',
-          money: '￥1564',
-          person: '007',
-          mobile: '187*******',
-          category: '已结算',
-          level: '二级',
-          place: '上海市-宝山区',
-          moneyMethod: '已结算'
-        }],
+        tableData: [],
         createDialogForm: {
           type: false,
           version: '',
@@ -125,6 +116,12 @@
             done()
           })
           .catch(_ => {})
+      },
+      handlerApp ($row) {
+        this.createDialogForm.type = true
+        if ($row) {
+          console.log($row)
+        }
       }
     }
   }

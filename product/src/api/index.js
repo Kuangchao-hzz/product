@@ -13,7 +13,20 @@ const instance = axios.create({
 
 instance.interceptors.response.use((res) => {
   if (res.data.code === -100) {
-    router.push('/login')
+    swal({
+      title: res.data.msg,
+      type: 'warning',
+      reverseButtons: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '确定!',
+      allowEscapeKey: false,
+      allowOutsideClick: false
+    }).then(() => {
+      router.push('/login')
+    }, () => {
+
+    })
   } else if (res.data.code !== 1) {
     Vue.prototype.$message({
       showClose: true,
@@ -32,4 +45,3 @@ export default instance
 export const instanceJson = axios.create({
   baseURL: '/api'
 })
-

@@ -11,26 +11,26 @@
               <el-row :gutter="50">
                 <el-col :span="12">
                   <el-form-item label="地区:">
-                    <el-input :value="detailsData.area" class="reset-border" readonly></el-input>
+                    <el-input v-model="detailsData.area" class="reset-border" readonly></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row :gutter="50">
                 <el-col :span="12">
                   <el-form-item label="门店号:">
-                    <el-input :value="detailsData.storeNo" class="reset-border" readonly></el-input>
+                    <el-input v-model="detailsData.storeNo" class="reset-border" readonly></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="门店名称:">
-                    <el-input :value="detailsData.name" class="reset-border" readonly></el-input>
+                    <el-input v-model="detailsData.name" class="reset-border" readonly></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-row :gutter="50">
                 <el-col :span="24">
                   <el-form-item label="地址:">
-                    <el-input :value="detailsData.address" class="reset-border" readonly></el-input>
+                    <el-input v-model="detailsData.address" class="reset-border" readonly></el-input>
                     <div class="person-map">
                       <el-amap :vid="'amap-vue'"
                                :zoom="zoom">
@@ -48,17 +48,17 @@
               <el-row :gutter="50">
                 <el-col :span="12">
                   <el-form-item label="联系人:">
-                    <el-input :value="detailsData.contactPerson"></el-input>
+                    <el-input v-model="detailsData.contactPerson"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="联系方式:">
-                    <el-input :value="detailsData.contact"></el-input>
+                    <el-input v-model="detailsData.contact"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
               <el-form-item label="备注:">
-                <el-input type="textarea" :value="detailsData.remark" v-model="detailsData.remark"></el-input>
+                <el-input type="textarea" v-model="detailsData.remark"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-row :gutter="10">

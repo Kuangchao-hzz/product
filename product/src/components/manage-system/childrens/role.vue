@@ -112,7 +112,7 @@
         })
       },
       tabHeight () {
-        return this.$store.state.include.tableHeight - 285
+        return this.$store.state.include.tableHeight - 250
       }
     },
     mounted () {
@@ -183,28 +183,28 @@
         })
       },
       del_roleData ($userId) {
-        apiTable.data_systemRoleDel({
-          userId: $userId
-        }).then((response) => {
-          if (response.data.code === 1) {
-            swal({
-              title: '你确定要删除该角色?',
-              type: 'warning',
-              showCancelButton: true,
-              reverseButtons: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: '确定!',
-              cancelButtonText: '取消'
-            }).then(() => {
+        swal({
+          title: '你确定要删除该角色?',
+          type: 'warning',
+          showCancelButton: true,
+          reverseButtons: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiTable.data_systemUserDel({
+            userId: $userId
+          }).then((response) => {
+            if (response.data.code === 1) {
               this.data_table()
               this.$message('删除成功！')
-            }, () => {
+            } else {
+              swal(response.data.code)
+            }
+          })
+        }, () => {
 
-            })
-          } else {
-            swal(response.data.code)
-          }
         })
       }
     },

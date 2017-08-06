@@ -1,7 +1,9 @@
 <template>
   <div class="system-editor">
     <div class="UE-edit" :id="diffEditId" type="text/plain"></div>
-    <el-button @click="save_data">提交</el-button>
+    <el-row style="text-align: center;margin-top: 15px;">
+      <el-button @click="save_data">提交</el-button>
+    </el-row>
   </div>
 </template>
 
@@ -51,12 +53,14 @@
 <style lang="scss" type="text/scss">
   .system-editor{
     width: 100%;
-    height: 700px;
+    height: 80%;
     .UE-edit{
-      width: 990px;
-      height: 650px;
-      #edui1_iframeholder{
-        height:530px !important;
+      height: 100%;
+      .edui-editor{
+        height: 100%;
+        #edui1_iframeholder{
+          height:530px !important;
+        }
       }
     }
   }

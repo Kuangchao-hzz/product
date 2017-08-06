@@ -181,8 +181,8 @@
       data_table () {
         let self = this
         apiTable.data_dataDeliveryTable({
-          city: self.searchData.country[0] || '1',
-          province: self.searchData.country[1] || '1',
+          city: self.searchData.country[1] || '1',
+          province: self.searchData.country[0] || '1',
           district: self.searchData.country[2] || '1'
         }).then((response) => {
           self.deliveryData = response.data.dat

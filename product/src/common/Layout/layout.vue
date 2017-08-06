@@ -11,8 +11,10 @@
           <transition name="move" mode="out-in">
             <router-view></router-view>
           </transition>
-        </div>
-      </div>
+        </div></div>
+    </div>
+    <div class="copyright-box">
+      © 2017 Carrefour China Inc.All
     </div>
   </div>
 </template>
@@ -25,7 +27,7 @@
     computed: {
       containerHeight () {
         return {
-          height: (this.$store.state.include.tableHeight - 90) + 'px',
+          height: (this.$store.state.include.tableHeight - 110) + 'px',
           overflow: this.$route.path === '/order/orderDetails' ? 'auto' : 'hidden'
         }
       },
@@ -61,6 +63,7 @@
       .container{
         float: right;
         overflow: hidden;
+        position: relative;
         box-sizing: border-box;
         border: 20px solid transparent;
         transition: all .5s;
@@ -77,6 +80,11 @@
           border-bottom: 1px #ddd solid;
         }
       }
+    }
+    .copyright-box{
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
     }
   }
 </style>

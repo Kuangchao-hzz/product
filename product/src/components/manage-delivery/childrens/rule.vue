@@ -101,7 +101,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 245
+        return this.$store.state.include.tableHeight - 265
       }
     },
     mounted () {
@@ -143,8 +143,8 @@
         if (!$sta) {
           apiTable.edit_SaveRuleTime({
             point: this.searchData.point
-          }).then((response) => {
-
+          }).then(() => {
+            this.$message('保存成功！')
           })
         }
       },

@@ -10,7 +10,7 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
-                  change-on-select
+                  @change="fetchStoreData"
                 ></el-cascader>
               </div>
             </el-form-item>
@@ -19,10 +19,10 @@
             <el-form-item>
               <el-select v-model="searchData.storeId" placeholder="请选择门店">
                 <el-option
-                  v-for="($item, $index) in this.$store.state.select.store"
+                  v-for="($item, $index) in storeData"
                   :key="$index"
                   :label="$item.label"
-                  :value="$item.value"></el-option>
+                  :value="$item.val"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -204,24 +204,44 @@
         exportData: {
           store: ''
         },
+        storeData: [],
         tableData: []
       }
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 345
+        return this.$store.state.include.tableHeight - 365
       }
     },
     mounted () {
       this.data_table()
     },
     methods: {
+      fetchStoreData ($country) {
+        this.get_storeOfArea($country[$country.length - 1])
+      },
+      get_storeOfArea ($district) {
+        apiTable.fetch_storeOfArea({
+          district: $district
+        }).then((response) => {
+          this.searchData.storeId = ''
+          this.storeData = [{
+            value: '',
+            label: '请选择门店'
+          }]
+          this.storeData = this.storeData.concat(response.data.dat)
+        })
+      },
       resetForm () {
+        this.storeData = []
+        this.searchData.country = []
         this.searchData.order = ''
-        this.searchData.payStatus = ''
-        this.searchData.personName = ''
-        this.searchData.orderTimeBetween = ''
-        this.searchData.personMobile = ''
+        this.searchData.mallTime = ''
+        this.searchData.settlement = ''
+        this.searchData.realName = ''
+        this.searchData.phone = ''
+        this.searchData.orderNo = ''
+        this.searchData.storeId = ''
       },
       data_table ($page) {
         let $params = {
@@ -233,8 +253,8 @@
           storeId: this.searchData.storeId,
           timeBegin: '',
           timeEnd: '',
-          city: '',
           province: '',
+          city: '',
           district: ''
         }
         if (this.searchData.mallTime !== '') {

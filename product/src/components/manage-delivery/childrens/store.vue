@@ -116,7 +116,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 285
+        return this.$store.state.include.tableHeight - 305
       }
     },
     mounted () {
@@ -138,7 +138,7 @@
           province: '',
           city: '',
           district: '',
-          orderType: this.searchData.orderType || '普通',
+          orderType: this.searchData.orderType || '',
           area: '1' || 1
         }
         apiTable.data_deliveryStoreTable(params).then((response) => {

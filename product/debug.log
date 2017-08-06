@@ -2,3 +2,7 @@
 [0713/010101.160:ERROR:process_info.cc(631)] range at 0xa211e000, size 0x2000 fully unreadable
 [0713/010101.160:ERROR:process_info.cc(631)] range at 0xa257e000, size 0x2000 fully unreadable
 [0713/010101.160:ERROR:process_info.cc(631)] range at 0xa279e000, size 0x2000 fully unreadable
+[0806/142708.517:ERROR:process_info.cc(631)] range at 0x92e7e000, size 0x2000 fully unreadable
+[0806/142708.517:ERROR:process_info.cc(631)] range at 0x92f7e000, size 0x2000 fully unreadable
+[0806/142708.517:ERROR:process_info.cc(631)] range at 0x9307e000, size 0x2000 fully unreadable
+[0806/142708.518:ERROR:process_info.cc(631)] range at 0xa977e000, size 0x2000 fully unreadable

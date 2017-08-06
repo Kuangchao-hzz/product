@@ -194,9 +194,9 @@
       data_table () {
         let self = this
         apiTable.data_dataPeopleTable({
-          city: self.searchData.country[0] || '1',
-          province: self.searchData.country[1] || '1',
-          district: self.searchData.country[2] || '1'
+          city: self.searchData.country[1] || '',
+          province: self.searchData.country[0] || '',
+          district: self.searchData.country[2] || ''
         }).then((response) => {
           self.tableData = response.data.dat
         })

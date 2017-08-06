@@ -10,7 +10,7 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
-                  change-on-select
+                  @change="fetchStoreData"
                 ></el-cascader>
               </div>
             </el-form-item>
@@ -19,10 +19,10 @@
             <el-form-item>
               <el-select v-model="searchData.storeId" placeholder="请选择门店">
                 <el-option
-                  v-for="($item, $index) in this.$store.state.select.store"
+                  v-for="($item, $index) in storeData"
                   :key="$index"
                   :label="$item.label"
-                  :value="$item.value"></el-option>
+                  :value="$item.val"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -237,6 +237,7 @@
           handlerStatus: '',
           phone: ''
         },
+        storeData: [],
         tableData: [],
         closeOrderForm: {
           reason: '1',
@@ -247,13 +248,28 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 285
+        return this.$store.state.include.tableHeight - 305
       }
     },
     mounted () {
       this.data_table()
     },
     methods: {
+      fetchStoreData ($country) {
+        this.get_storeOfArea($country[$country.length - 1])
+      },
+      get_storeOfArea ($district) {
+        apiTable.fetch_storeOfArea({
+          district: $district
+        }).then((response) => {
+          this.searchData.storeId = ''
+          this.storeData = [{
+            value: '',
+            label: '请选择门店'
+          }]
+          this.storeData = this.storeData.concat(response.data.dat)
+        })
+      },
       manualHandle ($id) {
         apiDetails.details_handleOrderManualHandle({
           id: $id
@@ -272,6 +288,7 @@
         this.closeOrderForm.id = ''
       },
       resetForm () {
+        this.storeData = []
         this.searchData.country = []
         this.searchData.abnormalStatus = ''
         this.searchData.handlerStatus = ''
@@ -307,12 +324,15 @@
           storeId: self.searchData.storeId,
           abnormalStatus: self.searchData.abnormalStatus,
           handlerStatus: self.searchData.handlerStatus,
-          phone: self.searchData.phone
+          phone: self.searchData.phone,
+          city: '',
+          province: '',
+          district: ''
         }
         if (self.searchData.country.length > 0) {
           Object.assign($params, {
-            city: self.searchData.country[0],
-            province: self.searchData.country[1],
+            city: self.searchData.country[1],
+            province: self.searchData.country[0],
             district: self.searchData.country[2]
           })
         }

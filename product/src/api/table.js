@@ -1,6 +1,8 @@
 /* eslint-disable no-duplicate-imports */
 
 import instance from './index'
+/* eslint-disable no-duplicate-imports */
+import { instanceJson } from './index'
 
 export default {
   // 全部地区(包含门店)
@@ -201,7 +203,7 @@ export default {
   },
   // 配送设置管理 -> 推送规则 -> 编辑
   edit_personRuleEdit ($baseData) {
-    return instance.post('/web/pushRule/edit', $baseData)
+    return instanceJson.post('/web/pushRule/edit', $baseData)
   },
   // 配送设置管理 -> 费用设置 -> 编辑
   edit_personMoneyEdit ($baseData) {

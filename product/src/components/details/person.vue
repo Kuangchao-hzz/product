@@ -325,7 +325,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 730
+        return this.$store.state.include.tableHeight - 750
       }
     },
     mounted () {
@@ -369,9 +369,12 @@
           id: self.$route.query.id,
           direction: $params
         }).then((response) => {
-          self.$nextTick(function () {
+          if (Number(response.data.code) !== 1) {
             this.$message(response.data.msg)
-          })
+          } else {
+            this.$message('操作成功！')
+            this.$router.go('-1')
+          }
         })
       },
       details_handlePersonEnabled ($params) {
@@ -380,9 +383,12 @@
           id: self.$route.query.id,
           direction: $params
         }).then((response) => {
-          self.$nextTick(function () {
+          if (Number(response.data.code) !== 1) {
             this.$message(response.data.msg)
-          })
+          } else {
+            this.$message('操作成功！')
+            this.$router.go('-1')
+          }
         })
       }
     },

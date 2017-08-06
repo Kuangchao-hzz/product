@@ -156,7 +156,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 220
+        return this.$store.state.include.tableHeight - 240
       }
     },
     mounted () {

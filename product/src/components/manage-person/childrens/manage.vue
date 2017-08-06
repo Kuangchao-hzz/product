@@ -140,7 +140,7 @@
         <el-table-column
           align="center"
           min-width="200"
-          prop="address"
+          prop="lastStoreName"
           label="最近送货门店"
           >
         </el-table-column>
@@ -218,7 +218,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 285
+        return this.$store.state.include.tableHeight - 305
       }
     },
     mounted () {
