@@ -5,7 +5,8 @@ const user = {
     USERID: Cookies.get('USERID'),
     POSSWORD: Cookies.get('POSSWORD'),
     LOGINSTATUS: Cookies.get('LOGINSTATUS'),
-    TOKEN: Cookies.get('_token')
+    TOKEN: Cookies.get('_token'),
+    AUTHIDS: localStorage.getItem('ms_authId')
   },
   mutations: {
     SET_USERID: (state, user) => {
@@ -26,8 +27,6 @@ const user = {
       return new Promise(resolve => {
         const user = userInfo.username.trim()
         const password = userInfo.password.trim()
-        console.log(Cookies.get('USERID'))
-        console.log(Cookies.get('_token'))
         commit('SET_TOKEN', Cookies.get('_token'))
         if (userInfo.checked) {
           Cookies.set('USERID', user)

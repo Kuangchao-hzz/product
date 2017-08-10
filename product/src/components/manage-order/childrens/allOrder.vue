@@ -110,6 +110,7 @@
         :data="tableData.details"
         :height="tabHeight"
         :max-height="tabHeight"
+        v-loading.body="loading"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -232,7 +233,7 @@
     </div>
     <div class="wait-send-pagination">
       <div class="other-btn">
-        <el-button :plain="true" type="info" @click="downloadExcel">导出excel</el-button>
+        <el-button v-if="btn_auth('b_qb_dc_excel')" :plain="true" type="info" @click="downloadExcel">导出excel</el-button>
       </div>
       <el-pagination
         @current-change="data_table"
@@ -270,6 +271,7 @@
   export default {
     data () {
       return {
+        loading: false,
         searchData: {
           country: [],
           orderNo: '',
@@ -300,6 +302,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       HandleCloseOrder ($id) {
         this.closeOrderDialog = true
         this.closeOrderForm.id = $id
@@ -372,7 +379,9 @@
             district: self.searchData.country[2]
           })
         }
+        self.loading = true
         apiTable.data_orderAllTable($params).then((response) => {
+          self.loading = false
           self.tableData = response.data.dat
         })
       },

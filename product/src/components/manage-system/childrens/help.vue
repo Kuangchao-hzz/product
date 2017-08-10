@@ -1,8 +1,8 @@
 <template>
-  <div class="system-editor">
+  <div class="system-editor" v-loading.body="loading">
     <div class="UE-edit" :id="diffEditId" type="text/plain"></div>
     <el-row style="text-align: center;margin-top: 15px;">
-      <el-button @click="save_data">提交</el-button>
+      <el-button v-if="btn_auth('b_bz_bc')" @click="save_data">提交</el-button>
     </el-row>
   </div>
 </template>
@@ -15,6 +15,7 @@
   export default {
     data () {
       return {
+        loading: false,
         editor: null
       }
     },
@@ -31,8 +32,10 @@
       })
     },
     methods: {
-      editUpdata () {
-        console.log(this.editor.getContent())
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
       },
       fetch_data () {
         apiTable.data_fetchUserHelp().then((response) => {
@@ -40,9 +43,11 @@
         })
       },
       save_data () {
+        self.loading = true
         apiTable.edit_userHelpSave({
           useHelp: this.editor.getContent()
         }).then((response) => {
+          self.loading = false
           this.$message('保存成功！')
         })
       }

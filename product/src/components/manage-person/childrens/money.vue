@@ -79,6 +79,7 @@
         :data="tableData.details"
         :max-height="tabHeight"
         :height="tabHeight"
+        v-loading.body="loading"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -143,11 +144,11 @@
         <el-col :lg="10">
           <div class="other-btn">
             <el-col :lg="24">
-              <el-button :plain="true" type="info">导出excel</el-button>
-              <el-button :plain="true"
+              <el-button v-if="btn_auth('b_cw_dc_excel')" :plain="true" type="info" @click="downloadExcel">导出excel</el-button>
+              <el-button v-if="btn_auth('b_cw_dr_excel')" :plain="true"
                          type="info"
                          @click="exportDataIsShow = true">导入excel</el-button>
-              <el-button :plain="true" type="info" @click="downloadExcel">下载模板</el-button>
+              <el-button v-if="btn_auth('b_cw_dc_xzmb')" :plain="true" type="info" @click="downloadTemplate">下载模板</el-button>
             </el-col>
           </div>
         </el-col>
@@ -190,6 +191,7 @@
   export default {
     data () {
       return {
+        loading: false,
         fileList: [],
         exportDataIsShow: false,
         searchData: {
@@ -217,6 +219,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       fetchStoreData ($country) {
         this.get_storeOfArea($country[$country.length - 1])
       },
@@ -270,15 +277,16 @@
             district: this.searchData.country[2]
           })
         }
+        self.loading = true
         apiTable.data_personMoneyTable($params).then((response) => {
+          self.loading = false
           this.tableData = response.data.dat
         })
       },
+      downloadTemplate () {
+
+      },
       downloadExcel () {
-        if (this.tableData.details.length < 1) {
-          this.$message('无数据可导出！')
-          return false
-        }
         window.location.href = '/api/web/settlement/exportData?'
       },
       submitUpload () {

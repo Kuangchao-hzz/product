@@ -56,6 +56,7 @@
       <el-table
         ref="multipleTable"
         :data="tableData.details"
+        v-loading.body="loading"
         border
         :max-height="tabHeight"
         :height="tabHeight"
@@ -148,9 +149,9 @@
     </div>
     <div class="person-manage-pagination">
       <div class="other-btn">
-        <el-button :plain="true" type="info" @click="handlePersonUpDown(1)">审核通过</el-button>
-        <el-button :plain="true" type="info" @click="handlePersonUpDown(2)">审核不通过</el-button>
-        <el-button :plain="true" type="info">全部导出excel</el-button>
+        <el-button v-if="btn_auth('b_zz_shtg')" :plain="true" type="info" @click="handlePersonUpDown(1)">审核通过</el-button>
+        <el-button v-if="btn_auth('b_zz_shbtg')" :plain="true" type="info" @click="handlePersonUpDown(2)">审核不通过</el-button>
+        <el-button v-if="btn_auth('b_zz_qbdc_excel')" :plain="true" type="info">全部导出excel</el-button>
       </div>
       <el-pagination
         @current-change="data_table"
@@ -168,6 +169,7 @@
   export default {
     data () {
       return {
+        loading: false,
         searchData: {
           personName: '',
           personNum: '',
@@ -187,6 +189,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       resetForm () {
         this.searchData.personName = ''
         this.searchData.personNum = ''
@@ -227,14 +234,12 @@
       },
       data_table ($page) {
         let self = this
+        self.loading = true
         apiTable.data_tableAuditTable({
           page: $page - 1 || 0
         }).then((response) => {
-          if (response.data.code === 1) {
-            self.tableData = response.data.dat
-          } else {
-            alert(response.data.msg)
-          }
+          self.loading = false
+          self.tableData = response.data.dat
         })
       }
     }

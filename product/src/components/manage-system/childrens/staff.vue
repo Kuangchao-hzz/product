@@ -55,6 +55,7 @@
         :data="tableData.details"
         :height="tabHeight"
         :max-height="tabHeight"
+        v-loading.body="loading"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -112,10 +113,10 @@
     </div>
     <div class="content-table-pagination">
       <div class="other-btn">
-        <el-button :plain="true"
+        <el-button v-if="btn_auth('b_yg_dyygbb')" :plain="true"
                    type="info"
                    @click="exportDataIsShow = true">导入员工排班</el-button>
-        <el-button type="info" @click="downloadExcel">下载模板</el-button>
+        <el-button v-if="btn_auth('b_yg_xzmb')" type="info" @click="downloadExcel">下载模板</el-button>
       </div>
       <el-pagination
         @current-change="data_table"
@@ -182,6 +183,7 @@
   export default {
     data () {
       return {
+        loading: false,
         exportDataIsShow: false,
         editStaffIsShow: false,
         editStaffData: {},
@@ -212,6 +214,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       fetchStoreData ($country) {
         this.get_storeOfArea($country[$country.length - 1])
       },
@@ -252,7 +259,9 @@
             district: self.searchData.country[2]
           })
         }
+        self.loading = true
         apiTable.data_staffTable($params).then((response) => {
+          self.loading = false
           self.tableData = response.data.dat
           self.handleTableHeader()
         })

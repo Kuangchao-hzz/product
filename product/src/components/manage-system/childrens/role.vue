@@ -1,7 +1,7 @@
 <template>
   <div class="view-role">
     <div class="role-group">
-      <el-button @click="get_roleData">新增角色</el-button>
+      <el-button v-if="btn_auth('b_jz_xzyh')" @click="get_roleData">新增角色</el-button>
     </div>
     <div class="system-role-table">
       <el-table
@@ -9,6 +9,7 @@
         :data="tableData"
         :height="tabHeight"
         :max-height="tabHeight"
+        v-loading.body="loading"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -80,6 +81,7 @@
   export default {
     data () {
       return {
+        loading: false,
         dialogTitle: '新增用户',
         roleDialogIsShow: false,
         tableData: [],
@@ -119,6 +121,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       handleClose (done) {
         this.roleDialogIsShow = false
         this.roleList.routerAuth = []
@@ -130,7 +137,9 @@
       },
       data_table () {
         let self = this
+        self.loading = true
         apiTable.data_roleTable().then((response) => {
+          self.loading = false
           self.tableData = response.data.dat
         })
       },

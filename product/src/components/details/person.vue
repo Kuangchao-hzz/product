@@ -359,8 +359,6 @@
           deliveryUserId: self.searchData.deliveryUserId
         }).then((response) => {
           self.tableData = response.data.dat
-        }).catch(() => {
-          swal('服务器错误')
         })
       },
       details_handlePersonUpDown ($params) {

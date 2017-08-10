@@ -1,7 +1,7 @@
 <template>
   <div class="view-notice">
     <div class="notice-group">
-      <el-button @click="createDialogForm.isShow = true">发布公告</el-button>
+      <el-button v-if="btn_auth('b_yh_xzyh')" @click="createDialogForm.isShow = true">发布公告</el-button>
     </div>
     <div class="system-notice-table">
       <el-table
@@ -113,6 +113,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       localStorage_details ($item) {
         this.$router.push('/system/noticeDetails')
         localStorage.setItem('details_notice', JSON.stringify($item))

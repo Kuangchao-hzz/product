@@ -65,11 +65,9 @@ export default {
       params: $baseData
     })
   },
-  // 配送管理-资格审核
+  // 配送管理-地图
   data_personMapTable ($baseData) {
-    return instance.get('/web/deliveryUserManage/geomap', {
-      params: $baseData
-    })
+    return instanceJson.post('/web/deliveryUserManage/geomap', $baseData)
   },
   // 配送管理-配送员信息
   data_personMapInfo ($baseData) {

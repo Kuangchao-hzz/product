@@ -52,6 +52,7 @@
         :data="tableData.details"
         :height="tabHeight"
         :max-height="tabHeight"
+        v-loading.body="loading"
         border
         tooltip-effect="dark"
         @selection-change="handleSelectionChange"
@@ -117,8 +118,8 @@
     <div class="wait-push-pagination">
       <div class="other-btn">
         <el-button :plain="true" type="info" @click="handleOrderBackToYb">回退邮包</el-button>
-        <el-button :plain="true" type="info" @click="handleOrderRePush">手工推送</el-button>
-        <el-button :plain="true" type="info" @click="downloadExcel">全部导出excel</el-button>
+        <el-button v-if="btn_auth('b_dq_sgts')" :plain="true" type="info" @click="handleOrderRePush">手工推送</el-button>
+        <el-button v-if="btn_auth('b_dq_qbdc_excel')" :plain="true" type="info" @click="downloadExcel">全部导出excel</el-button>
       </div>
       <el-pagination
         @current-change="data_table"
@@ -136,6 +137,7 @@
   export default {
     data () {
       return {
+        loading: false,
         searchData: {
           orderType: '',
           country: [],
@@ -156,6 +158,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       fetchStoreData ($country) {
         this.get_storeOfArea($country[$country.length - 1])
       },
@@ -250,7 +257,9 @@
             district: self.searchData.country[2]
           })
         }
+        self.loading = true
         apiTable.data_orderPushTable($params).then((response) => {
+          self.loading = false
           self.tableData = response.data.dat
         })
       },

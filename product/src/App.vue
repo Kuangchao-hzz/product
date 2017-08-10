@@ -95,4 +95,7 @@ export default {
       top: 50%;
     }
   }
+  html .swal2-container, body .swal2-container, #app .swal2-container{
+    z-index: 1000000;
+  }
 </style>

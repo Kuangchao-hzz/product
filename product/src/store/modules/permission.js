@@ -16,7 +16,7 @@ function hasPermission (roles, route) {
  * @param asyncRouterMap {array} 需要处理的权限路由
  * @param roles {array} 返回的用户权限
  */
-function filterAsyncRouter(asyncRouterMap, roles) {
+function filterAsyncRouter (asyncRouterMap, roles) {
   const accessedRouters = asyncRouterMap.filter(route => {
     if (hasPermission(roles, route)) {
       if (route.children && route.children.length) {
@@ -29,22 +29,22 @@ function filterAsyncRouter(asyncRouterMap, roles) {
   return accessedRouters
 }
 
-function deepClone(source) {
+function deepClone (source) {
   if (!source && typeof source !== 'object') {
-    throw new Error('error arguments', 'shallowClone');
+    throw new Error('error arguments', 'shallowClone')
   }
-  const targetObj = source.constructor === Array ? [] : {};
+  const targetObj = source.constructor === Array ? [] : {}
   for (const keys in source) {
     if (source.hasOwnProperty(keys)) {
       if (source[keys] && typeof source[keys] === 'object') {
-        targetObj[keys] = source[keys].constructor === Array ? [] : {};
-        targetObj[keys] = deepClone(source[keys]);
+        targetObj[keys] = source[keys].constructor === Array ? [] : {}
+        targetObj[keys] = deepClone(source[keys])
       } else {
-        targetObj[keys] = source[keys];
+        targetObj[keys] = source[keys]
       }
     }
   }
-  return targetObj;
+  return targetObj
 }
 
 const permission = {
@@ -68,7 +68,7 @@ const permission = {
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         }
-        commit('SET_ROUTERS', accessedRouters);
+        commit('SET_ROUTERS', accessedRouters)
         resolve(accessedRouters)
       })
     },

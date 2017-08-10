@@ -195,8 +195,6 @@
           page: $page - 1 || 0
         }).then((response) => {
           self.tableData = response.data.dat
-        }).catch(() => {
-          swal('服务器错误')
         })
       },
       data_tableAuto ($page) {
@@ -205,9 +203,6 @@
           page: $page - 1 || 0
         }).then((response) => {
           self.tableDataAuto = response.data.dat
-        }).catch(() => {
-          /* eslint-disable no-undef */
-          swal('服务器错误')
         })
       },
       edit_tableDialog ($row) {

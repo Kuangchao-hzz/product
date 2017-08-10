@@ -3,7 +3,7 @@
     <div class="zoom-sideBar" @click="toggleSideBar"></div>
     <el-menu theme="dark"
              :unique-opened="true"
-             :default-active="currentPath"
+             :default-active="realTime_currentPath"
              :collapse="isCollapse"
              :default-openeds="[]"
              class="side-bar-warps"
@@ -16,11 +16,10 @@
 
 <script>
   import sidebarItem from './SidebarItem'
-  import { asyncRouterMap } from '../../router/index'
   export default {
     data () {
       return {
-        routes: asyncRouterMap,
+        routes: this.$store.getters.addRouters,
         currentPath: this.$route.path,
         isCollapse: false
       }

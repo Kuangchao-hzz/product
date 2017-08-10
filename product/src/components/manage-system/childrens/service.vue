@@ -5,7 +5,7 @@
         <el-input v-model="serviceForm.kefu"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submit_data">保存</el-button>
+        <el-button v-if="btn_auth('b_kf_bj')" type="primary" @click="submit_data">保存</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -25,6 +25,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       data_table () {
         let self = this
         apiTable.data_editService().then((response) => {

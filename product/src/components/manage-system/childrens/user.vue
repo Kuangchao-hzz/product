@@ -1,7 +1,7 @@
 <template>
   <div class="view-user">
     <div class="user-group">
-      <el-button @click="handlerUserData_edit">新增用户</el-button>
+      <el-button v-if="btn_auth('b_yh_xzyh')" @click="handlerUserData_edit">新增用户</el-button>
     </div>
     <div class="system-user-table">
       <el-table
@@ -190,6 +190,11 @@
       this.data_systemUserRoleList()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       handleClose (done) {
         this.addUserForm.employeeId = ''
         this.addUserForm.realName = ''

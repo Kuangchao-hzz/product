@@ -1,13 +1,8 @@
 <template>
   <div class="person-map">
     <div class="country-select">
-      <span>区域 </span>
-      <el-cascader
-        v-model="country"
-        :options="this.$store.state.select.country"
-        :props="this.$store.state.select.defaultCountryProps"
-        @change="fetchCityData"
-      ></el-cascader>
+      <span>区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
+      <a href="javascript:;" @click="treeDialog.type = true">切换</a>
     </div>
     <div class="content-map">
       <div class="map-box-card">
@@ -34,7 +29,7 @@
             <el-amap :vid="'amap-vue'"
                      :zoom="zoom"
                      :center="center">
-              <el-amap-marker v-for="(marker, $index) in userPoints"
+              <el-amap-marker v-if="userPoints.length > 0" v-for="(marker, $index) in userPoints"
                               :position="marker.position"
                               :events="marker.events"
                               :visible="marker.visible"
@@ -77,6 +72,29 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      title="选择区域"
+      :visible.sync="treeDialog.type"
+      size="small"
+      :before-close="handleClose">
+      <el-form
+        :model="treeDialog"
+        label-width="80px">
+        <el-form-item label="选择区域: " class="area-box">
+          <el-tree
+            :data="this.routerAuthData"
+            show-checkbox
+            node-key="id"
+            ref="tree"
+            :props="defaultProps">
+          </el-tree>
+        </el-form-item>
+        <el-form-item style="text-align: right">
+          <el-button @click="handleClose">取消</el-button>
+          <el-button type="primary" @click="getCheckedNodes">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -89,17 +107,34 @@
         center: [121.5273285, 31.21515044],
         zoom: 14,
         mapData: {},
-        personInfoData: {}
+        personInfoData: {},
+        countryText: [],
+        checkedNodesData: [],
+        treeDialog: {
+          type: false,
+          name: '',
+          routerAuth: []
+        },
+        defaultProps: {
+          children: 'children',
+          label: 'label'
+        }
       }
     },
     computed: {
+      routerAuthData () {
+        return this.$store.state.select.treeCountry
+      },
+      handlerCountryText () {
+        return this.countryText.join('/')
+      },
       amapMapData () {
         return this.mapData
       },
       userPoints () {
         let self = this
         let userPointsArr = []
-        if (this.amapMapData.userPoints) {
+        if (this.amapMapData && this.amapMapData.userPoints) {
           this.amapMapData.userPoints.forEach(function ($item, $index) {
             userPointsArr.push({
               position: [$item.loc.x, $item.loc.y],
@@ -126,20 +161,56 @@
       }
     },
     mounted () {
-      this.data_table()
+      this.data_table({
+        provinces: [],
+        cities: [],
+        districts: [],
+        storeIds: []
+      })
     },
     methods: {
+      getCheckedNodes () {
+        this.checkedNodesData = this.$refs.tree.getCheckedNodes()
+        this.fetch_mapData()
+      },
+      fetch_mapData () {
+        let self = this
+        let $params = {
+          provinces: [],
+          cities: [],
+          districts: [],
+          storeIds: []
+        }
+        self.countryText = []
+        self.checkedNodesData.forEach(function ($item, $index) {
+          self.countryText.push($item.label)
+          self.handleClose()
+          if ($item.id <= 200) {
+            $params.provinces.push($item.id)
+          } else if ($item.id <= 2000 && $item.id > 200) {
+            $params.cities.push($item.id)
+          } else if ($item.id <= 20000 && $item.id > 2000) {
+            $params.districts.push($item.id)
+          } else {
+            $params.storeIds.push($item.id)
+          }
+        })
+        self.data_table($params)
+      },
+      handleClose (done) {
+        this.treeDialog.type = false
+      },
       fetchCityData ($country) {
         this.data_table()
       },
-      data_table () {
+      data_table ($params) {
         let self = this
-        apiTable.data_personMapTable({
-          city: '',
-          province: '',
-          district: ''
-        }).then((response) => {
-          self.mapData = response.data.dat
+        apiTable.data_personMapTable($params).then((response) => {
+          if (response.data.code !== 1) {
+            this.$message(response.data.msg)
+          } else {
+            self.mapData = response.data.dat
+          }
         })
       },
       fetch_Data ($id) {
@@ -153,13 +224,13 @@
     },
     watch: {
       mapData () {
-        if (this.mapData.point.x && this.mapData.point.y) {
+        if (this.mapData && this.mapData.point.x && this.mapData.point.y) {
           this.center = []
           this.center.push(this.mapData.point.x)
           this.center.push(this.mapData.point.y)
         }
         setTimeout(() => {
-          this.data_table()
+          this.fetch_mapData()
         }, 30000)
       }
     }

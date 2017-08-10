@@ -26,6 +26,13 @@ AMap.initAMapApiLoader({
   key: '4f77fb55df2ea2d761581bf83ff57acc'
 })
 router.beforeEach((to, from, next) => {
+  if (store.state.permission.addRouters.length < 1) {
+    let roles = store.getters.authIds.split(',')
+    store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
+      router.addRoutes(store.getters.addRouters) // 动态添加可访问的路由表
+      next()
+    })
+  }
   if (store.state.include.tableWidth === '' && store.state.include.tableHeight === '') {
     store.dispatch('captureBrowserSize').then(() => {
       if (store.state.select.treeCountry.length < 1 && to.path !== '/login') {

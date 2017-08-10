@@ -88,6 +88,7 @@
         :data="tableData.details"
         :height="tabHeight"
         :max-height="tabHeight"
+        v-loading.body="loading"
         border
         tooltip-effect="dark"
         @selection-change="handleSelectionChange"
@@ -184,10 +185,10 @@
     </div>
     <div class="person-manage-pagination">
       <div class="other-btn">
-        <el-button :plain="true" type="info" @click="handlePersonUpDown(1)">升级</el-button>
-        <el-button :plain="true" type="info" @click="handlePersonUpDown(0)">降级</el-button>
-        <el-button :plain="true" type="info" @click="handlePersonEnabled(0)">冻结账号</el-button>
-        <el-button :plain="true" type="info" @click="handlePersonEnabled(1)">账号解冻</el-button>
+        <el-button v-if="btn_auth('b_ps_sj')" :plain="true" type="info" @click="handlePersonUpDown(1)">升级</el-button>
+        <el-button v-if="btn_auth('b_ps_jj')" :plain="true" type="info" @click="handlePersonUpDown(0)">降级</el-button>
+        <el-button v-if="btn_auth('b_ps_djzh')" :plain="true" type="info" @click="handlePersonEnabled(0)">冻结账号</el-button>
+        <el-button v-if="btn_auth('b_ps_zhjd')" :plain="true" type="info" @click="handlePersonEnabled(1)">账号解冻</el-button>
       </div>
       <el-pagination
         :page-sizes="[20]"
@@ -204,6 +205,7 @@
   export default {
     data () {
       return {
+        loading: false,
         searchData: {
           userType: '',
           level: '',
@@ -225,6 +227,11 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       resetForm () {
         this.searchData.userType = ''
         this.searchData.level = ''
@@ -235,6 +242,7 @@
       },
       data_table ($page) {
         let self = this
+        self.loading = true
         apiTable.data_personManageTable({
           page: $page - 1 || 0,
           level: self.searchData.level,
@@ -244,9 +252,8 @@
           realName: self.searchData.realName,
           phone: self.searchData.phone
         }).then((response) => {
+          self.loading = false
           self.tableData = response.data.dat
-        }).catch(() => {
-          swal('服务器错误')
         })
       },
       handlePersonUpDown ($type) {

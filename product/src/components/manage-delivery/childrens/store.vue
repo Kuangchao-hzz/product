@@ -35,6 +35,7 @@
         :max-height="tabHeight"
         :height="tabHeight"
         :data="tableData.details"
+        v-loading.body="loading"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -107,6 +108,7 @@
   export default {
     data () {
       return {
+        loading: false,
         searchData: {
           country: [],
           store: ''
@@ -141,7 +143,9 @@
           orderType: this.searchData.orderType || '',
           area: '1' || 1
         }
+        self.loading = true
         apiTable.data_deliveryStoreTable(params).then((response) => {
+          self.loading = false
           self.tableData = response.data.dat
         })
       }

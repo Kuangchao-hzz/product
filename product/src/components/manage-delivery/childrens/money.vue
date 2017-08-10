@@ -192,9 +192,6 @@
           self.tableData = response.data
           let copyData = JSON.stringify(self.tableData)
           self.copyRow = JSON.parse(copyData)
-        }).catch(() => {
-          /* eslint-disable no-undef */
-          swal('服务器错误')
         })
       },
       enable_row ($row, $type) {

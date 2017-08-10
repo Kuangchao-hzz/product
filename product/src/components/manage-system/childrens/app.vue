@@ -1,7 +1,7 @@
 <template>
   <div class="view-app">
     <div class="app-group">
-      <el-button @click="handlerApp">添加新版本</el-button>
+      <el-button v-if="btn_auth('b_app_tjxbb')" @click="handlerApp">添加新版本</el-button>
     </div>
     <div class="system-app-table">
       <el-table
@@ -110,6 +110,11 @@
       }
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       handleClose (done) {
         this.$confirm('确认关闭？')
           .then(_ => {

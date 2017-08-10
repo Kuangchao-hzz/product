@@ -40,6 +40,12 @@ instance.interceptors.response.use((res) => {
   return res
 })
 
+instance.interceptors.request.use((res) => {
+  return res
+}, () => {
+
+})
+
 export default instance
 
 export const instanceJson = axios.create({
