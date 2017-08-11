@@ -1,7 +1,7 @@
 <template>
   <div class="view-notice">
     <div class="notice-group">
-      <el-button v-if="btn_auth('b_yh_xzyh')" @click="createDialogForm.isShow = true">发布公告</el-button>
+      <el-button :disabled="!btn_auth('b_yh_xzyh')" @click="createDialogForm.isShow = true">发布公告</el-button>
     </div>
     <div class="system-notice-table">
       <el-table

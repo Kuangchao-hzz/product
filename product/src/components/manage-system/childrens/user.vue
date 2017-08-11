@@ -1,7 +1,7 @@
 <template>
   <div class="view-user">
     <div class="user-group">
-      <el-button v-if="btn_auth('b_yh_xzyh')" @click="handlerUserData_edit">新增用户</el-button>
+      <el-button :disabled="!btn_auth('b_yh_xzyh')" @click="handlerUserData_edit">新增用户</el-button>
     </div>
     <div class="system-user-table">
       <el-table

@@ -149,9 +149,9 @@
     </div>
     <div class="person-manage-pagination">
       <div class="other-btn">
-        <el-button v-if="btn_auth('b_zz_shtg')" :plain="true" type="info" @click="handlePersonUpDown(1)">审核通过</el-button>
-        <el-button v-if="btn_auth('b_zz_shbtg')" :plain="true" type="info" @click="handlePersonUpDown(2)">审核不通过</el-button>
-        <el-button v-if="btn_auth('b_zz_qbdc_excel')" :plain="true" type="info">全部导出excel</el-button>
+        <el-button :disabled="!btn_auth('b_zz_shtg')" :plain="true" type="info" @click="handlePersonUpDown(1)">审核通过</el-button>
+        <el-button :disabled="!btn_auth('b_zz_shbtg')" :plain="true" type="info" @click="handlePersonUpDown(2)">审核不通过</el-button>
+        <el-button :disabled="!btn_auth('b_zz_qbdc_excel')" :plain="true" type="info">全部导出excel</el-button>
       </div>
       <el-pagination
         @current-change="data_table"

@@ -212,7 +212,7 @@
     </el-dialog>
     <div class="wait-send-pagination">
       <div class="other-btn">
-        <el-button v-if="btn_auth('b_yc_dc_excel')" :plain="true" type="info" @click="downloadExcel">导出excel</el-button>
+        <el-button :disabled="!btn_auth('b_yc_dc_excel')" :plain="true" type="info" @click="downloadExcel">导出excel</el-button>
       </div>
       <el-pagination
         @current-change="data_table"

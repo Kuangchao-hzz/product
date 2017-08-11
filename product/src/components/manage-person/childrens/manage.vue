@@ -185,10 +185,10 @@
     </div>
     <div class="person-manage-pagination">
       <div class="other-btn">
-        <el-button v-if="btn_auth('b_ps_sj')" :plain="true" type="info" @click="handlePersonUpDown(1)">升级</el-button>
-        <el-button v-if="btn_auth('b_ps_jj')" :plain="true" type="info" @click="handlePersonUpDown(0)">降级</el-button>
-        <el-button v-if="btn_auth('b_ps_djzh')" :plain="true" type="info" @click="handlePersonEnabled(0)">冻结账号</el-button>
-        <el-button v-if="btn_auth('b_ps_zhjd')" :plain="true" type="info" @click="handlePersonEnabled(1)">账号解冻</el-button>
+        <el-button :disabled="!btn_auth('b_ps_sj')" :plain="true" type="info" @click="handlePersonUpDown(1)">升级</el-button>
+        <el-button :disabled="!btn_auth('b_ps_jj')" :plain="true" type="info" @click="handlePersonUpDown(0)">降级</el-button>
+        <el-button :disabled="!btn_auth('b_ps_djzh')" :plain="true" type="info" @click="handlePersonEnabled(0)">冻结账号</el-button>
+        <el-button :disabled="!btn_auth('b_ps_zhjd')" :plain="true" type="info" @click="handlePersonEnabled(1)">账号解冻</el-button>
       </div>
       <el-pagination
         :page-sizes="[20]"

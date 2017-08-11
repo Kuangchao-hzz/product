@@ -2,7 +2,7 @@
   <div class="system-editor" v-loading.body="loading">
     <div class="UE-edit" :id="diffEditId" type="text/plain"></div>
     <el-row style="text-align: center;margin-top: 15px;">
-      <el-button v-if="btn_auth('b_bz_bc')" @click="save_data">提交</el-button>
+      <el-button :disabled="!btn_auth('b_bz_bc')" @click="save_data">提交</el-button>
     </el-row>
   </div>
 </template>

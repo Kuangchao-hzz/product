@@ -1,7 +1,7 @@
 <template>
   <div class="view-role">
     <div class="role-group">
-      <el-button v-if="btn_auth('b_jz_xzyh')" @click="get_roleData">新增角色</el-button>
+      <el-button :disabled="!btn_auth('b_jz_xzyh')" @click="get_roleData">新增角色</el-button>
     </div>
     <div class="system-role-table">
       <el-table

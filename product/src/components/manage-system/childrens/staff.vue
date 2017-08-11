@@ -113,10 +113,10 @@
     </div>
     <div class="content-table-pagination">
       <div class="other-btn">
-        <el-button v-if="btn_auth('b_yg_dyygbb')" :plain="true"
+        <el-button :disabled="!btn_auth('b_yg_dyygbb')" :plain="true"
                    type="info"
                    @click="exportDataIsShow = true">导入员工排班</el-button>
-        <el-button v-if="btn_auth('b_yg_xzmb')" type="info" @click="downloadExcel">下载模板</el-button>
+        <el-button :disabled="!btn_auth('b_yg_xzmb')" type="info" @click="downloadExcel">下载模板</el-button>
       </div>
       <el-pagination
         @current-change="data_table"

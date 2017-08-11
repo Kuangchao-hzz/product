@@ -144,11 +144,11 @@
         <el-col :lg="10">
           <div class="other-btn">
             <el-col :lg="24">
-              <el-button v-if="btn_auth('b_cw_dc_excel')" :plain="true" type="info" @click="downloadExcel">导出excel</el-button>
-              <el-button v-if="btn_auth('b_cw_dr_excel')" :plain="true"
+              <el-button :disabled="!btn_auth('b_cw_dc_excel')" :plain="true" type="info" @click="downloadExcel">导出excel</el-button>
+              <el-button :disabled="!btn_auth('b_cw_dr_excel')" :plain="true"
                          type="info"
                          @click="exportDataIsShow = true">导入excel</el-button>
-              <el-button v-if="btn_auth('b_cw_dc_xzmb')" :plain="true" type="info" @click="downloadTemplate">下载模板</el-button>
+              <el-button :disabled="!btn_auth('b_cw_dc_xzmb')" :plain="true" type="info" @click="downloadTemplate">下载模板</el-button>
             </el-col>
           </div>
         </el-col>

@@ -81,6 +81,7 @@
             }).then((response) => {
               localStorage.setItem('ms_username', self.ruleForm.username)
               localStorage.setItem('ms_authId', response.data.dat.authIds)
+              self.$store.dispatch('get_authIds')
               self.$store.dispatch('LoginByUser', self.ruleForm).then(() => {
                 self.$router.push('/data/delivery')
               })

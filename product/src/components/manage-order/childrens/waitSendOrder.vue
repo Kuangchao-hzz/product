@@ -115,7 +115,7 @@
     <div class="wait-send-pagination">
       <div class="other-btn">
         <el-button :plain="true" type="info" @click="handleOrderBackToYb">回退邮包</el-button>
-        <el-button v-if="btn_auth('b_qt_qbdc_excel')" :plain="true" type="info" @click="downloadExcel">全部导出excel</el-button>
+        <el-button :disabled="!btn_auth('b_qt_qbdc_excel')" :plain="true" type="info" @click="downloadExcel">全部导出excel</el-button>
       </div>
       <el-pagination
         @current-change="data_table"

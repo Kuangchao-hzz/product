@@ -1,7 +1,7 @@
 <template>
   <div class="view-app">
     <div class="app-group">
-      <el-button v-if="btn_auth('b_app_tjxbb')" @click="handlerApp">添加新版本</el-button>
+      <el-button :disabled="!btn_auth('b_app_tjxbb')" @click="handlerApp">添加新版本</el-button>
     </div>
     <div class="system-app-table">
       <el-table

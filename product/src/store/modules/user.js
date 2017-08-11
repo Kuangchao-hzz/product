@@ -6,7 +6,7 @@ const user = {
     POSSWORD: Cookies.get('POSSWORD'),
     LOGINSTATUS: Cookies.get('LOGINSTATUS'),
     TOKEN: Cookies.get('_token'),
-    AUTHIDS: localStorage.getItem('ms_authId')
+    AUTHIDS: null
   },
   mutations: {
     SET_USERID: (state, user) => {
@@ -20,6 +20,9 @@ const user = {
     },
     SET_LOGINSTATUS: (state, password) => {
       state.LOGINSTATUS = password
+    },
+    SET_AUTHIDS: (state, authids) => {
+      state.AUTHIDS = authids
     }
   },
   actions: {
@@ -42,6 +45,9 @@ const user = {
         }
         resolve()
       })
+    },
+    get_authIds ({ commit }) {
+      commit('SET_AUTHIDS', localStorage.getItem('ms_authId'))
     }
   }
 }

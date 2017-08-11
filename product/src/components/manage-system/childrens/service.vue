@@ -5,7 +5,7 @@
         <el-input v-model="serviceForm.kefu"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button v-if="btn_auth('b_kf_bj')" type="primary" @click="submit_data">保存</el-button>
+        <el-button :disabled="!btn_auth('b_kf_bj')" type="primary" @click="submit_data">保存</el-button>
       </el-form-item>
     </el-form>
   </div>
