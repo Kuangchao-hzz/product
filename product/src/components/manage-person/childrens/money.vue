@@ -148,7 +148,6 @@
               <el-button :disabled="!btn_auth('b_cw_dr_excel')" :plain="true"
                          type="info"
                          @click="exportDataIsShow = true">导入excel</el-button>
-              <el-button :disabled="!btn_auth('b_cw_dc_xzmb')" :plain="true" type="info" @click="downloadTemplate">下载模板</el-button>
             </el-col>
           </div>
         </el-col>

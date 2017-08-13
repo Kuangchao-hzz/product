@@ -96,7 +96,8 @@
           <template scope="scope">
             <el-button type="text"
                        size="small"
-            ><a href="javascript:" @click="edit_tableDialogAuto(scope.row)">编辑</a></el-button>
+                       disabled
+            ><a href="javascript:" @click="edit_tableDialogAuto(scope.row)" disabled>编辑</a></el-button>
           </template>
         </el-table-column>
       </el-table>

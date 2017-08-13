@@ -51,3 +51,15 @@ export default instance
 export const instanceJson = axios.create({
   baseURL: '/api'
 })
+
+instanceJson.interceptors.response.use((res) => {
+  if (res.data.code !== 1) {
+    Vue.prototype.$message({
+      showClose: true,
+      message: res.data.msg,
+      type: 'error'
+    })
+  } else {
+    return res
+  }
+})

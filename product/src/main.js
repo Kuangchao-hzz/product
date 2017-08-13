@@ -28,11 +28,12 @@ AMap.initAMapApiLoader({
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
     store.dispatch('get_authIds')
-    let roles = store.getters.authIds.split(',')
-    store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
-      router.addRoutes(store.getters.addRouters) // 动态添加可访问的路由表
-      next()
-    })
+    if (store.getters.addRouters.length < 1) {
+      let roles = store.getters.authIds.split(',')
+      store.dispatch('GenerateRoutes', { roles }).then(() => {
+        router.addRoutes(store.getters.addRouters)
+      })
+    }
   } else {
     localStorage.setItem('ms_authId', null)
     next()

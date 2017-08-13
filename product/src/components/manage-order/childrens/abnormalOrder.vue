@@ -74,7 +74,6 @@
         style="width: 100%"
         :row-class-name="tableRowClassName">
         <el-table-column
-          fixed
           type="expand">
           <template scope="scope">
             <el-form label-position="left" inline class="demo-table-expand">

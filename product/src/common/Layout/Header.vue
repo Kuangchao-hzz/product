@@ -20,6 +20,7 @@
   </div>
 </template>
 <script>
+  import api from '@/api/login'
   export default {
     data () {
       return {
@@ -37,6 +38,9 @@
       handleCommand (command) {
         if (command === 'loginout') {
           localStorage.removeItem('ms_username')
+          api.logout_user().then((response) => {
+
+          })
           this.$router.push('/login')
         }
       }

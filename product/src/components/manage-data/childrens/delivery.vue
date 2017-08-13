@@ -141,6 +141,7 @@
   export default {
     data () {
       return {
+        checkedNodesData: [],
         searchData: {
           country: []
         },
@@ -163,28 +164,48 @@
       }
     },
     mounted () {
-      this.data_table()
+      this.data_table({
+        provinces: [],
+        cities: [],
+        districts: [],
+        storeIds: []
+      })
     },
     methods: {
       getCheckedNodes () {
+        this.checkedNodesData = this.$refs.tree.getCheckedNodes()
+        this.fetch_mapData()
+      },
+      fetch_mapData () {
         let self = this
-        let data = this.$refs.tree.getCheckedNodes()
+        let $params = {
+          provinces: [],
+          cities: [],
+          districts: [],
+          storeIds: []
+        }
         self.countryText = []
-        data.forEach(function ($item, $index) {
+        self.checkedNodesData.forEach(function ($item, $index) {
           self.countryText.push($item.label)
           self.handleClose()
+          if ($item.id <= 200) {
+            $params.provinces.push($item.id)
+          } else if ($item.id <= 2000 && $item.id > 200) {
+            $params.cities.push($item.id)
+          } else if ($item.id <= 20000 && $item.id > 2000) {
+            $params.districts.push($item.id)
+          } else {
+            $params.storeIds.push($item.id)
+          }
         })
+        self.data_table($params)
       },
       handleClose (done) {
         this.treeDialog.type = false
       },
-      data_table () {
+      data_table ($params) {
         let self = this
-        apiTable.data_dataDeliveryTable({
-          city: self.searchData.country[1] || '1',
-          province: self.searchData.country[0] || '1',
-          district: self.searchData.country[2] || '1'
-        }).then((response) => {
+        apiTable.data_dataDeliveryTable($params).then((response) => {
           self.deliveryData = response.data.dat
         })
       }

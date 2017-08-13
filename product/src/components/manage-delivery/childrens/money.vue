@@ -22,7 +22,7 @@
           align="center"
           label="起步">
           <template scope="scope">
-            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_dj_qs"></el-input>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].jl_qs"></el-input>
             <span v-show="!scope.row.editable">{{ scope.row.jl_qs }}</span>
           </template>
         </el-table-column>
@@ -96,8 +96,8 @@
           align="center"
           label="起始等级">
           <template scope="scope">
-            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_jl_qs"></el-input>
-            <span v-show="!scope.row.editable">{{ scope.row.fee_jl_qs }}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].dj_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.dj_qs }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -105,8 +105,8 @@
           align="center"
           label="首费">
           <template scope="scope">
-            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].dj_qs"></el-input>
-            <span v-show="!scope.row.editable">{{ scope.row.dj_qs }}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].fee_dj_qs"></el-input>
+            <span v-show="!scope.row.editable">{{ scope.row.fee_dj_qs }}</span>
           </template>
         </el-table-column>
         <el-table-column

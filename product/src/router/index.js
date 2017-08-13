@@ -9,7 +9,7 @@ export const includeRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/login',
+    redirect: '/data/delivery',
     children: [
       {
         path: 'abnormalDetails',

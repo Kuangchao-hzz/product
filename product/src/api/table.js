@@ -31,13 +31,13 @@ export default {
   },
   // 数据统计-配送统计
   data_dataDeliveryTable ($baseData) {
-    return instance.get('/web/dataStats/order', {
+    return instanceJson.post('/web/dataStats/order', {
       params: $baseData
     })
   },
   // 数据统计-配送员统计
   data_dataPeopleTable ($baseData) {
-    return instance.get('/web/dataStats/user', {
+    return instance.post('/web/dataStats/user', {
       params: $baseData
     })
   },
