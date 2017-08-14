@@ -107,7 +107,7 @@
                       prop="treeDialog.checkedValue"
                       class="area-box">
           <el-tree
-            :data="addUserForm.treeDialog.routerAuth"
+            :data="this.treeCountry"
             show-checkbox
             node-key="id"
             ref="tree"
@@ -178,6 +178,9 @@
       }
     },
     computed: {
+      treeCountry () {
+        return this.addUserForm.treeDialog.routerAuth
+      },
       handlerCountryText () {
         return this.countryText.join('/')
       },

@@ -76,16 +76,10 @@
               <el-col :span="4"><strong>身份证：</strong></el-col>
               <el-col :span="7">{{detailsData.idCard?detailsData.idCard:'- -'}}</el-col>
             </el-row>
-            <el-row :gutter="10" class="data-item">
-              <el-col :span="3">
-                <el-button type="info" @click="details_handlePersonUpDown(1)">升级</el-button>
-              </el-col>
-              <el-col :span="3">
-                <el-button type="info" @click="details_handlePersonUpDown(0)">降级</el-button>
-              </el-col>
-              <el-col :span="4">
-                <el-button type="info" @click="details_handlePersonEnabled(0)">账号冻结</el-button>
-              </el-col>
+            <el-row class="data-item">
+              <el-button type="info" @click="details_handlePersonUpDown(1)">升级</el-button>
+              <el-button type="info" @click="details_handlePersonUpDown(0)">降级</el-button>
+              <el-button type="info" @click="details_handlePersonEnabled(0)">账号冻结</el-button>
             </el-row>
           </el-col>
           <el-col :span="8">
@@ -325,7 +319,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 750
+        return this.$store.state.include.tableHeight - 250
       }
     },
     mounted () {

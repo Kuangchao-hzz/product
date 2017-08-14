@@ -26,9 +26,12 @@
   export default {
     computed: {
       containerHeight () {
+        let autoPagePath = ['/order/orderDetails', '/person/personDetails']
         return {
           height: (this.$store.state.include.tableHeight - 110) + 'px',
-          overflow: this.$route.path === '/order/orderDetails' ? 'auto' : 'hidden'
+          overflow: autoPagePath.some((path) => {
+            return path === this.$route.path
+          }) ? 'auto' : 'hidden'
         }
       },
       containerStyle () {

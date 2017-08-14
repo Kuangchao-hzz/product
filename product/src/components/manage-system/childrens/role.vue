@@ -63,6 +63,7 @@
             ref="tree"
             show-checkbox
             node-key="id"
+            check-strictly
             :default-checked-keys="syncDefaultCheckedData"
             :default-expanded-keys="syncDefaultCheckedData"
             :props="defaultProps">

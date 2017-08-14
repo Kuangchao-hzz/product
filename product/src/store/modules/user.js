@@ -47,7 +47,10 @@ const user = {
       })
     },
     get_authIds ({ commit }) {
-      commit('SET_AUTHIDS', localStorage.getItem('ms_authId'))
+      return new Promise(resolve => {
+        commit('SET_AUTHIDS', localStorage.getItem('ms_authId'))
+        resolve()
+      })
     }
   }
 }

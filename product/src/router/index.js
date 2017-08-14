@@ -102,7 +102,7 @@ export const asyncRouterMap = [
         path: 'waitSendOrder',
         name: '待推订单',
         meta: {
-          role: ['m_dtdd']
+          role: ['m_dtdd', 'b_qt_qbdc_excel', 'b_htyb']
         },
         component: resolve => require(['../components/manage-order/childrens/waitSendOrder.vue'], resolve)
       },
@@ -110,7 +110,7 @@ export const asyncRouterMap = [
         path: 'waitPushOrder',
         name: '待抢订单',
         meta: {
-          role: ['m_dqdd']
+          role: ['m_dqdd', 'b_qt_qbdc_excel', 'b_htyb', 'b_sgts']
         },
         component: resolve => require(['../components/manage-order/childrens/waitPushOrder.vue'], resolve)
       },
@@ -118,7 +118,7 @@ export const asyncRouterMap = [
         path: 'abnormalOrder',
         name: '异常订单',
         meta: {
-          role: ['m_ycdd']
+          role: ['m_ycdd', 'b_yc_dc_excel', 'b_td', 'b_gbdd', 'b_rgcl']
         },
         component: resolve => require(['../components/manage-order/childrens/abnormalOrder.vue'], resolve)
       },
@@ -126,7 +126,7 @@ export const asyncRouterMap = [
         path: 'allOrder',
         name: '全部订单',
         meta: {
-          role: ['m_qbdd']
+          role: ['m_qbdd', 'b_td', 'b_gbdd']
         },
         component: resolve => require(['../components/manage-order/childrens/allOrder.vue'], resolve)
       }
@@ -153,7 +153,7 @@ export const asyncRouterMap = [
         path: 'manage',
         name: '配送员管理',
         meta: {
-          role: ['m_psygl']
+          role: ['m_psygl', 'b_ps_sj', 'b_ps_jj', 'b_ps_djzh', 'b_ps_zhjd']
         },
         component: resolve => require(['../components/manage-person/childrens/manage.vue'], resolve)
       },
@@ -161,7 +161,7 @@ export const asyncRouterMap = [
         path: 'audit',
         name: '资格审核',
         meta: {
-          role: ['m_zzsh']
+          role: ['m_zzsh', 'b_zz_shtg', 'b_zz_shbtg', 'b_zz_qbdc_excel']
         },
         component: resolve => require(['../components/manage-person/childrens/audit.vue'], resolve)
       },
@@ -169,7 +169,7 @@ export const asyncRouterMap = [
         path: 'money',
         name: '财务结算',
         meta: {
-          role: ['m_cwjs']
+          role: ['m_cwjs', 'b_cw_dc_excel', 'b_cw_dr_excel']
         },
         component: resolve => require(['../components/manage-person/childrens/money.vue'], resolve)
       }
@@ -231,7 +231,7 @@ export const asyncRouterMap = [
         path: 'notice',
         name: '公告管理',
         meta: {
-          role: ['m_gggl']
+          role: ['m_gggl', 'b_gg_fbgg']
         },
         component: resolve => require(['../components/manage-system/childrens/notice.vue'], resolve)
       },
@@ -239,7 +239,7 @@ export const asyncRouterMap = [
         path: 'user',
         name: '用户管理',
         meta: {
-          role: ['m_yhgl']
+          role: ['m_yhgl', 'b_yh_xzyh', 'b_yh_bj', 'b_yh_dj', 'b_yh_sc']
         },
         component: resolve => require(['../components/manage-system/childrens/user.vue'], resolve)
       },
@@ -247,7 +247,7 @@ export const asyncRouterMap = [
         path: 'role',
         name: '角色管理',
         meta: {
-          role: ['m_jzgl', 'm_ddgl']
+          role: ['m_jzgl', 'b_jz_xzyh', 'b_jz_bj', 'b_jz_sc']
         },
         component: resolve => require(['../components/manage-system/childrens/role.vue'], resolve)
       },
@@ -255,7 +255,7 @@ export const asyncRouterMap = [
         path: 'staff',
         name: '员工排班管理',
         meta: {
-          role: ['m_ygpbgl']
+          role: ['m_ygpbgl', 'b_yg_dyygbb', 'b_yg_xzmb', 'b_yg_bj']
         },
         component: resolve => require(['../components/manage-system/childrens/staff.vue'], resolve)
       },
@@ -263,7 +263,7 @@ export const asyncRouterMap = [
         path: 'service',
         name: '客服管理',
         meta: {
-          role: ['m_kfgl']
+          role: ['m_kfgl', 'b_kf_bj']
         },
         component: resolve => require(['../components/manage-system/childrens/service.vue'], resolve)
       },
@@ -271,7 +271,7 @@ export const asyncRouterMap = [
         path: 'app',
         name: 'APP版本管理',
         meta: {
-          role: ['m_appbbgl']
+          role: ['m_appbbgl', 'b_app_tjxbb']
         },
         component: resolve => require(['../components/manage-system/childrens/app.vue'], resolve)
       },
@@ -279,10 +279,13 @@ export const asyncRouterMap = [
         path: 'help',
         name: '使用帮助',
         meta: {
-          role: ['m_sybzgl']
+          role: ['m_sybzgl', 'b_bz_bc']
         },
         component: resolve => require(['../components/manage-system/childrens/help.vue'], resolve)
       }
     ]
+  },
+  {
+    path: '*', component: resolve => require(['../components/404/index.vue'], resolve)
   }
 ]

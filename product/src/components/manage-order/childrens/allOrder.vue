@@ -120,8 +120,8 @@
               <el-button type="primary">
                 <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 3 }}" tag="span">订单详情</router-link>
               </el-button>
-              <el-button v-if="scope.row.orderStatus !== 99" type="primary">退单</el-button>
-              <el-button v-if="scope.row.orderStatus !== 99" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
+              <el-button :disabled="!btn_auth('b_td')" v-if="scope.row.orderStatus !== 99" type="primary">退单</el-button>
+              <el-button :disabled="!btn_auth('b_gbdd')" v-if="scope.row.orderStatus !== 99" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
             </el-form>
           </template>
         </el-table-column>

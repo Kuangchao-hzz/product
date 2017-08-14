@@ -61,6 +61,7 @@
   .sidebar{
     background-color: #324157;
     position: relative;
+    z-index: 999;
     .el-menu{
       width: 250px;
       min-width: 250px;
@@ -93,6 +94,7 @@
     .zoom-sideBar{
       width: 8px;
       height: 70px;
+      display: block;
       background: #324157;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
@@ -113,6 +115,10 @@
         left: 10%;
         top: 50%;
         transform: translate(-50%, -50%);
+      }
+      &:hover{
+        opacity: 1;
+        right: -8px;
       }
     }
     &:hover{

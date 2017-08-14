@@ -56,6 +56,9 @@ const permission = {
     SET_ROUTERS (state, routers) {
       state.addRouters = deepClone(routers)
       state.routers = deepClone(includeRouterMap.concat(routers))
+    },
+    RESET_ROUTERS (state) {
+      state.addRouters = []
     }
   },
   actions: {
@@ -72,8 +75,8 @@ const permission = {
         resolve(accessedRouters)
       })
     },
-    setCurrentPath ({ commit }, data) {
-
+    ResetCurrentRouter ({ commit }) {
+      commit('RESET_ROUTERS')
     }
   }
 }

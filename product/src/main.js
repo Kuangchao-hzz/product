@@ -27,27 +27,33 @@ AMap.initAMapApiLoader({
 })
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
-    store.dispatch('get_authIds')
-    if (store.getters.addRouters.length < 1) {
-      let roles = store.getters.authIds.split(',')
-      store.dispatch('GenerateRoutes', { roles }).then(() => {
-        router.addRoutes(store.getters.addRouters)
+    // 如果当前地址不是登录页 并且没有路由权限 则跳转到登录页
+    if (!localStorage.getItem('ms_authId')) {
+      next({path: '/login'})
+    } else {
+      // 当地址不是登录页 但是有路由权限 则生成路由表
+      store.dispatch('get_authIds').then(() => {
+        if (store.getters.addRouters.length < 1) {
+          // 将路由字段转成数组
+          let roles = store.getters.authIds.split(',')
+          // 生成路由表 并添加到router实例里面
+          store.dispatch('GenerateRoutes', { roles }).then(() => {
+            router.addRoutes(store.getters.addRouters)
+            // 获取浏览器尺寸 计算布局
+            if (store.state.include.tableWidth === '' && store.state.include.tableHeight === '') {
+              store.dispatch('captureBrowserSize').then(() => {
+                store.dispatch('fetch_allAreaAndStore')
+              })
+            }
+          })
+        }
+        next()
       })
     }
   } else {
+    // 跳转到登录页是 重置路由表
     localStorage.setItem('ms_authId', null)
-    next()
-  }
-  if (store.state.include.tableWidth === '' && store.state.include.tableHeight === '') {
-    store.dispatch('captureBrowserSize').then(() => {
-      if (store.state.select.treeCountry.length < 1 && to.path !== '/login') {
-        store.dispatch('fetch_allAreaAndStore')
-        next()
-      } else {
-        next()
-      }
-    })
-  } else {
+    store.dispatch('ResetCurrentRouter')
     next()
   }
 })

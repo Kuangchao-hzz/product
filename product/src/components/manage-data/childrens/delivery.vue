@@ -120,7 +120,7 @@
         label-width="80px">
         <el-form-item label="选择区域: " class="area-box">
           <el-tree
-            :data="treeDialog.routerAuth"
+            :data="this.treeCountry"
             show-checkbox
             node-key="id"
             ref="tree"
@@ -149,7 +149,7 @@
         treeDialog: {
           type: false,
           name: '',
-          routerAuth: this.$store.state.select.treeCountry
+          routerAuth: []
         },
         defaultProps: {
           children: 'children',
@@ -159,6 +159,9 @@
       }
     },
     computed: {
+      treeCountry () {
+        return this.$store.state.select.treeCountry
+      },
       handlerCountryText () {
         return this.countryText.join('/')
       }

@@ -31,15 +31,11 @@ export default {
   },
   // 数据统计-配送统计
   data_dataDeliveryTable ($baseData) {
-    return instanceJson.post('/web/dataStats/order', {
-      params: $baseData
-    })
+    return instanceJson.post('/web/dataStats/order', $baseData)
   },
   // 数据统计-配送员统计
   data_dataPeopleTable ($baseData) {
-    return instance.post('/web/dataStats/user', {
-      params: $baseData
-    })
+    return instanceJson.post('/web/dataStats/user', $baseData)
   },
   // 订单管理-待推订单
   data_orderSendTable ($baseData) {

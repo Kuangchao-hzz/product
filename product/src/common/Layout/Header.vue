@@ -9,7 +9,6 @@
     <div class="user-info">
       <el-dropdown trigger="click" @command="handleCommand" class="el-btn-link">
         <span class="el-dropdown-link">
-            <img class="user-logo" src="../../assets/logo.png">
             {{username}}
         </span>
         <el-dropdown-menu slot="dropdown">
@@ -89,7 +88,6 @@
         cursor: pointer;
         vertical-align: middle;
         .el-dropdown-link{
-          padding-left: 50px;
           .user-logo {
             position: absolute;
             left: 0;
