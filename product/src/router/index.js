@@ -67,7 +67,7 @@ export const asyncRouterMap = [
     name: '数据统计',
     icon: 'icon icon-data',
     meta: {
-      role: ['m_sjtj', 'm_pstj', 'm_psytj']
+      role: ['m_sjtj', 'm_pstj', 'm_psytj', '$admin']
     },
     component: Layout,
     children: [
@@ -75,7 +75,7 @@ export const asyncRouterMap = [
         path: 'delivery',
         name: '配送统计',
         meta: {
-          role: ['m_pstj']
+          role: ['m_pstj', '$admin']
         },
         component: resolve => require(['../components/manage-data/childrens/delivery.vue'], resolve)
       },
@@ -83,7 +83,7 @@ export const asyncRouterMap = [
         path: 'people',
         name: '配送员统计',
         meta: {
-          role: ['m_psytj']
+          role: ['m_psytj', '$admin']
         },
         component: resolve => require(['../components/manage-data/childrens/people.vue'], resolve)
       }

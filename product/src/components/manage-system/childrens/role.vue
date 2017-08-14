@@ -233,5 +233,11 @@
     .role-group{
       margin-bottom: 20px;
     }
+    .el-tree{
+      height: 400px;
+      overflow-y: auto;
+      border: 1px #ddd solid;
+      border-radius: 4px;
+    }
   }
 </style>

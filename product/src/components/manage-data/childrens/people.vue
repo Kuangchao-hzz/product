@@ -1,5 +1,5 @@
 <template>
-  <div class="delivery-people">
+  <div class="delivery-people" v-if="btn_auth('m_psytj')">
     <div class="country-select">
       <span>区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
       <a href="javascript:;" @click="treeDialog.type = true">切换</a>
@@ -147,6 +147,7 @@
       </el-form>
     </el-dialog>
   </div>
+  <div v-else>没有权限查看该页面</div>
 </template>
 
 <script>
@@ -187,6 +188,11 @@
       }
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       getCheckedNodes () {
         this.checkedNodesData = this.$refs.tree.getCheckedNodes()
         this.fetch_mapData()

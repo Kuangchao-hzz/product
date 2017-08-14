@@ -7,7 +7,12 @@ import { asyncRouterMap, includeRouterMap } from '../../router'
  */
 function hasPermission (roles, route) {
   if (route.meta && route.meta.role) {
-    return roles.some(role => route.meta.role.indexOf(role) >= 0)
+    return roles.some(role => {
+      if (route.meta.role.indexOf('$admin') !== -1) {
+        return true
+      }
+      return route.meta.role.indexOf(role) >= 0
+    })
   }
 }
 

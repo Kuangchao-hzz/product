@@ -131,6 +131,12 @@ export default {
       params: $baseData
     })
   },
+  // 系统设置-APP版本管理
+  data_appVersionTable ($baseData) {
+    return instance.get('/web/appVersion/all', {
+      params: $baseData
+    })
+  },
   // 系统设置-角色管理-列表
   data_roleTable ($baseData) {
     return instance.get('/web/auth/allRole', {
@@ -206,6 +212,10 @@ export default {
   // 系统设置-公告管理-发布公告
   edit_systemNoticeTable ($baseData) {
     return instance.post('/web/systemNotice/publish', $baseData)
+  },
+  // 系统设置-APP版本管理
+  edit_systemVersionData ($baseData) {
+    return instance.post('/web/appVersion/save', $baseData)
   },
   // 系统设置-员工排班管理-编辑
   edit_systemStaffDate ($baseData) {

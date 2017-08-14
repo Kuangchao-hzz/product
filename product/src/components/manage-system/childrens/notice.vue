@@ -22,7 +22,6 @@
           label="内容">
         </el-table-column>
         <el-table-column
-          prop="creator"
           align="center"
           label="目标人群"
           show-overflow-tooltip>
