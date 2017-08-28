@@ -226,6 +226,7 @@
 <script>
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
+  import moment from 'moment'
   export default {
     data () {
       return {
@@ -256,6 +257,20 @@
       this.data_table()
     },
     methods: {
+      tableRowClassName ($row) {
+        let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        if (moment(now).diff(moment($row.scheduledTime)) > 3600000) {
+          return 'order-abnormal'
+        }
+      },
+      handleOrderStatus () {
+        let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        this.tableData.details.forEach(($item, $index) => {
+          if (moment(now).diff(moment($item.scheduledTime)) > 3600000) {
+            this.$store.dispatch('set_abnormalOrder', true)
+          }
+        })
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
@@ -300,14 +315,6 @@
         this.searchData.handlerStatus = ''
         this.searchData.phone = ''
         this.searchData.storeId = ''
-      },
-      tableRowClassName (row, index) {
-        if (index === 0) {
-          return 'info-row-abnormal'
-        } else if (index === 1) {
-          return 'info-row-error'
-        }
-        return ''
       },
       closeOrder () {
         apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
@@ -355,7 +362,7 @@
   }
 </script>
 
-<style lang="scss" type="text/scss" scoped>
+<style lang="scss" type="text/scss">
   /*异常标签*/
   .wait-abnormal-tag{
     .el-tag{
@@ -365,7 +372,9 @@
   }
   .wait-abnormal-table{
     margin-bottom: 20px;
-
+    .order-abnormal{
+      background: red;
+    }
   }
   .wait-send-pagination{
     display: flex;

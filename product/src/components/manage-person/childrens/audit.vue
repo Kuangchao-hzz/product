@@ -8,6 +8,7 @@
               <el-form-item>
                 <div class="country-select">
                   <el-cascader
+                    v-model="searchData.country"
                     :options="this.$store.state.select.country"
                     :props="this.$store.state.select.defaultCountryProps"
                     change-on-select
@@ -17,7 +18,7 @@
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-select v-model="searchData.category" placeholder="类别">
+                <el-select v-model="searchData.userType" placeholder="类别">
                   <el-option
                     v-for="item in this.$store.state.select.category"
                     :key="item.value"
@@ -29,17 +30,17 @@
             </el-col>
             <el-col :span="3">
               <el-form-item>
-                <el-input v-model="searchData.personName" placeholder="配送员姓名"></el-input>
+                <el-input v-model="searchData.realName" placeholder="配送员姓名"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="4">
               <el-form-item>
-                <el-input v-model="searchData.personNum" placeholder="配送员工号"></el-input>
+                <el-input v-model="searchData.employeeId" placeholder="配送员工号"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="5">
               <el-form-item>
-                <el-input v-model="searchData.personIdCard" placeholder="配送员身份证"></el-input>
+                <el-input v-model="searchData.idCard" placeholder="配送员身份证"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="4">
@@ -171,10 +172,11 @@
       return {
         loading: false,
         searchData: {
-          personName: '',
-          personNum: '',
-          category: '',
-          personIdCard: ''
+          country: [],
+          userType: '',
+          realName: '',
+          employeeId: '',
+          idCard: ''
         },
         tableData: [],
         multipleSelection: []
@@ -235,9 +237,24 @@
       data_table ($page) {
         let self = this
         self.loading = true
-        apiTable.data_tableAuditTable({
-          page: $page - 1 || 0
-        }).then((response) => {
+        let $params = {
+          page: $page - 1 || 0,
+          userType: this.searchData.userType,
+          realName: this.searchData.realName,
+          employeeId: this.searchData.employeeId,
+          idCard: this.searchData.idCard,
+          province: '',
+          city: '',
+          district: ''
+        }
+        if (this.searchData.country.length > 0) {
+          Object.assign($params, {
+            city: this.searchData.country[0],
+            province: this.searchData.country[1],
+            district: this.searchData.country[2]
+          })
+        }
+        apiTable.data_tableAuditTable($params).then((response) => {
           self.loading = false
           self.tableData = response.data.dat
         })

@@ -1,7 +1,7 @@
 <template>
   <div class="edit-staff-work">
     <el-dialog
-      title="员工排版"
+      title="员工排班"
       :visible.sync="editStaffIsShowChild"
       size="small"
       :close-on-press-escape="false"
@@ -191,7 +191,6 @@
           let month = date.getMonth() + 1
           let day = date.getDate()
           let week = date.getDay()
-          console.log(this.selectDate)
           this.dateField.employeeId = this.selectDate.employeeId
           this.dateField.id = this.selectDate.id
           this.dateField.workDay = this.selectDate.workDay
@@ -218,7 +217,7 @@
       edit_table ($month, $employeeId) {
         apiTable.data_editStaffTable({
           month: $month,
-          employeeId: $employeeId || this.editStaffData.employeeId
+          employeeId: $employeeId || this.editStaffData.employeeNo
         }).then((response) => {
           if (response.data.code === 1) {
             this.schedulingListData = response.data.dat
@@ -268,9 +267,10 @@
       },
       editStaffData () {
         if (this.editStaffData.schedulingList) {
+          console.log(this.editStaffData.schedulingList)
           let date = this.editStaffData.schedulingList[0].workDay.substring(-1, this.editStaffData.schedulingList[0].workDay.indexOf('-') + 3)
-          let employeeId = this.editStaffData.employeeId
-          this.edit_table(date, employeeId)
+          let employeeNo = this.editStaffData.employeeNo
+          this.edit_table(date, employeeNo)
         }
       }
     }
@@ -278,6 +278,11 @@
 </script>
 
 <style lang="scss" type="text/scss" rel="stylesheet/scss">
+  .edit-staff-work{
+    .el-input__inner{
+      color: #48576a !important;
+    }
+  }
   .hz-calendar {
     color: #fff;
     width: 100%;

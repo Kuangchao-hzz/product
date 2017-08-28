@@ -7,6 +7,8 @@
       <el-table
         ref="multipleTable"
         :data="tableData"
+        :height="tabHeight"
+        :max-height="tabHeight"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -44,23 +46,25 @@
             <el-button
               type="text"
               size="small"
+              v-if="currentUserNo !== scope.row.employeeId"
               @click="handlerUserData_edit(scope.row)"
             >编辑</el-button>
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.isEnabled === 1"
-              @click="handler_dataTableLock(scope.row, 0)"
+              v-if="scope.row.isEnabled === 1 && currentUserNo !== scope.row.employeeId"
+              @click="handler_dataTableLock(scope.row, 1)"
             >冻结</el-button>
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.isEnabled === 0"
-              @click="handler_dataTableLock(scope.row, 1)"
+              v-if="scope.row.isEnabled === 0 && currentUserNo !== scope.row.employeeId"
+              @click="handler_dataTableLock(scope.row, 0)"
             >解冻</el-button>
             <el-button
               type="text"
               size="small"
+              v-if="currentUserNo !== scope.row.employeeId"
               @click="handlerUserData_del(scope.row.id)"
             >删除</el-button>
           </template>
@@ -186,6 +190,12 @@
       },
       defaultCheckedData () {
         return this.defaultCheckedKeys
+      },
+      tabHeight () {
+        return this.$store.state.include.tableHeight - 255
+      },
+      currentUserNo () {
+        return localStorage.getItem('ms_username')
       }
     },
     mounted () {
@@ -199,10 +209,12 @@
         })
       },
       handleClose (done) {
+        this.addUserForm.id = ''
         this.addUserForm.employeeId = ''
         this.addUserForm.realName = ''
         this.addUserForm.phone = ''
         this.addUserForm.remark = ''
+        this.addUserForm.roleIds = []
         this.addUserForm.roleIds = []
         this.addUserForm.addUserIsShow = false
         this.$refs['addUserForm'].resetFields()
@@ -227,26 +239,26 @@
         })
       },
       handler_dataTableLock ($row, $sta) {
-        apiTable.edit_systemUserHandlerLock({
-          userId: $row.id,
-          lock: $sta
+        let str = $sta === 1 ? '你确定解冻该用户?' : '你确定冻结该用户?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          reverseButtons: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
         }).then(() => {
-          let str = $sta === 1 ? '你确定解冻该用户?' : '你确定冻结该用户?'
-          swal({
-            title: str,
-            type: 'warning',
-            showCancelButton: true,
-            reverseButtons: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '确定!',
-            cancelButtonText: '取消'
+          apiTable.edit_systemUserHandlerLock({
+            userId: $row.id,
+            lock: $sta
           }).then(() => {
             this.data_table()
             this.$message('操作成功！')
-          }, () => {
-
           })
+        }, () => {
+
         })
       },
       handlerUserData_edit ($row) {

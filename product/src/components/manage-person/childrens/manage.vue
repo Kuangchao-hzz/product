@@ -7,6 +7,7 @@
             <el-form-item>
               <div class="country-select">
                 <el-cascader
+                  v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
                   change-on-select
@@ -207,6 +208,7 @@
       return {
         loading: false,
         searchData: {
+          country: [],
           userType: '',
           level: '',
           workStatus: '',
@@ -243,15 +245,26 @@
       data_table ($page) {
         let self = this
         self.loading = true
-        apiTable.data_personManageTable({
+        let $params = {
           page: $page - 1 || 0,
           level: self.searchData.level,
           userType: self.searchData.userType,
           workStatus: self.searchData.workStatus,
           accountStatus: self.searchData.accountStatus,
           realName: self.searchData.realName,
-          phone: self.searchData.phone
-        }).then((response) => {
+          phone: self.searchData.phone,
+          province: '',
+          city: '',
+          district: ''
+        }
+        if (this.searchData.country.length > 0) {
+          Object.assign($params, {
+            city: this.searchData.country[0],
+            province: this.searchData.country[1],
+            district: this.searchData.country[2]
+          })
+        }
+        apiTable.data_personManageTable($params).then((response) => {
           self.loading = false
           self.tableData = response.data.dat
         })

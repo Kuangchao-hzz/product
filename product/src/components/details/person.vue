@@ -168,7 +168,7 @@
                       <el-input v-model="searchData.orderNo" placeholder="订单号"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="3">
+                  <el-col :span="4">
                     <el-form-item>
                       <el-button type="primary" @click="details_personTableData">查询</el-button>
                       <el-button type="primary" @click="resetForm">重置</el-button>

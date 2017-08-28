@@ -124,6 +124,9 @@
             show-checkbox
             node-key="id"
             ref="tree"
+            check-strictly
+            default-expand-all
+            show-checkbox
             :props="defaultProps">
           </el-tree>
         </el-form-item>
@@ -156,12 +159,16 @@
           children: 'children',
           label: 'label'
         },
+        treeDefaultChecked: [],
+        defaultTreeData: [],
         countryText: []
       }
     },
     computed: {
       treeCountry () {
-        return this.$store.state.select.treeCountry
+        let $data = this.$store.state.select.treeCountry
+        this.defaultTreeData = $data
+        return $data
       },
       handlerCountryText () {
         return this.countryText.join('/')
@@ -174,14 +181,26 @@
         districts: [],
         storeIds: []
       })
+      this.defaultCountryText(this.defaultTreeData)
     },
     methods: {
+      defaultCountryText ($data) {
+        let self = this
+        $data.forEach(($item, $index) => {
+          this.countryText.push($item.label)
+          this.treeDefaultChecked.push($item.id)
+          if ($item.children) {
+            self.defaultCountryText($item.children)
+          }
+        })
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
         })
       },
       getCheckedNodes () {
+        this.handleClose()
         this.checkedNodesData = this.$refs.tree.getCheckedNodes()
         this.fetch_mapData()
       },
@@ -194,9 +213,10 @@
           storeIds: []
         }
         self.countryText = []
+        self.treeDefaultChecked = []
         self.checkedNodesData.forEach(function ($item, $index) {
           self.countryText.push($item.label)
-          self.handleClose()
+          self.treeDefaultChecked.push($item.id)
           if ($item.id <= 200) {
             $params.provinces.push($item.id)
           } else if ($item.id <= 2000 && $item.id > 200) {
@@ -217,6 +237,17 @@
         apiTable.data_dataDeliveryTable($params).then((response) => {
           self.deliveryData = response.data.dat
         })
+      }
+    },
+    watch: {
+      'treeDialog.type' () {
+        if (this.treeDialog.type) {
+          this.$nextTick(() => {
+            this.$refs['tree'].setCheckedKeys(this.treeDefaultChecked)
+          })
+        } else {
+          this.$refs['tree'].setCheckedKeys([])
+        }
       }
     }
   }

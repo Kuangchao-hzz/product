@@ -45,6 +45,7 @@
         v-loading.body="loading"
         border
         tooltip-effect="dark"
+        :row-class-name="tableRowClassName"
         @selection-change="handleSelectionChange"
         style="width: 100%">
         <el-table-column
@@ -88,8 +89,8 @@
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
-          prop="scheduled_time"
           align="center"
+          prop="scheduled_time"
           min-width="180"
           label="预计推送时间"
           show-overflow-tooltip>
@@ -130,6 +131,7 @@
 <script>
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
+  import moment from 'moment'
   export default {
     data () {
       return {
@@ -151,6 +153,12 @@
       this.data_table()
     },
     methods: {
+      tableRowClassName ($row) {
+        let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        if (moment(now).diff(moment($row.scheduled_time)) > 0) {
+          return 'order-abnormal'
+        }
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
@@ -222,6 +230,9 @@
 <style lang="scss" type="text/scss">
   .wait-send-table{
     margin-bottom: 20px;
+    .order-abnormal{
+      background: red;
+    }
   }
   .wait-send-pagination{
     display: flex;

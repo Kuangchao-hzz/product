@@ -27,6 +27,9 @@ AMap.initAMapApiLoader({
 })
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login') {
+    if (store.state.select.treeCountry.length < 1) {
+      store.dispatch('fetch_allAreaAndStore')
+    }
     // 如果当前地址不是登录页 并且没有路由权限 则跳转到登录页
     if (!localStorage.getItem('ms_authId')) {
       next({path: '/login'})
@@ -41,9 +44,7 @@ router.beforeEach((to, from, next) => {
             router.addRoutes(store.getters.addRouters)
             // 获取浏览器尺寸 计算布局
             if (store.state.include.tableWidth === '' && store.state.include.tableHeight === '') {
-              store.dispatch('captureBrowserSize').then(() => {
-                store.dispatch('fetch_allAreaAndStore')
-              })
+              store.dispatch('captureBrowserSize')
             }
           })
         }

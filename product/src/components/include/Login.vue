@@ -83,6 +83,7 @@
               localStorage.setItem('ms_authId', response.data.dat.authIds)
               self.$store.dispatch('get_authIds')
               self.$store.dispatch('LoginByUser', self.ruleForm).then(() => {
+                this.$store.dispatch('fetch_allAreaAndStore')
                 self.$router.push('/data/delivery')
               })
             })

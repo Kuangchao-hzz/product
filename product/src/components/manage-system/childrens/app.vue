@@ -7,6 +7,8 @@
       <el-table
         ref="multipleTable"
         :data="tableData"
+        :height="tabHeight"
+        :max-height="tabHeight"
         border
         tooltip-effect="dark"
         style="width: 100%">
@@ -130,6 +132,9 @@
       }
     },
     computed: {
+      tabHeight () {
+        return this.$store.state.include.tableHeight - 255
+      },
       dialogData () {
         return this.dialogFormData
       }

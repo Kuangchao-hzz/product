@@ -171,6 +171,10 @@ export default {
       params: $baseData
     })
   },
+  // 系统设置-员工排班管理-删除
+  data_deleteScheduling ($baseData) {
+    return instance.post('/web/employeeManage/deleteScheduling', $baseData)
+  },
   // 系统设置-客服管理
   data_editService ($baseData) {
     return instance.get('/web/commData/kefu', {

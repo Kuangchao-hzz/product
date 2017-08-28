@@ -10,15 +10,15 @@
           <div class="card-content">
             <div class="card-item">
               <label>待配送订单：</label>
-              <span>1</span>
+              <span>{{mapData.dpsCount}}</span>
             </div>
             <div class="card-item">
               <label>配送中订单：</label>
-              <span>2</span>
+              <span>{{mapData.pszCount}}</span>
             </div>
             <div class="card-item">
               <label>今日已送达订单：</label>
-              <span>3</span>
+              <span>{{mapData.psyCount}}</span>
             </div>
           </div>
         </el-card>

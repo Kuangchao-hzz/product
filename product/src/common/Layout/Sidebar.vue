@@ -34,6 +34,8 @@
         }
       }
     },
+    mounted () {
+    },
     methods: {
       toggleSideBar () {
         this.isCollapse = !this.isCollapse

@@ -29,7 +29,7 @@
               <el-date-picker
                 v-model="searchData.arriveTime"
                 type="daterange"
-                placeholder="订单时间">
+                placeholder="送达时间">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -113,6 +113,7 @@
         v-loading.body="loading"
         border
         tooltip-effect="dark"
+        :row-class-name="tableRowClassName"
         style="width: 100%">
         <el-table-column type="expand">
           <template scope="scope">
@@ -268,6 +269,7 @@
 <script>
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
+  import moment from 'moment'
   export default {
     data () {
       return {
@@ -302,6 +304,12 @@
       this.data_table()
     },
     methods: {
+      tableRowClassName ($row) {
+        let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+        if (moment(now).diff(moment($row.scheduledTime)) > 0) {
+          return 'order-abnormal'
+        }
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
@@ -411,6 +419,9 @@
   }
   .wait-all-table{
     margin-bottom: 20px;
+    .order-abnormal{
+      background: red;
+    }
   }
   .wait-send-pagination{
     display: flex;

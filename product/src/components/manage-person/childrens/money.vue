@@ -169,11 +169,11 @@
           <el-upload
             class="upload-demo"
             ref="upload"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-success="handleAvatarSuccess"
+            action="/api/web/settlement/importExcel"
             :file-list="fileList"
             :auto-upload="false">
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -282,8 +282,9 @@
           this.tableData = response.data.dat
         })
       },
-      downloadTemplate () {
-
+      handleAvatarSuccess (response) {
+        this.$message(response.msg)
+        this.handleClose()
       },
       downloadExcel () {
         window.location.href = '/api/web/settlement/exportData?'
@@ -292,11 +293,8 @@
         this.$refs.upload.submit()
       },
       handleClose (done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done()
-          })
-          .catch(_ => {})
+        this.exportDataIsShow = false
+        this.$refs.upload.clearFiles()
       }
     }
   }

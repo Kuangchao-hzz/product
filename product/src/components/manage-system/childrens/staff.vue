@@ -84,15 +84,13 @@
         </el-table-column>
         <el-table-column
           v-for="($item, $index) in handleTableHeaderList"
-          :label="($item.month + 1) + '/' + $item.day + ' ' + $item.week"
+          :label="$item.month + '/' + $item.day + ' ' + $item.week"
           min-width="150"
           align="center"
           :key="$index"
           show-overflow-tooltip>
           <template scope="scope">
-            {{scope.row.schedulingList[$index] ? scope.row.schedulingList[$index].timeBegin : ''}}
-            {{scope.row.schedulingList[$index] ? '-' : ''}}
-            {{scope.row.schedulingList[$index] ? scope.row.schedulingList[$index].timeEnd : ''}}
+            {{handlerMatchDate($item.day, scope.row)}}
           </template>
         </el-table-column>
         <el-table-column
@@ -106,7 +104,7 @@
                        @click="editStaff(scope.row)">编辑</el-button>
             <el-button type="text"
                        size="small"
-            >删除</el-button>
+                       @click="delStaff(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -161,6 +159,7 @@
             class="upload-demo"
             ref="upload"
             :data="exportData"
+            :on-success="handleAvatarSuccess"
             action="/api/web/employeeManage/importScheduling"
             :auto-upload="false">
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -214,6 +213,20 @@
       this.data_table()
     },
     methods: {
+      handlerMatchDate ($date, $row) {
+        let data = {}
+        if ($row.schedulingList.length > 0) {
+          if ($row.schedulingList.some((date) => {
+            let a = date.workDay.slice(date.workDay.lastIndexOf('-') + 1, date.workDay.length)
+            data = date
+            console.log(a)
+            console.log($date)
+            return a === $date
+          })) {
+            return data.timeBegin + '-' + data.timeEnd
+          }
+        }
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
@@ -248,7 +261,7 @@
           province: '',
           city: '',
           district: '',
-          workDayBegin: new Date(this.searchData.workDayBegin).Format('yyyy-MM-dd'),
+          workDayBegin: this.searchData.workDayBegin === '' ? '' : new Date(this.searchData.workDayBegin).Format('yyyy-MM-dd'),
           employeeNo: this.searchData.employeeNo,
           storeId: this.searchData.storeId
         }
@@ -280,9 +293,11 @@
           }
           weeks.forEach(function ($item, $index) {
             let dateList = dateAddDays(startDate, $index)
+            let month = new Date(dateList).getMonth() <= 9 ? '0' + (new Date(dateList).getMonth() + 1) : new Date(dateList).getMonth()
+            let day = new Date(dateList).getDate() <= 9 ? '0' + (new Date(dateList).getDate()) : new Date(dateList).getDate()
             schedulingList.push({
-              month: new Date(dateList).getMonth(),
-              day: new Date(dateList).getDate(),
+              month: month,
+              day: day,
               week: weeks[new Date(dateList).getDay()]
             })
           })
@@ -299,6 +314,27 @@
         this.editStaffData = $data
         this.editStaffIsShow = true
       },
+      delStaff ($row) {
+        swal({
+          title: '确定删除?',
+          type: 'warning',
+          showCancelButton: true,
+          reverseButtons: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiTable.data_deleteScheduling({
+            employeeId: $row.employeeNo
+          }).then(() => {
+            this.data_table()
+            this.$message('删除成功！')
+          })
+        }, () => {
+
+        })
+      },
       submitUpload () {
         this.$refs['exportData'].validate((valid) => {
           if (valid) {
@@ -308,16 +344,13 @@
               this.$message('请添加员工排班文件')
             }
           } else {
-            console.log('error submit!!')
             return false
           }
         })
       },
-      upDataSuccess (response) {
-        if (response.code === 1) {
-          this.$message('上传成功！')
-          this.handleClose()
-        }
+      handleAvatarSuccess (response) {
+        this.$message(response.msg)
+        this.handleClose()
       },
       downloadExcel () {
         window.location.href = '/api/web/employeeManage/downloadTemplete?'

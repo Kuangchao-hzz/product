@@ -5,6 +5,8 @@
     </div>
     <div class="system-notice-table">
       <el-table
+        :height="tabHeight"
+        :max-height="tabHeight"
         ref="multipleTable"
         :data="tableData.details"
         border
@@ -106,6 +108,11 @@
           content: ''
         },
         tableData: []
+      }
+    },
+    computed: {
+      tabHeight () {
+        return this.$store.state.include.tableHeight - 305
       }
     },
     mounted () {

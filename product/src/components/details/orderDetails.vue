@@ -44,14 +44,10 @@
               <el-col :span="6">{{detailsData.scheduledTime?detailsData.scheduledTime:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item" v-if="detailsSource !== '1'">
-              <el-col :span="3"><strong>拣货时间：</strong></el-col>
+              <el-col :span="3"><strong>验货时间：</strong></el-col>
               <el-col :span="6">{{detailsData.checkTime}}</el-col>
-              <el-col :span="4"><strong>验货时间：</strong></el-col>
-              <el-col :span="6">{{detailsData.checkTime}}</el-col>
-            </el-row>
-            <el-row class="data-item">
-              <el-col :span="3"><strong>送达时间：</strong></el-col>
-              <el-col :span="6">{{detailsData.scheduledTime}}</el-col>
+              <el-col :span="4"><strong>送达时间：</strong></el-col>
+              <el-col :span="6">{{detailsData.arriveTime}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>收货人：</strong></el-col>
@@ -91,57 +87,62 @@
                 </el-row>
               </el-col>
             </el-row>
-            <div class="abnormal-row" v-if="detailsSource === '2'">
+            <div class="abnormal-row" v-if="detailsData.abnormalInfo">
               <el-row class="data-item">
                 <el-col :span="3"><strong>异常时间：</strong></el-col>
-                <el-col :span="6">{{detailsData.abnormalTime}}</el-col>
+                <el-col :span="6">{{detailsData.abnormalInfo.abnormalTime}}</el-col>
                 <el-col :span="4"><strong>异常原因：</strong></el-col>
                 <el-col :span="6">
-                  {{detailsData.abnormalStatus === 1 ? '无人抢单': ''}}
-                  {{detailsData.abnormalStatus === 2 ? '主动退出': ''}}
-                  {{detailsData.abnormalStatus === 3 ? '超时未送': ''}}
-                  {{detailsData.abnormalStatus === 4 ? '超时未达': ''}}
-                  {{detailsData.abnormalStatus === 5 ? '商城关闭': ''}}
-                  {{detailsData.abnormalStatus === 6 ? '客户拒单': ''}}
-                  {{detailsData.abnormalStatus === 7 ? '商城退换货': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 1 ? '无人抢单': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 2 ? '主动退出': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 3 ? '超时未送': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 4 ? '超时未达': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 5 ? '商城关闭': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 6 ? '客户拒单': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 7 ? '商城退换货': ''}}
                 </el-col>
               </el-row>
               <el-row class="data-item">
                 <el-col :span="3"><strong>处理时间：</strong></el-col>
-                <el-col :span="6">{{detailsData.hanleTime}}</el-col>
+                <el-col :span="6">{{detailsData.abnormalInfo.hanleTime}}</el-col>
                 <el-col :span="4"><strong>处理结果：</strong></el-col>
-                <el-col :span="6">{{detailsData.handleResult}}</el-col>
+                <el-col :span="6">
+                  {{detailsData.abnormalInfo.handleResult === 0 ? '未处理': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 10 ? '待抢单': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 20 ? '抢单中': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 30 ? '待拣货': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 40 ? '待验货': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 50 ? '送货中': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 60 ? '已送达': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 90 ? '已退单': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 91 ? '已拒单': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 99 ? '已关闭': ''}}
+                </el-col>
               </el-row>
             </div>
-            <div class="closeOrder-row" v-if="detailsSource === '3'">
+            <div class="closeOrder-row" v-if="detailsData.cancelInfo">
               <el-row class="data-item">
                 <el-col :span="3"><strong>退单时间：</strong></el-col>
-                <el-col :span="6">{{detailsData.cancelTime}}</el-col>
+                <el-col :span="6">{{detailsData.cancelInfo.cancelTime}}</el-col>
               </el-row>
               <el-row class="data-item">
                 <el-col :span="3"><strong>退单人：</strong></el-col>
-                <el-col :span="6">{{detailsData.realName}}</el-col>
+                <el-col :span="6">{{detailsData.cancelInfo.realName}}</el-col>
                 <el-col :span="4"><strong>联系方式：</strong></el-col>
-                <el-col :span="6">{{detailsData.phone}}</el-col>
+                <el-col :span="6">{{detailsData.cancelInfo.phone}}</el-col>
               </el-row>
               <el-row class="data-item">
                 <el-col :span="3"><strong>退单原因：</strong></el-col>
-                <el-col :span="6">{{detailsData.cancelReason}}</el-col>
+                <el-col :span="6">{{detailsData.cancelInfo.cancelReason}}</el-col>
               </el-row>
             </div>
             <el-row class="data-item">
-              <el-row :gutter="10" v-if="detailsSource === '1'">
-                <el-button type="info" @click="handleOrderBackToYb">回退邮包</el-button>
-                <el-button type="info" @click="handleOrderRePush">手工推送</el-button>
-              </el-row>
-              <el-row :gutter="10" v-else-if="detailsSource === '2'">
-                <el-button type="info" @click="outOrderDialog = true">退单</el-button>
-                <el-button type="info" @click="closeOrderDialog = true">关闭订单</el-button>
-                <el-button type="info" @click="manualHandle(detailsData.id)">人工处理</el-button>
-              </el-row>
-              <el-row :gutter="10" v-else-if="detailsSource === '3'">
-                <el-button type="info" @click="outOrderDialog = true">退单</el-button>
-                <el-button type="info" @click="closeOrderDialog = true">关闭订单</el-button>
+              <el-row :gutter="10" v-if="detailsData.orderStatus !== 60">
+                <el-button type="info" v-if="detailsData.orderStatus !== 90" @click="handleOrderBackToYb">回退邮包</el-button>
+                <el-button type="info" v-if="detailsData.orderStatus === 10" @click="handleOrderRePush">手工推送</el-button>
+                <el-button type="info" v-if="detailsData.orderStatus < 90" @click="outOrderDialog = true">退单</el-button>
+                <el-button type="info" v-if="detailsData.orderStatus < 90" @click="closeOrderDialog = true">关闭订单</el-button>
+                <el-button type="info" v-if="detailsData.abnormalInfo && detailsData.abnormalInfo.handleResult === 0" @click="manualHandle(detailsData.id)">人工处理</el-button>
               </el-row>
             </el-row>
           </el-col>

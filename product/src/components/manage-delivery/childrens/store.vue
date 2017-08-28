@@ -10,19 +10,25 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
-                  change-on-select
+                  @change="fetchStoreData"
                 ></el-cascader>
               </div>
             </el-form-item>
           </el-col>
           <el-col :span="5">
             <el-form-item>
-              <el-input v-model="searchData.store" placeholder="店铺"></el-input>
+              <el-select v-model="searchData.storeId" placeholder="请选择门店">
+                <el-option
+                  v-for="($item, $index) in storeData"
+                  :key="$index"
+                  :label="$item.label"
+                  :value="$item.val"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4">
             <el-form-item>
-              <el-button type="primary" @click="submitForm">查询</el-button>
+              <el-button type="primary" @click="data_table">查询</el-button>
               <el-button type="primary" @click="resetForm">重置</el-button>
             </el-form-item>
           </el-col>
@@ -111,8 +117,9 @@
         loading: false,
         searchData: {
           country: [],
-          store: ''
+          storeId: ''
         },
+        storeData: [],
         tableData: []
       }
     },
@@ -129,22 +136,39 @@
         this.searchData.country = []
         this.searchData.store = ''
       },
-      submitForm () {
-        alert(JSON.stringify(this.searchData))
+      fetchStoreData ($country) {
+        this.get_storeOfArea($country[$country.length - 1])
+      },
+      get_storeOfArea ($district) {
+        apiTable.fetch_storeOfArea({
+          district: $district
+        }).then((response) => {
+          this.searchData.storeId = ''
+          this.storeData = [{
+            value: '',
+            label: '请选择门店'
+          }]
+          this.storeData = this.storeData.concat(response.data.dat)
+        })
       },
       data_table ($page) {
         let self = this
-        let params = {
+        let $params = {
           page: $page - 1 || 0,
-          name: self.store,
           province: '',
           city: '',
           district: '',
-          orderType: this.searchData.orderType || '',
-          area: '1' || 1
+          storeId: self.searchData.storeId
+        }
+        if (self.searchData.country.length > 0) {
+          Object.assign($params, {
+            province: self.searchData.country[0],
+            city: self.searchData.country[1],
+            district: self.searchData.country[2]
+          })
         }
         self.loading = true
-        apiTable.data_deliveryStoreTable(params).then((response) => {
+        apiTable.data_deliveryStoreTable($params).then((response) => {
           self.loading = false
           self.tableData = response.data.dat
         })

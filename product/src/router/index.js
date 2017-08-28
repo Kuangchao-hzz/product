@@ -223,7 +223,7 @@ export const asyncRouterMap = [
     name: '系统设置',
     icon: 'icon icon-system',
     meta: {
-      role: ['m_stsz', 'm_gggl', 'm_yhgl', 'm_jzgl', 'm_ygpbgl', 'm_kfgl', 'm_appbbgl', 'm_sybzgl', 'm_ddgl']
+      role: ['m_xtsz', 'm_gggl', 'm_yhgl', 'm_jsgl', 'm_ygpbgl', 'm_kfgl', 'm_appbbgl', 'm_sybzgl', 'm_ddgl']
     },
     component: Layout,
     children: [
@@ -247,7 +247,7 @@ export const asyncRouterMap = [
         path: 'role',
         name: '角色管理',
         meta: {
-          role: ['m_jzgl', 'b_jz_xzyh', 'b_jz_bj', 'b_jz_sc']
+          role: ['m_jsgl', 'b_jz_xzyh', 'b_jz_bj', 'b_jz_sc']
         },
         component: resolve => require(['../components/manage-system/childrens/role.vue'], resolve)
       },
@@ -274,15 +274,15 @@ export const asyncRouterMap = [
           role: ['m_appbbgl', 'b_app_tjxbb']
         },
         component: resolve => require(['../components/manage-system/childrens/app.vue'], resolve)
-      },
-      {
-        path: 'help',
-        name: '使用帮助',
-        meta: {
-          role: ['m_sybzgl', 'b_bz_bc']
-        },
-        component: resolve => require(['../components/manage-system/childrens/help.vue'], resolve)
       }
+      // {
+      //   path: 'help',
+      //   name: '使用帮助',
+      //   meta: {
+      //     role: ['m_sybzgl', 'b_bz_bc']
+      //   },
+      //   component: resolve => require(['../components/manage-system/childrens/help.vue'], resolve)
+      // }
     ]
   },
   {

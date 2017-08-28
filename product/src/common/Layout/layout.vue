@@ -26,7 +26,7 @@
   export default {
     computed: {
       containerHeight () {
-        let autoPagePath = ['/order/orderDetails', '/person/personDetails']
+        let autoPagePath = ['/order/orderDetails', '/person/personDetails', '/delivery/level', '/data/delivery', '/system/notice']
         return {
           height: (this.$store.state.include.tableHeight - 110) + 'px',
           overflow: autoPagePath.some((path) => {

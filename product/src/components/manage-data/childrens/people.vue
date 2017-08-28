@@ -17,7 +17,7 @@
             <span>{{tableData.sh}}</span>
           </div>
           <div class="card-item">
-            <label>本地员工您配送员：</label>
+            <label>本地员工配送员：</label>
             <span>{{tableData.yg}}</span>
           </div>
         </div>
@@ -84,9 +84,11 @@
             label="接单">
           </el-table-column>
           <el-table-column
-            prop="ontimeRate"
             align="center"
             label="准达率">
+            <template scope="scope">
+              {{scope.row.ontimeRate}}%
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -119,6 +121,9 @@
             prop="ontimeRate"
             align="center"
             label="准达率">
+            <template scope="scope">
+              {{scope.row.ontimeRate}}%
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -137,6 +142,9 @@
             show-checkbox
             node-key="id"
             ref="tree"
+            check-strictly
+            default-expand-all
+            show-checkbox
             :props="defaultProps">
           </el-tree>
         </el-form-item>
@@ -169,7 +177,19 @@
           children: 'children',
           label: 'label'
         },
+        treeDefaultChecked: [],
+        defaultTreeData: [],
         countryText: []
+      }
+    },
+    computed: {
+      treeCountry () {
+        let $data = this.$store.state.select.treeCountry
+        this.defaultTreeData = $data
+        return $data
+      },
+      handlerCountryText () {
+        return this.countryText.join('/')
       }
     },
     mounted () {
@@ -178,22 +198,26 @@
         cities: [],
         districts: []
       })
-    },
-    computed: {
-      treeCountry () {
-        return this.$store.state.select.treeCountry
-      },
-      handlerCountryText () {
-        return this.countryText.join('/')
-      }
+      this.defaultCountryText(this.defaultTreeData)
     },
     methods: {
+      defaultCountryText ($data) {
+        let self = this
+        $data.forEach(($item, $index) => {
+          this.countryText.push($item.label)
+          this.treeDefaultChecked.push($item.id)
+          if ($item.children) {
+            self.defaultCountryText($item.children)
+          }
+        })
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
         })
       },
       getCheckedNodes () {
+        this.handleClose()
         this.checkedNodesData = this.$refs.tree.getCheckedNodes()
         this.fetch_mapData()
       },
@@ -202,18 +226,22 @@
         let $params = {
           provinces: [],
           cities: [],
-          districts: []
+          districts: [],
+          storeIds: []
         }
         self.countryText = []
+        self.treeDefaultChecked = []
         self.checkedNodesData.forEach(function ($item, $index) {
           self.countryText.push($item.label)
-          self.handleClose()
+          self.treeDefaultChecked.push($item.id)
           if ($item.id <= 200) {
             $params.provinces.push($item.id)
           } else if ($item.id <= 2000 && $item.id > 200) {
             $params.cities.push($item.id)
           } else if ($item.id <= 20000 && $item.id > 2000) {
             $params.districts.push($item.id)
+          } else {
+            $params.storeIds.push($item.id)
           }
         })
         self.data_table($params)
@@ -226,6 +254,17 @@
         apiTable.data_dataPeopleTable($params).then((response) => {
           self.tableData = response.data.dat
         })
+      }
+    },
+    watch: {
+      'treeDialog.type' () {
+        if (this.treeDialog.type) {
+          this.$nextTick(() => {
+            this.$refs['tree'].setCheckedKeys(this.treeDefaultChecked)
+          })
+        } else {
+          this.$refs['tree'].setCheckedKeys([])
+        }
       }
     }
   }

@@ -65,39 +65,45 @@ const select = {
       value: '',
       label: '处理状态'
     }, {
-      value: '1',
-      label: '全部'
-    }, {
-      value: '2',
+      value: '0',
       label: '未处理'
     }, {
-      value: '3',
+      value: '1',
       label: '已处理'
     }, {
-      value: '4',
+      value: '-1',
       label: '自动处理'
     }],
     orderStatus: [{
       value: '',
       label: '订单状态'
     }, {
-      value: '1',
+      value: '10',
+      label: '待抢单'
+    }, {
+      value: '20',
+      label: '抢单中'
+    }, {
+      value: '30',
       label: '待拣货'
     }, {
-      value: '2',
+      value: '40',
       label: '待验货'
     }, {
-      value: '3',
+      value: '50',
       label: '送货中'
     }, {
-      value: '3',
+      value: '60',
       label: '已送达'
     }, {
-      value: '4',
-      label: '回退邮包'
+      value: '90',
+      label: '已退单'
     }, {
-      value: '5',
-      label: '订单关闭'
+      value: '91',
+      label: '已拒单'
+    }, {
+      value: '99',
+      label: '已关闭'
     }],
     pushOrderType: [{
       value: '',
@@ -232,9 +238,6 @@ const select = {
     ruleTime: [{
       value: '1',
       label: '立即推送'
-    }, {
-      value: '2',
-      label: '拣货后推送'
     }, {
       value: '3',
       label: '期望送达时间前30分钟推送'

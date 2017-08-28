@@ -14,7 +14,7 @@
         </template>
         <template v-for="child in item.children">
           <sidebar-item v-if="child.children" :routes="[child]"></sidebar-item>
-          <el-menu-item v-else :index="item.path + '/' + child.path"><i :class="child.icon" class="menu-icon small"></i>{{child.name}}</el-menu-item>
+          <el-menu-item v-else :index="item.path + '/' + child.path" :class="setOrderStatus(child)"><i :class="child.icon" class="menu-icon small"></i>{{child.name}}</el-menu-item>
         </template>
       </el-submenu>
     </template>
@@ -30,6 +30,23 @@
       }
     },
     mounted () {
+
+    },
+    methods: {
+      setOrderStatus ($val) {
+        if ($val.name === '待推订单' && this.$store.getters.sendOrderStatus) {
+          return 'order-abnormal'
+        }
+        if ($val.name === '待抢订单' && this.$store.getters.pushOrderStatus) {
+          return 'order-abnormal'
+        }
+        if ($val.name === '异常订单' && this.$store.getters.abnormalOrderStatus) {
+          return 'order-abnormal'
+        }
+        if ($val.name === '全部订单' && this.$store.getters.allOrderStatus) {
+          return 'order-abnormal'
+        }
+      }
     }
   }
 </script>
@@ -37,6 +54,12 @@
 
 <style lang="scss" rel="stylesheet/scss" type="text/scss">
   .side-bar-warps{
+    .order-abnormal{
+      color: red !important;
+    }
+    .order-abnormal.is-active{
+      background: #30333e !important;
+    }
     .menu-icon{
       font-size: 20px;
       position: relative;
@@ -69,7 +92,6 @@
       small{
         font-size: 14px;
       }
-
     }
     &.el-menu--collapse>.el-menu-item span, &.el-menu--collapse>div>.el-submenu>.el-submenu__title span{
       height: 0;
