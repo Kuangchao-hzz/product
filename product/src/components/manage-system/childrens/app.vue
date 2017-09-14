@@ -148,7 +148,9 @@
         apiTable.data_appVersionTable({
           page: $page - 1 || 0
         }).then((response) => {
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       },
       btn_auth ($btn) {
@@ -179,9 +181,14 @@
           if (valid) {
             let $params = this.dialogFormData
             apiTable.edit_systemVersionData($params).then((response) => {
-              this.$message('操作成功！')
-              this.handleClose()
-              this.data_table()
+              if (response.data.code === 1) {
+                this.$message({
+                  duration: 1500,
+                  message: '操作成功！'
+                })
+                this.handleClose()
+                this.data_table()
+              }
             })
           } else {
             return false

@@ -2,6 +2,7 @@
 const getters = {
   token: state => state.user.token,
   authIds: state => state.user.AUTHIDS,
+  loginStatus: state => state.user.LOGINSTATUS,
   addRouters: state => state.permission.addRouters,
   sendOrderStatus: state => state.order.sendOrder,
   pushOrderStatus: state => state.order.pushOrder,

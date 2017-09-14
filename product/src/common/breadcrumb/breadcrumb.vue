@@ -37,8 +37,15 @@
 
 <style lang="scss" type="text/scss">
   .app-levelbar.el-breadcrumb {
+    .el-breadcrumb__item__inner:hover{
+      color: #48576a;
+    }
     a{
       text-decoration: none;
+      &:hover{
+        color: #48576a;
+        cursor: default;
+      }
     }
   }
 </style>

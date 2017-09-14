@@ -1,7 +1,7 @@
 <template>
   <div class="delivery" v-if="btn_auth('m_pstj')">
     <div class="country-select">
-      <span>区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
+      <span>请选择区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
       <a href="javascript:;" @click="treeDialog.type = true">切换</a>
     </div>
     <div class="box-card-group">
@@ -77,7 +77,7 @@
             <el-col :lg="6">
               <div class="statistics-list">
                 <div class="statistics-content">
-                  {{deliveryData.jrqdRate + '%'}}
+                  {{deliveryData.jrqdRate ? deliveryData.jrqdRate : '0'}}%
                 </div>
                 <p>今天抢单率</p>
               </div>
@@ -85,7 +85,7 @@
             <el-col :lg="6">
               <div class="statistics-list">
                 <div class="statistics-content">
-                  {{deliveryData.jrzdRate + '%'}}
+                  {{deliveryData.jrzdRate ? deliveryData.jrzdRate : '0' }}%
                 </div>
                 <p>今天订单准达率</p>
               </div>
@@ -93,7 +93,7 @@
             <el-col :lg="6">
               <div class="statistics-list">
                 <div class="statistics-content">
-                  {{deliveryData.lsqdRate + '%'}}
+                  {{deliveryData.lsqdRate ? deliveryData.lsqdRate : '0' }}%
                 </div>
                 <p>历史抢单率</p>
               </div>
@@ -101,7 +101,7 @@
             <el-col :lg="6">
               <div class="statistics-list">
                 <div class="statistics-content">
-                  {{deliveryData.lszdRate + '%'}}
+                  {{deliveryData.lszdRate ? deliveryData.lszdRate : '0' }}%
                 </div>
                 <p>历史抢单准达率</p>
               </div>
@@ -235,7 +235,9 @@
       data_table ($params) {
         let self = this
         apiTable.data_dataDeliveryTable($params).then((response) => {
-          self.deliveryData = response.data.dat
+          if (response.data.code === 1) {
+            self.deliveryData = response.data.dat
+          }
         })
       }
     },

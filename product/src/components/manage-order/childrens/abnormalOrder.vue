@@ -10,6 +10,7 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
+                  placeholder="请选择区域"
                   @change="fetchStoreData"
                 ></el-cascader>
               </div>
@@ -80,9 +81,9 @@
               <el-button type="primary">
                 <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.orderId, detailsType: 2 }}" tag="span">查看详情</router-link>
               </el-button>
-              <el-button :disabled="!btn_auth('b_td')" v-if="scope.row.handlerStatus === 0 && scope.row.orderStatus !== 99" type="primary">退单</el-button>
-              <el-button :disabled="!btn_auth('b_gbdd')" v-if="scope.row.handlerStatus === 0 && scope.row.orderStatus !== 99" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
-              <el-button :disabled="!btn_auth('b_rgcl')" v-if="scope.row.handlerStatus === 0 && scope.row.orderStatus !== 99" type="primary" @click="manualHandle(scope.row.id)">人工处理</el-button>
+              <!--<el-button :disabled="!btn_auth('b_xq_td')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary">退单</el-button>-->
+              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
+              <el-button :disabled="!btn_auth('b_xq_rgcl')" v-if="tableRowClassName(scope.row) === 'order-abnormal' || (scope.row.abnormalInfo && scope.row.abnormalInfo.handleResult === 0)" type="primary" @click="manualHandle(scope.row.id)">人工处理</el-button>
             </el-form>
           </template>
         </el-table-column>
@@ -128,7 +129,7 @@
             {{scope.row.orderStatus === 10 ? '待抢单': ''}}
             {{scope.row.orderStatus === 20 ? '抢单中': ''}}
             {{scope.row.orderStatus === 30 ? '待拣货': ''}}
-            {{scope.row.orderStatus === 40 ? '待验货': ''}}
+            {{scope.row.orderStatus === 40 ? '待提货': ''}}
             {{scope.row.orderStatus === 50 ? '送货中': ''}}
             {{scope.row.orderStatus === 60 ? '已送达': ''}}
             {{scope.row.orderStatus === 90 ? '已退单': ''}}
@@ -263,14 +264,6 @@
           return 'order-abnormal'
         }
       },
-      handleOrderStatus () {
-        let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
-        this.tableData.details.forEach(($item, $index) => {
-          if (moment(now).diff(moment($item.scheduledTime)) > 3600000) {
-            this.$store.dispatch('set_abnormalOrder', true)
-          }
-        })
-      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
@@ -283,19 +276,26 @@
         apiTable.fetch_storeOfArea({
           district: $district
         }).then((response) => {
-          this.searchData.storeId = ''
-          this.storeData = [{
-            value: '',
-            label: '请选择门店'
-          }]
-          this.storeData = this.storeData.concat(response.data.dat)
+          if (response.data.code === 1) {
+            this.searchData.storeId = ''
+            this.storeData = [{
+              value: '',
+              label: '请选择门店'
+            }]
+            this.storeData = this.storeData.concat(response.data.dat)
+          }
         })
       },
       manualHandle ($id) {
         apiDetails.details_handleOrderManualHandle({
           id: $id
         }).then((response) => {
-          this.$message('操作成功！')
+          if (response.data.code === 1) {
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
+          }
         })
       },
       HandleCloseOrder ($id) {
@@ -318,14 +318,22 @@
       },
       closeOrder () {
         apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
-          this.$message('操作成功！')
-          this.data_table()
-          this.handleClose()
+          if (response.data.code === 1) {
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
+            this.data_table()
+            this.handleClose()
+          }
         })
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
-          this.$message('无数据可导出！')
+          this.$message({
+            duration: 1500,
+            message: '无数据可导出！'
+          })
           return false
         }
         window.location.href = '/api/web/orderManage/exportAbnormal?'
@@ -352,7 +360,9 @@
         self.loading = true
         apiTable.data_orderAbnormalTable($params).then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       },
       lookDetails ($item) {

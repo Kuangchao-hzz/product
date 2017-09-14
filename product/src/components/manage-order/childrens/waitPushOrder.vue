@@ -9,6 +9,7 @@
                 <el-cascader
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
+                  placeholder="请选择区域"
                   :props="this.$store.state.select.defaultCountryProps"
                   @change="fetchStoreData"
                 ></el-cascader>
@@ -178,58 +179,98 @@
         apiTable.fetch_storeOfArea({
           district: $district
         }).then((response) => {
-          this.searchData.storeId = ''
-          this.storeData = [{
-            value: '',
-            label: '请选择门店'
-          }]
-          this.storeData = this.storeData.concat(response.data.dat)
+          if (response.data.code === 1) {
+            this.searchData.storeId = ''
+            this.storeData = [{
+              value: '',
+              label: '请选择门店'
+            }]
+            this.storeData = this.storeData.concat(response.data.dat)
+          }
         })
       },
       handleOrderBackToYb () {
-        let $params = {}
-        if (this.multipleSelection.length < 1) {
-          this.$message('请勾选需要处理的列表！')
-          return false
-        }
-        if (this.multipleSelection.length === 1) {
-          $params = Object.assign({}, $params, {
-            id: this.multipleSelection[0].orderId
+        swal({
+          title: '你确定要手工推送?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          let $params = {}
+          if (this.multipleSelection.length < 1) {
+            this.$message({
+              duration: 1500,
+              message: '请勾选需要处理的列表！'
+            })
+            return false
+          }
+          if (this.multipleSelection.length === 1) {
+            $params = Object.assign({}, $params, {
+              id: this.multipleSelection[0].id
+            })
+          } else {
+            let ids = this.multipleSelection.map(($item) => {
+              return $item.id
+            })
+            $params = Object.assign({}, $params, {
+              ids: ids
+            })
+          }
+          apiDetails.details_handleOrderBackToYb($params).then((response) => {
+            if (response.data.code === 1) {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+            }
+            this.data_table()
           })
-        } else {
-          let ids = this.multipleSelection.map(($item) => {
-            return $item.orderId
-          })
-          $params = Object.assign({}, $params, {
-            ids: ids
-          })
-        }
-        apiDetails.details_handleOrderBackToYb($params).then((response) => {
-          this.$message('操作成功！')
-          this.data_table()
+        }, () => {
+
         })
       },
       handleOrderRePush () {
-        let $params = {}
-        if (this.multipleSelection.length < 1) {
-          this.$message('请勾选需要处理的列表！')
-          return false
-        }
-        if (this.multipleSelection.length === 1) {
-          $params = Object.assign({}, $params, {
-            id: this.multipleSelection[0].orderId
+        swal({
+          title: '你确定要回退邮包?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          let $params = {}
+          if (this.multipleSelection.length < 1) {
+            this.$message({
+              duration: 1500,
+              message: '请勾选需要处理的列表！'
+            })
+            return false
+          }
+          if (this.multipleSelection.length === 1) {
+            $params = Object.assign({}, $params, {
+              id: this.multipleSelection[0].orderId
+            })
+          } else {
+            let ids = this.multipleSelection.map(($item) => {
+              return $item.orderId
+            })
+            $params = Object.assign({}, $params, {
+              ids: ids
+            })
+          }
+          apiDetails.details_handleOrderRePush($params).then((response) => {
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
+            this.data_table()
           })
-        } else {
-          let ids = this.multipleSelection.map(($item) => {
-            return $item.orderId
-          })
-          $params = Object.assign({}, $params, {
-            ids: ids
-          })
-        }
-        apiDetails.details_handleOrderRePush($params).then((response) => {
-          this.$message('操作成功！')
-          this.data_table()
+        }, () => {
+
         })
       },
       handleSelectionChange ($row) {
@@ -243,7 +284,10 @@
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
-          this.$message('无数据可导出！')
+          this.$message({
+            duration: 1500,
+            message: '无数据可导出！'
+          })
           return false
         }
         window.location.href = '/api/web/orderManage/exportDqOrder?'
@@ -268,7 +312,9 @@
         self.loading = true
         apiTable.data_orderPushTable($params).then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       },
       lookDetails ($item) {

@@ -158,18 +158,18 @@
 
     },
     methods: {
-      onSubmit () {
-        console.log('submit!')
-      },
+
       details_tableSendTable ($params) {
         let self = this
         apiDetails.details_tableSendTable({
           orderId: $params
         }).then((response) => {
-          self.$nextTick(function () {
-            self.detailsData = response.data.dat
-            self.storeInfo = response.data.dat.storeInfo
-          })
+          if (response.data.code === 1) {
+            self.$nextTick(function () {
+              self.detailsData = response.data.dat
+              self.storeInfo = response.data.dat.storeInfo
+            })
+          }
         })
       }
     },

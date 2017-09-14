@@ -31,6 +31,12 @@ export default {
       params: $baseData
     })
   },
+  // 配送管理-资格审核-查看身份证
+  data_tableAuditCheckPwd ($baseData) {
+    return instance.get('/web/deliveryUserManage/checkPwd', {
+      params: $baseData
+    })
+  },
   /*
    * ========================================
    *
@@ -76,6 +82,6 @@ export default {
     return instance.post('/web/storeManage/edit', $baseData)
   },
   details_submitAudit ($baseData) {
-    return instance.post('/web/deliveryUserManage/audit', $baseData)
+    return instanceJson.post('/web/deliveryUserManage/audit', $baseData)
   }
 }

@@ -46,6 +46,18 @@
                 </el-col>
               </el-row>
               <el-row :gutter="50">
+                <el-col :span="4">
+                  <el-form-item label="经度:">
+                    {{detailsData.longitude}}
+                  </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item label="纬度:">
+                    {{detailsData.latitude}}
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row :gutter="50">
                 <el-col :span="12">
                   <el-form-item label="联系人:">
                     <el-input v-model="detailsData.contactPerson"></el-input>
@@ -62,12 +74,8 @@
               </el-form-item>
               <el-form-item>
                 <el-row :gutter="10">
-                  <el-col :span="2">
-                    <el-button type="primary" @click="details_SubmitStore">保存</el-button>
-                  </el-col>
-                  <el-col :span="2">
-                    <el-button @click="goBack">取消</el-button>
-                  </el-col>
+                  <el-button type="primary" @click="details_SubmitStore">保存</el-button>
+                  <el-button @click="goBack">取消</el-button>
                 </el-row>
               </el-form-item>
             </el-form>
@@ -127,7 +135,10 @@
       details_SubmitStore () {
         let self = this
         apiDetails.details_submitStore(self.detailsData).then((response) => {
-          this.$message(response.data.msg)
+          this.$message({
+            duration: 1500,
+            message: response.data.msg
+          })
           self.$router.push('/delivery/store')
         })
       },
@@ -177,9 +188,6 @@
           margin: 3px 10px;
         }
       }
-    }
-    .el-button{
-      width: 100%;
     }
     .el-form-item{
       margin-bottom: 15px !important;

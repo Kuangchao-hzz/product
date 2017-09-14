@@ -33,7 +33,9 @@
       data_table () {
         let self = this
         apiTable.data_editService().then((response) => {
-          self.serviceForm.kefu = response.data.dat
+          if (response.data.code === 1) {
+            self.serviceForm.kefu = response.data.dat
+          }
         })
       },
       submit_data () {
@@ -41,8 +43,13 @@
         apiTable.edit_editService({
           kufu: self.serviceForm.kefu
         }).then((response) => {
-          this.$message('保存成功！')
-          self.data_table()
+          if (response.data.code === 1) {
+            this.$message({
+              duration: 1500,
+              message: '保存成功！'
+            })
+            self.data_table()
+          }
         })
       }
     }

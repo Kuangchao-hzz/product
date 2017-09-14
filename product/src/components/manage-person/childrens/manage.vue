@@ -10,6 +10,7 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
+                  placeholder="请选择区域"
                   change-on-select
                 ></el-cascader>
               </div>
@@ -102,9 +103,12 @@
         </el-table-column>
         <el-table-column
           align="center"
-          min-width="120"
+          min-width="150"
           label="配送员">
-          <template scope="scope">{{ scope.row.realName }}</template>
+          <template scope="scope">
+            <p>{{ scope.row.realName }}</p>
+            <p>{{ scope.row.phone }}</p>
+          </template>
         </el-table-column>
         <el-table-column
           align="center"
@@ -134,7 +138,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          min-width="100"
+          min-width="200"
           prop="city"
           label="常驻地区"
           >
@@ -192,6 +196,7 @@
         <el-button :disabled="!btn_auth('b_ps_zhjd')" :plain="true" type="info" @click="handlePersonEnabled(1)">账号解冻</el-button>
       </div>
       <el-pagination
+        @current-change="data_table"
         :page-sizes="[20]"
         layout="total, sizes, prev, pager, next, jumper"
         :total="tableData.rowsCount">
@@ -235,6 +240,7 @@
         })
       },
       resetForm () {
+        this.searchData.country = []
         this.searchData.userType = ''
         this.searchData.level = ''
         this.searchData.workStatus = ''
@@ -266,57 +272,97 @@
         }
         apiTable.data_personManageTable($params).then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       },
       handlePersonUpDown ($type) {
-        let $params = {
-          direction: $type
-        }
-        if (this.multipleSelection.length < 1) {
-          this.$message('请勾选需要处理的列表！')
-          return false
-        }
-        if (this.multipleSelection.length === 1) {
-          $params = Object.assign({}, $params, {
-            id: this.multipleSelection[0].id
+        let str = $type === 1 ? '你确定要升级该配送员?' : '你确定要降级该配送员?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          let $params = {
+            direction: $type
+          }
+          if (this.multipleSelection.length < 1) {
+            this.$message({
+              duration: 1500,
+              message: '请勾选需要处理的列表！'
+            })
+            return false
+          }
+          if (this.multipleSelection.length === 1) {
+            $params = Object.assign({}, $params, {
+              id: this.multipleSelection[0].id
+            })
+          } else {
+            let ids = this.multipleSelection.map(($item) => {
+              return $item.id
+            })
+            $params = Object.assign({}, $params, {
+              ids: ids
+            })
+          }
+          apiDetails.details_handlePersonUpDown($params).then((response) => {
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
+            this.data_table()
           })
-        } else {
-          let ids = this.multipleSelection.map(($item) => {
-            return $item.id
-          })
-          $params = Object.assign({}, $params, {
-            ids: ids
-          })
-        }
-        apiDetails.details_handlePersonUpDown($params).then((response) => {
-          this.$message('操作成功！')
-          this.data_table()
+        }, () => {
+
         })
       },
       handlePersonEnabled ($type) {
-        let $params = {
-          direction: $type
-        }
-        if (this.multipleSelection.length < 1) {
-          this.$message('请勾选需要处理的列表！')
-          return false
-        }
-        if (this.multipleSelection.length === 1) {
-          $params = Object.assign({}, $params, {
-            id: this.multipleSelection[0].id
+        let str = $type === 0 ? '你确定要冻结该配送员?' : '你确定要解冻该配送员?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          let $params = {
+            direction: $type
+          }
+          if (this.multipleSelection.length < 1) {
+            this.$message({
+              duration: 1500,
+              message: '请勾选需要处理的列表！'
+            })
+            return false
+          }
+          if (this.multipleSelection.length === 1) {
+            $params = Object.assign({}, $params, {
+              id: this.multipleSelection[0].id
+            })
+          } else {
+            let ids = this.multipleSelection.map(($item) => {
+              return $item.id
+            })
+            $params = Object.assign({}, $params, {
+              ids: ids
+            })
+          }
+          apiDetails.details_handlePersonEnabled($params).then((response) => {
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
+            this.data_table()
           })
-        } else {
-          let ids = this.multipleSelection.map(($item) => {
-            return $item.id
-          })
-          $params = Object.assign({}, $params, {
-            ids: ids
-          })
-        }
-        apiDetails.details_handlePersonEnabled($params).then((response) => {
-          this.$message('操作成功！')
-          this.data_table()
+        }, () => {
+
         })
       },
       handleSelectionChange ($row) {

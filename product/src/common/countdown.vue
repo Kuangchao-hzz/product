@@ -22,7 +22,7 @@
         if (value === true) {
           this.countDown()
         } else {
-          console.log(value)
+
         }
       }
     },
@@ -37,7 +37,7 @@
             flag = true
             clearInterval(time)
           }
-        }, 100)
+        }, 1000)
       }
     },
     filters: {

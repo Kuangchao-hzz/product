@@ -13,9 +13,6 @@
           </transition>
         </div></div>
     </div>
-    <div class="copyright-box">
-      © 2017 Carrefour China Inc.All
-    </div>
   </div>
 </template>
 
@@ -26,7 +23,8 @@
   export default {
     computed: {
       containerHeight () {
-        let autoPagePath = ['/order/orderDetails', '/person/personDetails', '/delivery/level', '/data/delivery', '/system/notice']
+        // 设置指定路径下的页面允许滚动
+        let autoPagePath = ['/order/orderDetails', '/person/personDetails', '/delivery/level', '/data/delivery', '/system/notice', '/data/people', '/person/map', '/delivery/storeDetails', '/order/waitSendOrder']
         return {
           height: (this.$store.state.include.tableHeight - 110) + 'px',
           overflow: autoPagePath.some((path) => {
@@ -83,11 +81,6 @@
           border-bottom: 1px #ddd solid;
         }
       }
-    }
-    .copyright-box{
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
     }
   }
 </style>

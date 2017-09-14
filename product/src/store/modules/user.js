@@ -4,7 +4,7 @@ const user = {
   state: {
     USERID: Cookies.get('USERID'),
     POSSWORD: Cookies.get('POSSWORD'),
-    LOGINSTATUS: Cookies.get('LOGINSTATUS'),
+    LOGINSTATUS: localStorage.getItem('ms_loginInfo'),
     TOKEN: Cookies.get('_token'),
     AUTHIDS: null
   },
@@ -34,17 +34,21 @@ const user = {
         if (userInfo.checked) {
           Cookies.set('USERID', user)
           Cookies.set('POSSWORD', password)
-          Cookies.set('LOGINSTATUS', userInfo.checked)
           commit('SET_USERID', user)
           commit('SET_POSSWORD', password)
-          commit('SET_LOGINSTATUS', userInfo.checked)
         } else {
           Cookies.remove('USERID')
           Cookies.remove('POSSWORD')
-          commit('SET_LOGINSTATUS', userInfo.checked)
         }
         resolve()
       })
+    },
+    handlerLoginInfo ({ commit }) {
+      if (localStorage.getItem('ms_loginInfo') === '0') {
+        commit('SET_LOGINSTATUS', false)
+      } else {
+        commit('SET_LOGINSTATUS', true)
+      }
     },
     get_authIds ({ commit }) {
       return new Promise(resolve => {

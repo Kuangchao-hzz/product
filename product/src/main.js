@@ -25,8 +25,9 @@ Vue.use(AMap)
 AMap.initAMapApiLoader({
   key: '4f77fb55df2ea2d761581bf83ff57acc'
 })
+
 router.beforeEach((to, from, next) => {
-  if (to.path !== '/login') {
+  if (to.path !== '/login' && to.path !== '/forget') {
     if (store.state.select.treeCountry.length < 1) {
       store.dispatch('fetch_allAreaAndStore')
     }
@@ -42,24 +43,25 @@ router.beforeEach((to, from, next) => {
           // 生成路由表 并添加到router实例里面
           store.dispatch('GenerateRoutes', { roles }).then(() => {
             router.addRoutes(store.getters.addRouters)
+            next({...to})
             // 获取浏览器尺寸 计算布局
             if (store.state.include.tableWidth === '' && store.state.include.tableHeight === '') {
               store.dispatch('captureBrowserSize')
             }
           })
+        } else {
+          next()
         }
-        next()
       })
     }
   } else {
-    // 跳转到登录页是 重置路由表
     localStorage.setItem('ms_authId', null)
-    store.dispatch('ResetCurrentRouter')
+    store.dispatch('handlerLoginInfo')
+    // 跳转到登录页是 重置路由表
+    console.log(asyncRouterMap)
     next()
   }
 })
-
-router.addRoutes(asyncRouterMap)
 
 Vue.component('icon', Icon)
 

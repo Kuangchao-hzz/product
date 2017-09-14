@@ -9,15 +9,21 @@
                  :rules="rules"
                  ref="ruleForm"
                  label-width="80px" class="demo-ruleForm">
-          <el-form-item label="工号">
+          <el-form-item
+            prop="uname"
+            label="工号">
             <el-input v-model="ruleForm.uname" placeholder="工号"></el-input>
           </el-form-item>
-          <el-form-item label="手机号">
+          <el-form-item
+            prop="phone"
+            label="手机号">
             <el-input v-model="ruleForm.phone" placeholder="手机号"></el-input>
           </el-form-item>
           <el-row class="verification-code">
             <el-col :span="16">
-              <el-form-item label="验证码">
+              <el-form-item
+                prop="code"
+                label="验证码">
                 <el-input v-model="ruleForm.code" placeholder="验证码"></el-input>
               </el-form-item>
             </el-col>
@@ -25,8 +31,9 @@
               <countdown :start='start' @countDown ='start=false' @click.native='sendCode'></countdown>
             </el-col>
           </el-row>
-
-          <el-form-item label="新密码" class="last-form-item">
+          <el-form-item
+            prop="password"
+            label="新密码" class="last-form-item">
             <el-input type="password"
                       v-model="ruleForm.password"
                       @keyup.enter.native="submitForm('ruleForm')"
@@ -52,6 +59,8 @@
     data: function () {
       return {
         start: false,
+        codeValid: false,
+        passwordValid: false,
         ruleForm: {
           uname: '',
           phone: '',
@@ -59,31 +68,76 @@
           password: ''
         },
         rules: {
-          username: [
-            { required: true, message: '请输入用户名', trigger: 'blur' }
+          uname: [
+            { required: true, message: '请输入工号', trigger: 'blur' }
+          ],
+          phone: [
+            { required: true, message: '请输入手机号', trigger: 'blur' }
+          ],
+          code: [
+            {
+              trigger: 'blur',
+              validator: (rule, value, callback) => {
+                if (this.handlerCodeValid) {
+                  if (!value) {
+                    return callback(new Error('请输入验证码'))
+                  }
+                }
+                callback()
+              }
+            }
           ],
           password: [
-            { required: true, message: '请输入密码', trigger: 'blur' }
+            {
+              trigger: 'blur',
+              validator: (rule, value, callback) => {
+                if (this.handlerPasswordValid) {
+                  if (!value) {
+                    return callback(new Error('请输入新密码'))
+                  }
+                }
+                callback()
+              }
+            }
           ]
         }
       }
     },
+    computed: {
+      handlerCodeValid () {
+        return this.codeValid
+      },
+      handlerPasswordValid () {
+        return this.passwordValid
+      }
+    },
     mounted () {
-      console.log(this.$store.state.user)
     },
     methods: {
       sendCode (value) {
         // 前面发送ajax请求成功之后调用this.start = true开始短信倒计时
-        api.send_code({
-          phone: this.ruleForm.phone,
-          employeeId: this.ruleForm.uname
-        }).then((response) => {
-          this.start = true
+        this.codeValid = false
+        this.passwordValid = false
+        this.$refs['ruleForm'].validate((valid) => {
+          if (valid) {
+            api.send_code({
+              phone: this.ruleForm.phone,
+              employeeId: this.ruleForm.uname
+            }).then((response) => {
+              if (response.data.code === 1) {
+                this.start = true
+                this.codeValid = true
+                this.passwordValid = true
+              }
+            })
+          } else {
+            return false
+          }
         })
       },
-      submitForm (formName) {
-        const self = this
-        self.$refs[formName].validate((valid) => {
+      submitForm () {
+        let self = this
+        self.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             api.editNew_password({
               uname: this.ruleForm.uname,
@@ -91,10 +145,11 @@
               code: this.ruleForm.code,
               password: md5(this.ruleForm.password)
             }).then((response) => {
-              self.$router.push('/login')
+              if (response.data.code === 1) {
+                self.$router.push('/login')
+              }
             })
           } else {
-            console.log('error submit!!')
             return false
           }
         })
@@ -111,6 +166,11 @@
     width: 100%;
     height: 100%;
     background: #ddd;
+    .el-form-item__error{
+      left: auto;
+      right: 20px;
+      top: 25%;
+    }
     .login-wrap{
       width:400px;
       padding: 40px 0;
@@ -140,7 +200,7 @@
           text-align: center;
         }
         .login-btn button{
-          width:100%;
+          width:50%;
           height:36px;
           border-radius: 0;
           background: #0000cc;

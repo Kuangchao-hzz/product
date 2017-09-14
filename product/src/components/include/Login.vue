@@ -55,7 +55,8 @@
         ruleForm: {
           username: this.$store.state.user.USERID,
           password: this.$store.state.user.POSSWORD,
-          checked: this.$store.state.user.LOGINSTATUS || false
+          /* eslint-disable no-unneeded-ternary */
+          checked: this.$store.getters.loginStatus
         },
         rules: {
           username: [
@@ -67,8 +68,14 @@
         }
       }
     },
-    mounted () {
+    computed: {
 
+    },
+    mounted () {
+      if (!this.$store.state.user.LOGINSTATUS) {
+        this.ruleForm.username = ''
+        this.ruleForm.password = ''
+      }
     },
     methods: {
       submitForm (formName) {
@@ -79,16 +86,18 @@
               uname: self.ruleForm.username,
               pwd: md5(self.ruleForm.password)
             }).then((response) => {
-              localStorage.setItem('ms_username', self.ruleForm.username)
-              localStorage.setItem('ms_authId', response.data.dat.authIds)
-              self.$store.dispatch('get_authIds')
-              self.$store.dispatch('LoginByUser', self.ruleForm).then(() => {
-                this.$store.dispatch('fetch_allAreaAndStore')
-                self.$router.push('/data/delivery')
-              })
+              if (response.data.code === 1) {
+                localStorage.setItem('ms_username', self.ruleForm.username)
+                localStorage.setItem('ms_userId', response.data.dat.id)
+                localStorage.setItem('ms_authId', response.data.dat.authIds)
+                localStorage.setItem('ms_loginInfo', this.ruleForm.checked ? 1 : 0)
+                self.$store.dispatch('get_authIds')
+                self.$store.dispatch('LoginByUser', self.ruleForm).then(() => {
+                  self.$router.push('/data/delivery')
+                })
+              }
             })
           } else {
-            console.log('error submit!!')
             return false
           }
         })

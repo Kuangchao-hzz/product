@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { Message } from 'element-ui'
 import axios from 'axios'
 import router from '../router'
 const qs = require('qs')
@@ -14,12 +14,15 @@ const instance = axios.create({
 instance.interceptors.response.use((res) => {
   if (res.data.code === -100) {
     router.push('/login')
+    return res
   } else if (res.data.code !== 1) {
-    Vue.prototype.$message({
+    Message({
+      duration: 1500,
       showClose: true,
       message: res.data.msg,
       type: 'error'
     })
+    return res
   } else {
     return res
   }
@@ -40,13 +43,15 @@ export const instanceJson = axios.create({
 })
 
 instanceJson.interceptors.response.use((res) => {
-  if (res.data.code !== 1) {
-    Vue.prototype.$message({
+  if (res.data.code === -100) {
+    router.push('/login')
+    return res
+  } else if (res.data.code !== 1) {
+    Message({
       showClose: true,
       message: res.data.msg,
       type: 'error'
     })
-  } else {
-    return res
   }
+  return res
 })

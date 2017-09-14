@@ -23,7 +23,7 @@
   export default {
     data () {
       return {
-        name: 'linxin'
+        name: 'admin'
       }
     },
     computed: {
@@ -38,9 +38,10 @@
         if (command === 'loginout') {
           localStorage.removeItem('ms_username')
           api.logout_user().then((response) => {
-
+            if (response.data.code === 1) {
+              this.$router.push('/login')
+            }
           })
-          this.$router.push('/login')
         }
       }
     }

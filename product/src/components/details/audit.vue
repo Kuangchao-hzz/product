@@ -24,9 +24,12 @@
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>性别：</strong></el-col>
-              <el-col :span="6">{{}}</el-col>
+              <el-col :span="6">
+                <span v-if="detailsData.gender === 1">男</span>
+                <span v-else-if="detailsData.gender === 2">女</span>
+              </el-col>
               <el-col :span="3"><strong>年龄：</strong></el-col>
-              <el-col :span="6">{{}}</el-col>
+              <el-col :span="6">{{detailsData.age}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>常驻地区：</strong></el-col>
@@ -45,11 +48,11 @@
               <el-col :span="6">{{detailsData.ip}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="3"><strong>身份证：</strong></el-col>
-              <el-col :span="6"><a href="javascript:" @click="passwordDialog.windowStatus = true">显示身份证</a></el-col>
+              <el-col :span="3">身份证：</el-col>
+              <el-col :span="6">{{ detailsData.idCard }}</el-col>
+              <el-col :span="6"><a href="javascript:" @click="passwordDialog.windowStatus = true">查看证件照</a></el-col>
             </el-row>
             <el-row :gutter="10" class="data-item">
-
               <el-button type="info" @click="details_submit(1)">审核通过</el-button>
               <el-button type="info" @click="details_submit(2)">审核不通过</el-button>
               <el-button type="info" @click="back">返回</el-button>
@@ -121,9 +124,18 @@
       viewIdCard () {
         this.$refs['passwordDialog'].validate((valid) => {
           if (valid) {
-            this.idCarUrl = '/api/web/deliveryUserManage/viewIdCard?' + qs.stringify({
+            apiDetails.data_tableAuditCheckPwd({
               imgId: this.detailsData.idCardImg,
-              pwd: md5(this.passwordDialog.password)
+              pwd: md5(this.passwordDialog.password),
+              id: localStorage.getItem('ms_userId')
+            }).then((response) => {
+              if (response.data.code === 1) {
+                this.idCarUrl = '/api/web/deliveryUserManage/viewIdCard?' + qs.stringify({
+                  imgId: this.detailsData.idCardImg,
+                  pwd: md5(this.passwordDialog.password),
+                  id: localStorage.getItem('ms_userId')
+                })
+              }
             })
           } else {
             return false
@@ -138,7 +150,10 @@
           id: this.detailsData.id,
           result: $params
         }).then((response) => {
-          this.$message(response.data.msg)
+          this.$message({
+            duration: 1500,
+            message: response.data.msg
+          })
           this.$router.push('/person/audit')
           localStorage.removeItem('details_audit')
         })

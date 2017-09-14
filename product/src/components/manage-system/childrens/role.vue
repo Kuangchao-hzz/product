@@ -141,7 +141,9 @@
         self.loading = true
         apiTable.data_roleTable().then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       },
       // 添加角色
@@ -181,18 +183,22 @@
                 roleName: this.roleList.name,
                 authIds: authIdsArr.join(',')
               }).then((response) => {
-                this.$message('保存成功！')
-                this.handleClose()
-                this.data_table()
+                if (response.data.code === 1) {
+                  this.$message({
+                    duration: 1500,
+                    message: '保存成功！'
+                  })
+                  this.handleClose()
+                  this.data_table()
+                }
               })
             } else {
-              console.log(this.roleList.checkedValue)
               return false
             }
           })
         })
       },
-      del_roleData ($userId) {
+      del_roleData ($roleId) {
         swal({
           title: '你确定要删除该角色?',
           type: 'warning',
@@ -203,12 +209,15 @@
           confirmButtonText: '确定!',
           cancelButtonText: '取消'
         }).then(() => {
-          apiTable.data_systemUserDel({
-            userId: $userId
+          apiTable.data_systemRoleDel({
+            roleId: $roleId
           }).then((response) => {
             if (response.data.code === 1) {
               this.data_table()
-              this.$message('删除成功！')
+              this.$message({
+                duration: 1500,
+                message: '删除成功！'
+              })
             } else {
               swal(response.data.code)
             }

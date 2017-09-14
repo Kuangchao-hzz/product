@@ -11,6 +11,7 @@
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
                   @change="fetchStoreData"
+                  placeholder="请选择区域"
                 ></el-cascader>
               </div>
             </el-form-item>
@@ -100,6 +101,7 @@
     </div>
     <div class="content-table-pagination">
       <el-pagination
+        @current-change="data_table"
         :page-sizes="[20]"
         :page-size="100"
         layout="total, sizes, prev, pager, next, jumper"
@@ -134,7 +136,7 @@
     methods: {
       resetForm () {
         this.searchData.country = []
-        this.searchData.store = ''
+        this.searchData.storeId = ''
       },
       fetchStoreData ($country) {
         this.get_storeOfArea($country[$country.length - 1])
@@ -143,12 +145,14 @@
         apiTable.fetch_storeOfArea({
           district: $district
         }).then((response) => {
-          this.searchData.storeId = ''
-          this.storeData = [{
-            value: '',
-            label: '请选择门店'
-          }]
-          this.storeData = this.storeData.concat(response.data.dat)
+          if (response.data.code === 1) {
+            this.searchData.storeId = ''
+            this.storeData = [{
+              value: '',
+              label: '请选择门店'
+            }]
+            this.storeData = this.storeData.concat(response.data.dat)
+          }
         })
       },
       data_table ($page) {
@@ -170,7 +174,9 @@
         self.loading = true
         apiTable.data_deliveryStoreTable($params).then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       }
     }

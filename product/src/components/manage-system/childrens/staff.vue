@@ -12,6 +12,7 @@
                     :options="this.$store.state.select.country"
                     :props="this.$store.state.select.defaultCountryProps"
                     @change="fetchStoreData"
+                    placeholder="请选择区域"
                   ></el-cascader>
                 </div>
               </el-form-item>
@@ -90,7 +91,8 @@
           :key="$index"
           show-overflow-tooltip>
           <template scope="scope">
-            {{handlerMatchDate($item.day, scope.row)}}
+            {{scope.row.schedulingList[$index].timeBegin ? scope.row.schedulingList[$index].timeBegin + '-' : ''}}
+            {{scope.row.schedulingList[$index].timeEnd ? scope.row.schedulingList[$index].timeEnd : ''}}
           </template>
         </el-table-column>
         <el-table-column
@@ -134,25 +136,26 @@
             prop="country"
             :rules="{ type: 'array', required: true, message: '请选择城市', trigger: 'change'}">
             <div class="country-select">
-              <el-cascader
-                v-model="exportData.country"
-                :options="this.$store.state.select.country"
-                :props="this.$store.state.select.defaultCountryProps"
-                change-on-select
-              ></el-cascader>
+              <div class="country-select">
+                <el-cascader
+                  v-model="exportData.country"
+                  :options="this.$store.state.select.country"
+                  :props="this.$store.state.select.defaultCountryProps"
+                  @change="fetchStoreData"
+                  placeholder="请选择区域"
+                ></el-cascader>
+              </div>
             </div>
           </el-form-item>
           <el-form-item label="选择门店"
                         prop="storeId"
-                        :rules="{required: true, message: '请选择门店', trigger: 'change'}">
-            <el-select v-model="exportData.storeId"
-                       placeholder="请选择活动区域"
-                       style="width: 100%">
+                        :rules="{ type: 'number', required: true, message: '请选择门店', trigger: 'change'}">
+            <el-select v-model="exportData.storeId" placeholder="请选择门店">
               <el-option
-                v-for="($item, $index) in this.$store.state.select.store"
+                v-for="($item, $index) in storeData"
                 :key="$index"
                 :label="$item.label"
-                :value="$item.value"></el-option>
+                :value="$item.val"></el-option>
             </el-select>
           </el-form-item>
           <el-upload
@@ -171,7 +174,9 @@
         </div>
       </el-dialog>
     </div>
-    <editStaffDialog :editStaffIsShow.sync="editStaffIsShow" :editStaffData="editStaffData"></editStaffDialog>
+    <editStaffDialog :editStaffIsShow.sync="editStaffIsShow"
+                     :editStaffData="editStaffData"
+                     :editStaffStatusCallback.sync="editStaffStatusCallback"></editStaffDialog>
   </div>
 
 </template>
@@ -185,6 +190,7 @@
         loading: false,
         exportDataIsShow: false,
         editStaffIsShow: false,
+        editStaffStatusCallback: false,
         editStaffData: {},
         exportData: {
           country: [],
@@ -213,20 +219,6 @@
       this.data_table()
     },
     methods: {
-      handlerMatchDate ($date, $row) {
-        let data = {}
-        if ($row.schedulingList.length > 0) {
-          if ($row.schedulingList.some((date) => {
-            let a = date.workDay.slice(date.workDay.lastIndexOf('-') + 1, date.workDay.length)
-            data = date
-            console.log(a)
-            console.log($date)
-            return a === $date
-          })) {
-            return data.timeBegin + '-' + data.timeEnd
-          }
-        }
-      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
@@ -239,12 +231,14 @@
         apiTable.fetch_storeOfArea({
           district: $district
         }).then((response) => {
-          this.searchData.storeId = ''
-          this.storeData = [{
-            value: '',
-            label: '请选择门店'
-          }]
-          this.storeData = this.storeData.concat(response.data.dat)
+          if (response.data.code === 1) {
+            this.searchData.storeId = ''
+            this.storeData = [{
+              value: '',
+              label: '请选择门店'
+            }]
+            this.storeData = this.storeData.concat(response.data.dat)
+          }
         })
       },
       resetForm () {
@@ -275,8 +269,10 @@
         self.loading = true
         apiTable.data_staffTable($params).then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
-          self.handleTableHeader()
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+            self.handleTableHeader()
+          }
         })
       },
       handleTableHeader () {
@@ -319,17 +315,19 @@
           title: '确定删除?',
           type: 'warning',
           showCancelButton: true,
-          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiTable.data_deleteScheduling({
             employeeId: $row.employeeNo
           }).then(() => {
             this.data_table()
-            this.$message('删除成功！')
+            this.$message({
+              duration: 1500,
+              message: '删除成功！'
+            })
           })
         }, () => {
 
@@ -341,7 +339,10 @@
             if (this.$refs.upload.uploadFiles.length > 0) {
               this.$refs.upload.submit()
             } else {
-              this.$message('请添加员工排班文件')
+              this.$message({
+                duration: 1500,
+                message: '请添加员工排班文件'
+              })
             }
           } else {
             return false
@@ -349,11 +350,21 @@
         })
       },
       handleAvatarSuccess (response) {
-        this.$message(response.msg)
-        this.handleClose()
+        if (response.data.code === 1) {
+          this.$message({
+            duration: 1500,
+            message: response.data.msg
+          })
+          this.handleClose()
+        }
       },
       downloadExcel () {
         window.location.href = '/api/web/employeeManage/downloadTemplete?'
+      }
+    },
+    watch: {
+      editStaffStatusCallback () {
+        this.data_table()
       }
     },
     components: {

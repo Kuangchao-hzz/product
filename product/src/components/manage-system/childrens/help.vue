@@ -39,7 +39,9 @@
       },
       fetch_data () {
         apiTable.data_fetchUserHelp().then((response) => {
-          this.editor.setContent(response.data.dat)
+          if (response.data.code === 1) {
+            this.editor.setContent(response.data.dat)
+          }
         })
       },
       save_data () {
@@ -48,7 +50,12 @@
           useHelp: this.editor.getContent()
         }).then((response) => {
           self.loading = false
-          this.$message('保存成功！')
+          if (response.data.code === 1) {
+            this.$message({
+              duration: 1500,
+              message: '保存成功！'
+            })
+          }
         })
       }
     }

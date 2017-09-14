@@ -9,7 +9,7 @@ export const includeRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/data/delivery',
+    redirect: '/login',
     children: [
       {
         path: 'abnormalDetails',
@@ -180,7 +180,7 @@ export const asyncRouterMap = [
     name: '配送设置管理',
     icon: 'icon icon-delivery',
     meta: {
-      role: ['m_psszgl', 'm_mdgl', 'm_pssz', 'm_psdjsz', 'm_tsgzsz']
+      role: ['m_psszgl', 'm_mdgl', 'm_mdrygl', 'm_pssz', 'm_psdjsz', 'm_tsgzsz']
     },
     component: Layout,
     children: [
@@ -191,6 +191,14 @@ export const asyncRouterMap = [
           role: ['m_mdgl']
         },
         component: resolve => require(['../components/manage-delivery/childrens/store.vue'], resolve)
+      },
+      {
+        path: 'storePerson',
+        name: '门店人员管理',
+        meta: {
+          role: ['m_mdrygl']
+        },
+        component: resolve => require(['../components/manage-delivery/childrens/storePerson.vue'], resolve)
       },
       {
         path: 'money',

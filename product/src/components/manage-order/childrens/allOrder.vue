@@ -42,12 +42,13 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
+                  placeholder="请选择区域"
                   change-on-select
                 ></el-cascader>
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="6">
             <el-form-item>
               <el-select v-model="searchData.orderType" placeholder="订单类型">
                 <el-option
@@ -59,7 +60,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="4">
             <el-form-item>
               <el-select v-model="searchData.orderStatus" placeholder="订单状态">
                 <el-option
@@ -71,7 +72,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="4">
             <el-form-item>
               <el-select v-model="searchData.grabStatus" placeholder="抢单状态">
                 <el-option
@@ -83,7 +84,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
+          <!--<el-col :span="3">
             <el-form-item>
               <el-select v-model="searchData.markScore" placeholder="订单评价">
                 <el-option
@@ -94,7 +95,7 @@
                 </el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col>-->
           <el-col :span="4">
             <el-form-item>
               <el-button type="primary" @click="data_table">查询</el-button>
@@ -121,8 +122,8 @@
               <el-button type="primary">
                 <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 3 }}" tag="span">订单详情</router-link>
               </el-button>
-              <el-button :disabled="!btn_auth('b_td')" v-if="scope.row.orderStatus !== 99" type="primary">退单</el-button>
-              <el-button :disabled="!btn_auth('b_gbdd')" v-if="scope.row.orderStatus !== 99" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
+              <el-button :disabled="!btn_auth('b_xq_td')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary">退单</el-button>
+              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
             </el-form>
           </template>
         </el-table-column>
@@ -175,7 +176,7 @@
             {{scope.row.orderStatus === 10 ? '待抢单': ''}}
             {{scope.row.orderStatus === 20 ? '抢单中': ''}}
             {{scope.row.orderStatus === 30 ? '待拣货': ''}}
-            {{scope.row.orderStatus === 40 ? '待验货': ''}}
+            {{scope.row.orderStatus === 40 ? '待提货': ''}}
             {{scope.row.orderStatus === 50 ? '送货中': ''}}
             {{scope.row.orderStatus === 60 ? '已送达': ''}}
             {{scope.row.orderStatus === 90 ? '已退单': ''}}
@@ -269,7 +270,6 @@
 <script>
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
-  import moment from 'moment'
   export default {
     data () {
       return {
@@ -279,11 +279,11 @@
           orderNo: '',
           orderType: '',
           storeId: '',
-          mallTime: '',
-          arriveTime: '',
+          mallTime: [],
+          arriveTime: [],
           grabStatus: '',
           orderStatus: '',
-          markScore: '',
+          // markScore: '',
           phone: ''
         },
         tableData: [],
@@ -305,8 +305,7 @@
     },
     methods: {
       tableRowClassName ($row) {
-        let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
-        if (moment(now).diff(moment($row.scheduledTime)) > 0) {
+        if ($row.isAbnormal === 1) {
           return 'order-abnormal'
         }
       },
@@ -327,7 +326,10 @@
       },
       closeOrder () {
         apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
-          this.$message('操作成功！')
+          this.$message({
+            duration: 1500,
+            message: '操作成功！'
+          })
           this.data_table()
           this.handleClose()
         })
@@ -337,17 +339,20 @@
         this.searchData.orderType = ''
         this.searchData.orderNo = ''
         this.searchData.storeId = ''
-        this.searchData.mallTime = ''
-        this.searchData.arriveTime = ''
+        this.searchData.mallTime = []
+        this.searchData.arriveTime = []
         this.searchData.grabStatus = ''
         this.searchData.orderStatus = ''
-        this.searchData.markScore = ''
+        // this.searchData.markScore = ''
         this.searchData.phone = ''
         this.data_table()
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
-          this.$message('无数据可导出！')
+          this.$message({
+            duration: 1500,
+            message: '无数据可导出！'
+          })
           return false
         }
         window.location.href = '/api/web/orderManage/exportAllOrder?'
@@ -359,22 +364,28 @@
         let self = this
         let $params = {
           page: $page - 1 || 0,
-          district: self.searchData.district,
           orderNo: self.searchData.orderNo,
           orderType: self.searchData.orderType,
           storeId: self.searchData.storeId,
           grabStatus: self.searchData.grabStatus,
           orderStatus: self.searchData.orderStatus,
-          markScore: self.searchData.markScore,
+          arriveTimeBegin: '',
+          arriveTimeEnd: '',
+          mallTimeBegin: '',
+          mallTimeEnd: '',
+          city: '',
+          province: '',
+          district: '',
+          // markScore: self.searchData.markScore,
           phone: self.searchData.phone
         }
-        if (self.searchData.arriveTime !== '') {
+        if (self.searchData.arriveTime.length > 0) {
           Object.assign($params, {
             arriveTimeBegin: new Date(self.searchData.arriveTime[1]).Format('yyyy-MM-dd'),
             arriveTimeEnd: new Date(self.searchData.arriveTime[0]).Format('yyyy-MM-dd')
           })
         }
-        if (self.searchData.mallTime !== '') {
+        if (self.searchData.mallTime.length > 0) {
           Object.assign($params, {
             mallTimeBegin: new Date(self.searchData.mallTime[1]).Format('yyyy-MM-dd'),
             mallTimeEnd: new Date(self.searchData.mallTime[0]).Format('yyyy-MM-dd')
@@ -390,7 +401,9 @@
         self.loading = true
         apiTable.data_orderAllTable($params).then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       },
       Format (date, fmt) {

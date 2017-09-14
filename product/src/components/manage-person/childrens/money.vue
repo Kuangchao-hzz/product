@@ -10,6 +10,7 @@
                   v-model="searchData.country"
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
+                  placeholder="请选择区域"
                   @change="fetchStoreData"
                 ></el-cascader>
               </div>
@@ -153,6 +154,7 @@
         </el-col>
         <el-col :lg="14" style="text-align: right">
           <el-pagination
+            @current-change="data_table"
             :page-sizes="[20]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="tableData.rowsCount">
@@ -195,7 +197,7 @@
         exportDataIsShow: false,
         searchData: {
           country: [],
-          mallTime: '',
+          mallTime: [],
           settlement: '',
           realName: '',
           phone: '',
@@ -230,19 +232,21 @@
         apiTable.fetch_storeOfArea({
           district: $district
         }).then((response) => {
-          this.searchData.storeId = ''
-          this.storeData = [{
-            value: '',
-            label: '请选择门店'
-          }]
-          this.storeData = this.storeData.concat(response.data.dat)
+          if (response.data.code === 1) {
+            this.searchData.storeId = ''
+            this.storeData = [{
+              value: '',
+              label: '请选择门店'
+            }]
+            this.storeData = this.storeData.concat(response.data.dat)
+          }
         })
       },
       resetForm () {
         this.storeData = []
         this.searchData.country = []
         this.searchData.order = ''
-        this.searchData.mallTime = ''
+        this.searchData.mallTime = []
         this.searchData.settlement = ''
         this.searchData.realName = ''
         this.searchData.phone = ''
@@ -263,7 +267,7 @@
           city: '',
           district: ''
         }
-        if (this.searchData.mallTime !== '') {
+        if (this.searchData.mallTime.length > 0) {
           Object.assign($params, {
             timeBegin: new Date(this.searchData.mallTime[1]).Format('yyyy-MM-dd'),
             timeEnd: new Date(this.searchData.mallTime[0]).Format('yyyy-MM-dd')
@@ -276,15 +280,22 @@
             district: this.searchData.country[2]
           })
         }
-        self.loading = true
+        this.loading = true
         apiTable.data_personMoneyTable($params).then((response) => {
-          self.loading = false
-          this.tableData = response.data.dat
+          this.loading = false
+          if (response.data.code === 1) {
+            this.tableData = response.data.dat
+          }
         })
       },
       handleAvatarSuccess (response) {
-        this.$message(response.msg)
-        this.handleClose()
+        if (response.data.code === 1) {
+          this.$message({
+            duration: 1500,
+            message: response.data.msg
+          })
+          this.handleClose()
+        }
       },
       downloadExcel () {
         window.location.href = '/api/web/settlement/exportData?'

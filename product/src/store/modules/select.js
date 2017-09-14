@@ -88,7 +88,7 @@ const select = {
       label: '待拣货'
     }, {
       value: '40',
-      label: '待验货'
+      label: '待提货'
     }, {
       value: '50',
       label: '送货中'
@@ -255,17 +255,13 @@ const select = {
     fetch_allAreaAndStore ({ commit }) {
       return new Promise(resolve => {
         api.fetch_areaAndStore().then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
+          if (response.data.code === 1) {
             commit('SET_AREAANDSTORE', response.data.dat)
             resolve()
           }
         })
         api.fetch_areaData().then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
+          if (response.data.code === 1) {
             commit('SET_AREA', response.data.dat)
             resolve()
           }

@@ -46,25 +46,23 @@
             <el-button
               type="text"
               size="small"
-              v-if="currentUserNo !== scope.row.employeeId"
               @click="handlerUserData_edit(scope.row)"
             >编辑</el-button>
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.isEnabled === 1 && currentUserNo !== scope.row.employeeId"
+              v-if="scope.row.isEnabled === 1"
               @click="handler_dataTableLock(scope.row, 1)"
             >冻结</el-button>
             <el-button
               type="text"
               size="small"
-              v-if="scope.row.isEnabled === 0 && currentUserNo !== scope.row.employeeId"
+              v-if="scope.row.isEnabled === 0"
               @click="handler_dataTableLock(scope.row, 0)"
             >解冻</el-button>
             <el-button
               type="text"
               size="small"
-              v-if="currentUserNo !== scope.row.employeeId"
               @click="handlerUserData_del(scope.row.id)"
             >删除</el-button>
           </template>
@@ -84,7 +82,7 @@
         <el-form-item
           label="工号: "
           prop="employeeId">
-          <el-input v-model="addUserForm.employeeId"></el-input>
+          <el-input v-model="addUserForm.employeeId" :disabled="employeeIdDisabled"></el-input>
         </el-form-item>
         <el-form-item label="姓名: "
                       prop="realName">
@@ -125,7 +123,6 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
   </div>
 </template>
 
@@ -135,11 +132,12 @@
     data () {
       return {
         dialogTitle: '新增用户',
+        employeeIdDisabled: false,
         tableData: [],
         roleList: [],
         defaultCheckedKeys: [],
         addUserForm: {
-          id: '0',
+          id: '',
           employeeId: '',
           realName: '',
           phone: '',
@@ -215,7 +213,6 @@
         this.addUserForm.phone = ''
         this.addUserForm.remark = ''
         this.addUserForm.roleIds = []
-        this.addUserForm.roleIds = []
         this.addUserForm.addUserIsShow = false
         this.$refs['addUserForm'].resetFields()
         this.addUserForm.treeDialog = {
@@ -244,7 +241,6 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
-          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -255,7 +251,10 @@
             lock: $sta
           }).then(() => {
             this.data_table()
-            this.$message('操作成功！')
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
           })
         }, () => {
 
@@ -268,6 +267,7 @@
         self.$nextTick(() => {
           if ($row.id) {
             self.dialogTitle = '编辑用户'
+            self.employeeIdDisabled = true
             let roleIdsArr = $row.roleIds.split(',').map(($item) => {
               return parseInt($item)
             })
@@ -284,6 +284,7 @@
             this.addUserForm.roleIds = roleIdsArr
           } else {
             self.dialogTitle = '新增用户'
+            self.employeeIdDisabled = false
             self.$refs.tree.setCheckedKeys([])
           }
         })
@@ -293,7 +294,6 @@
           title: '你确定要删除该用户?',
           type: 'warning',
           showCancelButton: true,
-          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -303,7 +303,10 @@
             userId: $id
           }).then((response) => {
             this.data_table()
-            this.$message('操作成功！')
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
           })
         }, () => {
 
@@ -331,7 +334,12 @@
                 this.data_table()
                 this.handleClose()
                 this.$store.dispatch('fetch_allAreaAndStore')
-                this.$message('操作成功！')
+                if (response.data.code === 1) {
+                  this.$message({
+                    duration: 1500,
+                    message: '操作成功！'
+                  })
+                }
               })
             } else {
               return false
@@ -345,7 +353,7 @@
         $keys.forEach(($key) => {
           $checks.forEach(($check) => {
             let arr = ''
-            console.log($check)
+
             arr += $check.id + '-'
             if ($check.children && $check.children.length > 0) {
               $check.children.forEach((_$check) => {
@@ -356,7 +364,6 @@
             }
           })
         })
-        console.log(allarr)
       },
       data_systemUserRoleList () {
         apiTable.data_systemUserRoleList().then((response) => {
@@ -376,7 +383,6 @@
     },
     watch: {
       'this.addUserForm.addUserIsShow' () {
-        console.log(this.addUserForm.addUserIsShow)
         if (this.addUserForm.addUserIsShow) {
           this.get_allAreaAndStore()
         }

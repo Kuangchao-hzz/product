@@ -29,7 +29,7 @@
                 {{detailsData.orderStatus === 10 ? '待抢单': ''}}
                 {{detailsData.orderStatus === 20 ? '抢单中': ''}}
                 {{detailsData.orderStatus === 30 ? '待拣货': ''}}
-                {{detailsData.orderStatus === 40 ? '待验货': ''}}
+                {{detailsData.orderStatus === 40 ? '待提货': ''}}
                 {{detailsData.orderStatus === 50 ? '送货中': ''}}
                 {{detailsData.orderStatus === 60 ? '已送达': ''}}
                 {{detailsData.orderStatus === 90 ? '已退单': ''}}
@@ -277,7 +277,7 @@
     },
     methods: {
       onSubmit () {
-        console.log('submit!')
+
       },
       handleClose (done) {
         this.$confirm('确认关闭？')
@@ -296,7 +296,7 @@
               self.detailsData = response.data.dat
               self.storeInfo = response.data.dat.storeInfo
             } else {
-              swal(response.data.msg)
+              this.$message(response.data.msg)
             }
           })
         })

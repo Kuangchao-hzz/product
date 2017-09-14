@@ -108,6 +108,20 @@ export default {
       params: $baseData
     })
   },
+  // 配送设置管理-门店人员管理
+  data_deliveryPersonStoreTable ($baseData) {
+    return instance.get('/web/storeUser/list', {
+      params: $baseData
+    })
+  },
+  // 配送设置管理-门店人员管理-编辑新增
+  data_deliveryPersonStoreSave ($baseData) {
+    return instance.post('/web/storeUser/save', $baseData)
+  },
+  // 配送设置管理-门店人员管理-删除
+  data_deliveryPersonStoreDel ($baseData) {
+    return instance.post('/web/storeUser/del', $baseData)
+  },
   // 配送设置管理-配送等级设置
   data_deliveryLevelTable ($baseData) {
     return instance.get('/web/orderLevel/all', {
@@ -242,12 +256,16 @@ export default {
     return instance.post('/web/auth/roleSave', $baseData)
   },
   // 系统设置-角色管理-删除
-  data_systemUserDel ($baseData) {
-    return instance.post('/web/auth/userDel', $baseData)
+  data_systemRoleDel ($baseData) {
+    return instance.post('/web/auth/roleDel', $baseData)
   },
   // 系统设置-用户管理-新增
   data_systemUserSave ($baseData) {
     return instance.post('/web/auth/userSave', $baseData)
+  },
+  // 系统设置-用户管理-删除
+  data_systemUserDel ($baseData) {
+    return instance.post('/web/auth/userDel', $baseData)
   },
   // 系统设置-用户管理- 解冻&解冻
   edit_systemUserHandlerLock ($baseData) {

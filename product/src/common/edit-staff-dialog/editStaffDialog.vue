@@ -55,7 +55,7 @@
             </div>
             <div class="calendar-day">
               <div class="calendar-data-item"
-                   v-for="($item, $index) in calendarData"
+                   v-for="($item, $index) in initCalendarData"
                    :key="$index"
                    :class="{prevMonthDay: $item.prevMonth, nextMonthDay: $item.nextMonth}"
                    @click="handleSelectDate($item)">
@@ -108,19 +108,18 @@
 
 <script>
   import apiTable from '@/api/table'
+  import moment from 'moment'
   export default {
     name: 'hz-calendar',
     data () {
       let now = new Date()
       return {
+        editStatus: false,
         editStaffIsShowChild: false,
         // 编辑提交日期字段
         dateField: {
-          employeeId: '',
-          workDay: '',
           timeBegin: '',
-          timeEnd: '',
-          id: ''
+          timeEnd: ''
         },
         selectDate: {},
         selectStartDate: {
@@ -137,31 +136,60 @@
         year: now.getFullYear(),
         tmpYear: now.getFullYear(),
         tmpMonth: now.getMonth() + 1,
+        editDate: [],
         disposeTime: {},
-        schedulingListData: {}
+        schedulingListData: {},
+        calendarData: {}
       }
     },
-    props: ['editStaffIsShow', 'editStaffData'],
+    props: ['editStaffIsShow', 'editStaffData', 'editStaffStatusCallback'],
     computed: {
-      calendarData () {
+      initCalendarData () {
+        return this.calendarData
+      },
+      initSelectDate () {
+        let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+        if (this.selectDate.id) {
+          let date = new Date(this.selectDate.workDay)
+          let month = date.getMonth() + 1
+          let day = date.getDate()
+          let week = date.getDay()
+          this.dateField.timeBegin = this.selectDate.timeBegin
+          this.dateField.timeEnd = this.selectDate.timeEnd
+          return month + '/' + day + ' ' + weeks[week]
+        }
+      },
+      initSelectStartDate () {
+        return this.selectStartDate
+      },
+      initSelectEndDate () {
+        return this.selectEndDate
+      }
+    },
+    methods: {
+      createCalendarData ($workDay, $data) {
         // 获取当月的天数 new Date(年， 月， 日)
         let calendarData = new Date(this.tmpYear, this.tmpMonth, 0).getDate()
         // 当月的日期 currentDayArr
         let currentDayArr = []
         currentDayArr = Array.from({length: calendarData}, (n, i) => {
-          let handleDate = {
+          let handleDate = Object.assign({}, {
             currentMonth: true,
-            value: ((i + 1) < 10 ? '0' : '') + (i + 1)
-          }
-          if (this.schedulingListData.length > 0) {
-            this.schedulingListData.forEach(function ($item, $index) {
-              let hasDate = $item.workDay
-              if (hasDate.slice(hasDate.lastIndexOf('-') + 1, hasDate.length) === ((i + 1) < 10 ? '0' : '') + (i + 1)) {
+            value: ((i + 1) < 10 ? '0' : '') + (i + 1),
+            id: '',
+            employeeId: this.editStaffData.employeeNo,
+            timeBegin: '',
+            timeEnd: '',
+            workDay: $workDay + '-' + ((i + 1) < 10 ? '0' : '') + (i + 1)
+          })
+          if ($data.length > 0) {
+            $data.forEach(($item, $index) => {
+              if ($item.workDay.slice($item.workDay.lastIndexOf('-') + 1, $item.workDay.length) === ((i + 1) < 10 ? '0' : '') + (i + 1)) {
                 handleDate = Object.assign({}, {
                   currentMonth: true,
                   value: ((i + 1) < 10 ? '0' : '') + (i + 1),
                   id: $item.id,
-                  employeeId: $item.employeeId,
+                  employeeId: this.editStaffData.employeeNo,
                   timeBegin: $item.timeBegin,
                   timeEnd: $item.timeEnd,
                   workDay: $item.workDay
@@ -182,31 +210,8 @@
         for (let i = currentDayArr.length, item = 1; i < 42; i++, item++) {
           currentDayArr[currentDayArr.length] = {nextMonth: true, value: item}
         }
-        return currentDayArr
+        this.calendarData = currentDayArr
       },
-      initSelectDate () {
-        let weeks = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-        if (this.selectDate.id) {
-          let date = new Date(this.selectDate.workDay)
-          let month = date.getMonth() + 1
-          let day = date.getDate()
-          let week = date.getDay()
-          this.dateField.employeeId = this.selectDate.employeeId
-          this.dateField.id = this.selectDate.id
-          this.dateField.workDay = this.selectDate.workDay
-          this.dateField.timeBegin = this.selectDate.timeBegin
-          this.dateField.timeEnd = this.selectDate.timeEnd
-          return month + '/' + day + ' ' + weeks[week]
-        }
-      },
-      initSelectStartDate () {
-        return this.selectStartDate
-      },
-      initSelectEndDate () {
-        return this.selectEndDate
-      }
-    },
-    methods: {
       handleSelectDate ($item) {
         this.editCalendarShow = true
         this.selectDate = $item
@@ -221,18 +226,34 @@
         }).then((response) => {
           if (response.data.code === 1) {
             this.schedulingListData = response.data.dat
+            this.createCalendarData($month, response.data.dat)
           }
         })
       },
-      submit_editCalendar (item) {
-        let date = this.dateField.workDay.substring(-1, this.dateField.workDay.indexOf('-') + 3)
-        apiTable.edit_systemStaffDate(this.dateField).then((response) => {
+      submit_editCalendar () {
+        let now = moment(new Date()).format('YYYY-MM-DD')
+        if (moment(now).diff(moment(this.selectDate.workDay)) > 0) {
+          this.$message({
+            duration: 1500,
+            message: '不能添加今天之前的员工排班！'
+          })
+          return false
+        }
+        let date = this.selectDate.workDay.substring(-1, this.selectDate.workDay.indexOf('-') + 3)
+        apiTable.edit_systemStaffDate(Object.assign(this.selectDate, this.dateField)).then((response) => {
           if (response.data.code === 1) {
-            swal('编辑成功！')
+            this.$message({
+              duration: 1500,
+              message: '编辑成功！'
+            })
             this.editCalendarShow = false
             this.edit_table(date)
+            this.editStatus = !this.editStatus
           } else {
-            swal(response.msg)
+            this.$message({
+              duration: 1500,
+              message: response.data.msg
+            })
           }
         })
       },
@@ -258,19 +279,36 @@
       }
     },
     watch: {
+      // 监听组件状态
       editStaffIsShow ($val) {
         this.$emit('update:editStaffIsShow', $val)
         this.editStaffIsShowChild = $val
       },
+      // 发送组件状态
       editStaffIsShowChild () {
         this.$emit('update:editStaffIsShow', this.editStaffIsShowChild)
       },
+      editStatus () {
+        this.$emit('update:editStaffStatusCallback', this.editStatus)
+      },
+      editCalendarShow () {
+        if (!this.editCalendarShow) {
+          this.dateField.timeBegin = ''
+          this.dateField.timeEnd = ''
+        }
+      },
       editStaffData () {
         if (this.editStaffData.schedulingList) {
-          console.log(this.editStaffData.schedulingList)
-          let date = this.editStaffData.schedulingList[0].workDay.substring(-1, this.editStaffData.schedulingList[0].workDay.indexOf('-') + 3)
-          let employeeNo = this.editStaffData.employeeNo
-          this.edit_table(date, employeeNo)
+          let date = []
+          let employeeNo = []
+          this.editStaffData.schedulingList.forEach(($item, $index) => {
+            if ($item.timeBegin) {
+              this.tmpMonth = new Date($item.workDay).getMonth() + 1
+              date.push($item.workDay.substring(-1, $item.workDay.indexOf('-') + 3))
+              employeeNo.push(this.editStaffData.employeeNo)
+            }
+          })
+          this.edit_table(date[0], employeeNo[0])
         }
       }
     }

@@ -144,12 +144,14 @@
               title: this.createDialogForm.title,
               content: this.createDialogForm.content
             }).then(() => {
-              this.$message('发布成功!')
+              this.$message({
+                duration: 1500,
+                message: '发布成功！'
+              })
               this.createDialogForm.isShow = false
               this.data_table()
             })
           } else {
-            console.log('error submit!!')
             return false
           }
         })

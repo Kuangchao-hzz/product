@@ -127,9 +127,15 @@
         })
         apiTable.edit_personRuleEdit($row).then((response) => {
           if (response.data.code !== 1) {
-            this.$message(response.data.msg)
+            this.$message({
+              duration: 1500,
+              message: response.data.mag
+            })
           } else {
-            this.$message('操作成功！')
+            this.$message({
+              duration: 1500,
+              message: response.data.mag
+            })
             this.data_table()
           }
         })
@@ -147,38 +153,56 @@
         this.searchData.orderType = ''
       },
       inlineEditRow ($item) {
-        console.log($item)
+
       },
       data_table ($page, $sta) {
         let self = this
         apiTable.data_deliveryRuleTable().then((response) => {
-          self.tableData = response.data
-          let copyData = JSON.stringify(self.tableData)
-          self.copyRow = JSON.parse(copyData)
+          if (response.data.code === 1) {
+            self.tableData = response.data
+            let copyData = JSON.stringify(self.tableData)
+            self.copyRow = JSON.parse(copyData)
+          }
         })
         if (!$sta) {
           apiTable.edit_SaveRuleTime({
             point: this.searchData.point
           }).then(() => {
-            this.$message('保存成功！')
+            this.$message({
+              duration: 1500,
+              message: '保存成功！'
+            })
           })
         }
       },
       fetch_ruleTime ($page) {
         apiTable.data_fetchRuleTime().then((response) => {
-          this.searchData.point = response.data.dat.toString()
+          if (response.data.code === 1) {
+            this.searchData.point = response.data.dat.toString()
+          }
         })
       },
       enable_row ($row, $type) {
-        apiTable.edit_personRuleEnable({
-          id: $row.id,
-          isEnabled: $type
-        }).then((response) => {
-          swal({
-            title: '操作成功！',
-            width: 300
+        let str = $type === 0 ? '是否禁用' : '是否启用?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiTable.edit_personRuleEnable({
+            id: $row.id,
+            isEnabled: $type
+          }).then((response) => {
+            if (response.data.code === 1) {
+              this.data_table()
+            }
           })
-          this.data_table()
+        }, () => {
+
         })
       },
       handle_row ($item, $status) {

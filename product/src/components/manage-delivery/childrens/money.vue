@@ -177,7 +177,10 @@
       },
       submitEditRow ($row) {
         apiTable.edit_personMoneyEdit($row).then((response) => {
-          this.$message('操作成功！')
+          this.$message({
+            duration: 1500,
+            message: '操作成功！'
+          })
           this.data_table()
         })
       },
@@ -195,15 +198,25 @@
         })
       },
       enable_row ($row, $type) {
-        apiTable.edit_personMoneyEnable({
-          id: $row.id,
-          isEnabled: $type
-        }).then((response) => {
-          swal({
-            title: '操作成功！',
-            width: 300
+        let str = $type === 0 ? '是否禁用' : '是否启用?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiTable.edit_personMoneyEnable({
+            id: $row.id,
+            isEnabled: $type
+          }).then((response) => {
+            this.$message('操作成功！')
+            this.data_table()
           })
-          this.data_table()
+        }, () => {
+
         })
       },
       inlineEditRow ($item) {

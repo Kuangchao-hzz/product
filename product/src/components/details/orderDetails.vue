@@ -13,7 +13,7 @@
               <el-col :span="4"  v-if="detailsData.abnormalInfo"><strong>异常类型：</strong></el-col>
               <el-col :span="6"  v-if="detailsData.abnormalInfo">
                 {{detailsData.abnormalInfo.abnormalStatus === 1 ? '无人抢单': ''}}
-                {{detailsData.abnormalInfo.abnormalStatus === 2 ? '主动退出': ''}}
+                {{detailsData.abnormalInfo.abnormalStatus === 2 ? '主动退单': ''}}
                 {{detailsData.abnormalInfo.abnormalStatus === 3 ? '超时未送': ''}}
                 {{detailsData.abnormalInfo.abnormalStatus === 4 ? '超时未达': ''}}
                 {{detailsData.abnormalInfo.abnormalStatus === 5 ? '商城关闭': ''}}
@@ -29,7 +29,7 @@
                 {{detailsData.orderStatus === 10 ? '待抢单': ''}}
                 {{detailsData.orderStatus === 20 ? '抢单中': ''}}
                 {{detailsData.orderStatus === 30 ? '待拣货': ''}}
-                {{detailsData.orderStatus === 40 ? '待验货': ''}}
+                {{detailsData.orderStatus === 40 ? '待提货': ''}}
                 {{detailsData.orderStatus === 50 ? '送货中': ''}}
                 {{detailsData.orderStatus === 60 ? '已送达': ''}}
                 {{detailsData.orderStatus === 90 ? '已退单': ''}}
@@ -94,7 +94,7 @@
                 <el-col :span="4"><strong>异常原因：</strong></el-col>
                 <el-col :span="6">
                   {{detailsData.abnormalInfo.abnormalStatus === 1 ? '无人抢单': ''}}
-                  {{detailsData.abnormalInfo.abnormalStatus === 2 ? '主动退出': ''}}
+                  {{detailsData.abnormalInfo.abnormalStatus === 2 ? '主动退单': ''}}
                   {{detailsData.abnormalInfo.abnormalStatus === 3 ? '超时未送': ''}}
                   {{detailsData.abnormalInfo.abnormalStatus === 4 ? '超时未达': ''}}
                   {{detailsData.abnormalInfo.abnormalStatus === 5 ? '商城关闭': ''}}
@@ -104,14 +104,14 @@
               </el-row>
               <el-row class="data-item">
                 <el-col :span="3"><strong>处理时间：</strong></el-col>
-                <el-col :span="6">{{detailsData.abnormalInfo.hanleTime}}</el-col>
+                <el-col :span="6">{{detailsData.abnormalInfo.handleTime}}</el-col>
                 <el-col :span="4"><strong>处理结果：</strong></el-col>
                 <el-col :span="6">
                   {{detailsData.abnormalInfo.handleResult === 0 ? '未处理': ''}}
                   {{detailsData.abnormalInfo.handleResult === 10 ? '待抢单': ''}}
                   {{detailsData.abnormalInfo.handleResult === 20 ? '抢单中': ''}}
                   {{detailsData.abnormalInfo.handleResult === 30 ? '待拣货': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 40 ? '待验货': ''}}
+                  {{detailsData.abnormalInfo.handleResult === 40 ? '待提货': ''}}
                   {{detailsData.abnormalInfo.handleResult === 50 ? '送货中': ''}}
                   {{detailsData.abnormalInfo.handleResult === 60 ? '已送达': ''}}
                   {{detailsData.abnormalInfo.handleResult === 90 ? '已退单': ''}}
@@ -137,12 +137,15 @@
               </el-row>
             </div>
             <el-row class="data-item">
-              <el-row :gutter="10" v-if="detailsData.orderStatus !== 60">
-                <el-button type="info" v-if="detailsData.orderStatus !== 90" @click="handleOrderBackToYb">回退邮包</el-button>
-                <el-button type="info" v-if="detailsData.orderStatus === 10" @click="handleOrderRePush">手工推送</el-button>
-                <el-button type="info" v-if="detailsData.orderStatus < 90" @click="outOrderDialog = true">退单</el-button>
-                <el-button type="info" v-if="detailsData.orderStatus < 90" @click="closeOrderDialog = true">关闭订单</el-button>
-                <el-button type="info" v-if="detailsData.abnormalInfo && detailsData.abnormalInfo.handleResult === 0" @click="manualHandle(detailsData.id)">人工处理</el-button>
+              <el-row :gutter="10">
+                <div v-if="detailsData.orderStatus !== 60" style="float: left;margin-right: 10px;">
+                  <el-button type="info" :disabled="!btn_auth('b_xq_htyb')" v-if="detailsData.orderStatus !== 90" @click="handleOrderBackToYb">回退邮包</el-button>
+                  <el-button type="info" :disabled="!btn_auth('b_xq_sgts')" v-if="detailsData.orderStatus === 10" @click="handleOrderRePush">手工推送</el-button>
+                  <!--<el-button type="info" :disabled="!btn_auth('b_xq_td')" v-if="detailsData.orderStatus < 90" @click="outOrderDialog = true">退单</el-button>-->
+                  <el-button type="info" :disabled="!btn_auth('b_xq_gbdd')" v-if="detailsData.orderStatus < 90" @click="closeOrderDialog = true">关闭订单</el-button>
+                  <el-button type="info" :disabled="!btn_auth('b_xq_rgcl')" v-if="(detailsData.abnormalInfo && detailsData.abnormalInfo.handleResult === 0)" @click="manualHandle(detailsData.id)">人工处理</el-button>
+                </div>
+                <el-button type="info" @click="$router.go(-1)">返回</el-button>
               </el-row>
             </el-row>
           </el-col>
@@ -201,8 +204,8 @@
                 <el-col :span="24">推送记录:</el-col>
               </el-row>
               <el-row v-for="($item, $index) in detailsData.pushInfo" :key="$index">
-                <el-col :span="16">{{$item.pushInfo.pushTime?$item.pushInfo.pushTime:'- -'}}</el-col>
-                <el-col :span="8">{{$item.pushInfo.pushUsers?$item.pushInfo.pushUsers:'- -'}}</el-col>
+                <el-col :span="16">{{$item.pushTime?$item.pushTime:'- -'}}</el-col>
+                <el-col :span="8">{{$item.pushUsers?$item.pushUsers:'- -'}}</el-col>
               </el-row>
             </el-row>
           </el-col>
@@ -263,6 +266,7 @@
   * =======================================
   * */
   import apiDetails from '@/api/details'
+  import moment from 'moment'
   export default {
     data () {
       return {
@@ -281,6 +285,14 @@
       }
     },
     computed: {
+      tableRowClassName () {
+        if (this.detailsData) {
+          let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+          if (moment(now).diff(moment(this.detailsData.scheduledTime)) > 3600000) {
+            return true
+          }
+        }
+      },
       // 判断详情来源
       detailsSource () {
         return this.$route.query.detailsType.toString()
@@ -317,26 +329,57 @@
       }
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       handleOrderRePush () {
-        apiDetails.details_handleOrderRePush({
-          id: this.detailsData.id
-        }).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-          }
+        swal({
+          title: '你确定要手工推送?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiDetails.details_handleOrderRePush({
+            id: this.detailsData.id
+          }).then((response) => {
+            if (response.data.code !== 1) {
+              this.$message(response.data.msg)
+            } else {
+              this.$message('操作成功！')
+              this.$router.go(-1)
+            }
+          })
+        }, () => {
+
         })
       },
       handleOrderBackToYb () {
-        apiDetails.details_handleOrderBackToYb({
-          id: this.detailsData.id
-        }).then((response) => {
-          if (response.data.code !== 1) {
-            swal(response.data.msg)
-          } else {
-            swal('操作成功！')
-          }
+        swal({
+          title: '你确定要回退邮包?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiDetails.details_handleOrderBackToYb({
+            id: this.detailsData.id
+          }).then((response) => {
+            if (response.data.code !== 1) {
+              this.$message(response.data.msg)
+            } else {
+              this.$message('操作成功！')
+              this.$router.go(-1)
+            }
+          })
+        }, () => {
+
         })
       },
       closeOrder ($id) {
@@ -346,23 +389,47 @@
           remake: this.closeOrderForm.remake
         }).then((response) => {
           if (Number(response.data.code) !== 1) {
-            this.$message(response.data.msg)
+            this.$message({
+              duration: 1500,
+              message: response.data.msg
+            })
           } else {
-            this.$message('操作成功！')
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
             this.$router.go('-1')
           }
         })
       },
       manualHandle ($id) {
-        apiDetails.details_handleOrderManualHandle({
-          id: $id
-        }).then((response) => {
-          if (Number(response.data.code) !== 1) {
-            this.$message(response.data.msg)
-          } else {
-            this.$message('操作成功！')
-            this.$router.go('-1')
-          }
+        swal({
+          title: '你确定要人工处理?',
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiDetails.details_handleOrderManualHandle({
+            id: $id
+          }).then((response) => {
+            if (Number(response.data.code) !== 1) {
+              this.$message({
+                duration: 1500,
+                message: response.data.msg
+              })
+            } else {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+              this.$router.go('-1')
+            }
+          })
+        }, () => {
+
         })
       },
       details_tableSendTable ($params) {
@@ -370,13 +437,15 @@
         apiDetails.details_tableSendTable({
           orderId: $params
         }).then((response) => {
-          self.$nextTick(function () {
-            if (response.data.code === 1) {
-              self.detailsData = response.data.dat
-            } else {
-              swal(response.data.msg)
-            }
-          })
+          if (response.data.code === 1) {
+            self.$nextTick(function () {
+              if (response.data.code === 1) {
+                self.detailsData = response.data.dat
+              } else {
+                this.$message(response.data.msg)
+              }
+            })
+          }
         })
       },
       handleClose (done) {

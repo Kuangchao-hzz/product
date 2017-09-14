@@ -11,6 +11,7 @@
                     v-model="searchData.country"
                     :options="this.$store.state.select.country"
                     :props="this.$store.state.select.defaultCountryProps"
+                    placeholder="请选择区域"
                     change-on-select
                   ></el-cascader>
                 </div>
@@ -127,8 +128,9 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="regArea"
+          prop="ipCity"
           label="ip地区"
+          width="150"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
@@ -206,28 +208,49 @@
         this.multipleSelection = $row
       },
       handlePersonUpDown ($type) {
-        let $params = {
-          result: $type
-        }
-        if (this.multipleSelection.length < 1) {
-          this.$message('请勾选需要处理的列表！')
-          return false
-        }
-        if (this.multipleSelection.length === 1) {
-          $params = Object.assign({}, $params, {
-            id: this.multipleSelection[0].id
+        let str = $type === 1 ? '你确定审核通过?' : '你确定审核不通过?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          let $params = {
+            result: $type
+          }
+          if (this.multipleSelection.length < 1) {
+            this.$message({
+              duration: 1500,
+              message: '请勾选需要处理的列表！'
+            })
+            return false
+          }
+          if (this.multipleSelection.length === 1) {
+            $params = Object.assign({}, $params, {
+              id: this.multipleSelection[0].id
+            })
+          } else {
+            let ids = this.multipleSelection.map(($item) => {
+              return $item.id
+            })
+            $params = Object.assign({}, $params, {
+              ids: ids
+            })
+          }
+          apiDetails.details_submitAudit($params).then((response) => {
+            if (response.data.code === 1) {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+              this.data_table()
+            }
           })
-        } else {
-          let ids = this.multipleSelection.map(($item) => {
-            return $item.id
-          })
-          $params = Object.assign({}, $params, {
-            ids: ids
-          })
-        }
-        apiDetails.details_submitAudit($params).then((response) => {
-          this.$message('操作成功！')
-          this.data_table()
+        }, () => {
+
         })
       },
       localStorage_details ($item) {
@@ -256,7 +279,9 @@
         }
         apiTable.data_tableAuditTable($params).then((response) => {
           self.loading = false
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       }
     }

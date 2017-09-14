@@ -1,7 +1,7 @@
 <template>
   <div class="person-map">
     <div class="country-select">
-      <span>区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
+      <span>请选择区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
       <a href="javascript:;" @click="treeDialog.type = true">切换</a>
     </div>
     <div class="content-map">
@@ -86,6 +86,9 @@
             show-checkbox
             node-key="id"
             ref="tree"
+            check-strictly
+            default-expand-all
+            show-checkbox
             :props="defaultProps">
           </el-tree>
         </el-form-item>
@@ -110,6 +113,8 @@
         personInfoData: {},
         countryText: [],
         checkedNodesData: [],
+        defaultTreeData: [],
+        treeDefaultChecked: [],
         treeDialog: {
           type: false,
           name: '',
@@ -123,7 +128,9 @@
     },
     computed: {
       routerAuthData () {
-        return this.$store.state.select.treeCountry
+        let $data = this.$store.state.select.country
+        this.defaultTreeData = $data
+        return $data
       },
       handlerCountryText () {
         return this.countryText.join('/')
@@ -167,8 +174,19 @@
         districts: [],
         storeIds: []
       })
+      this.defaultCountryText(this.defaultTreeData)
     },
     methods: {
+      defaultCountryText ($data) {
+        let self = this
+        $data.forEach(($item, $index) => {
+          this.countryText.push($item.label)
+          this.treeDefaultChecked.push($item.id)
+          if ($item.children) {
+            self.defaultCountryText($item.children)
+          }
+        })
+      },
       getCheckedNodes () {
         this.checkedNodesData = this.$refs.tree.getCheckedNodes()
         this.fetch_mapData()
@@ -207,7 +225,10 @@
         let self = this
         apiTable.data_personMapTable($params).then((response) => {
           if (response.data.code !== 1) {
-            this.$message(response.data.msg)
+            this.$message({
+              duration: 1500,
+              message: response.data.msg
+            })
           } else {
             self.mapData = response.data.dat
           }
@@ -218,7 +239,9 @@
         apiTable.data_personMapInfo({
           id: $id
         }).then((response) => {
-          self.personInfoData = response.data.dat
+          if (response.data.code === 1) {
+            self.personInfoData = response.data.dat
+          }
         })
       }
     },
@@ -232,6 +255,15 @@
         setTimeout(() => {
           this.fetch_mapData()
         }, 30000)
+      },
+      'treeDialog.type' () {
+        if (this.treeDialog.type) {
+          this.$nextTick(() => {
+            this.$refs['tree'].setCheckedKeys(this.treeDefaultChecked)
+          })
+        } else {
+          this.$refs['tree'].setCheckedKeys([])
+        }
       }
     }
   }
@@ -278,6 +310,7 @@
       .box-content-win{
         overflow: hidden;
         background: #fff;
+        margin-bottom: 20px;
         >div{
           width: 700px;
           height: 450px;

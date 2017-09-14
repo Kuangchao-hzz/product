@@ -1,7 +1,7 @@
 <template>
   <div class="delivery-people" v-if="btn_auth('m_psytj')">
     <div class="country-select">
-      <span>区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
+      <span>请选择区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
       <a href="javascript:;" @click="treeDialog.type = true">切换</a>
     </div>
     <div class="box-card-group">
@@ -184,7 +184,7 @@
     },
     computed: {
       treeCountry () {
-        let $data = this.$store.state.select.treeCountry
+        let $data = this.$store.state.select.country
         this.defaultTreeData = $data
         return $data
       },
@@ -252,7 +252,9 @@
       data_table ($params) {
         let self = this
         apiTable.data_dataPeopleTable($params).then((response) => {
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       }
     },

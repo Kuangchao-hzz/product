@@ -58,7 +58,7 @@
               <el-col :span="4"><strong>注册时间：</strong></el-col>
               <el-col :span="7">{{detailsData.regTime?detailsData.regTime:'- -'}}</el-col>
               <el-col :span="4"><strong>工作年限：</strong></el-col>
-              <el-col :span="6">{{detailsData.workStatus?detailsData.workStatus:'- -'}}</el-col>
+              <el-col :span="6">{{detailsData.month}}月</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="4"><strong>注册ip：</strong></el-col>
@@ -77,9 +77,11 @@
               <el-col :span="7">{{detailsData.idCard?detailsData.idCard:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-button type="info" @click="details_handlePersonUpDown(1)">升级</el-button>
-              <el-button type="info" @click="details_handlePersonUpDown(0)">降级</el-button>
-              <el-button type="info" @click="details_handlePersonEnabled(0)">账号冻结</el-button>
+              <el-button :disabled="!btn_auth('b_ps_sj')" type="info" @click="details_handlePersonUpDown(1)">升级</el-button>
+              <el-button :disabled="!btn_auth('b_ps_jj')" type="info" @click="details_handlePersonUpDown(0)">降级</el-button>
+              <el-button :disabled="!btn_auth('b_ps_djzh')" type="info" v-if="detailsData.accountStatus === 1" @click="details_handlePersonEnabled(0)">账号冻结</el-button>
+              <el-button :disabled="!btn_auth('b_ps_zhjd')" type="info" v-if="detailsData.accountStatus === 0" @click="details_handlePersonEnabled(1)">账号解冻</el-button>
+              <el-button type="info" @click="$router.go(-1)">返回</el-button>
             </el-row>
           </el-col>
           <el-col :span="8">
@@ -90,34 +92,34 @@
               <el-row>
                 <el-col :span="10"><strong>本月/历史订单量</strong></el-col>
                 <el-col :span="14">
-                  {{detailsData.userData.monthAmount?detailsData.userData.monthAmount + '%' :'- -'}}
+                  {{detailsData.userData.monthAmount}}
                   /
-                  {{detailsData.userData.monthAmount?detailsData.userData.totalAmount + '%' :'- -'}}
+                  {{detailsData.userData.monthAmount}}
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="10"><strong>本月/历史准达率:</strong></el-col>
                 <el-col :span="14">
-                  {{detailsData.userData.monthOntimeRate?detailsData.userData.monthOntimeRate + '%' :'- -'}}
+                  {{detailsData.userData.monthOntimeRate}}%
                   /
-                  {{detailsData.userData.totalOntimeRate?detailsData.userData.totalOntimeRate + '%' :'- -'}}
+                  {{detailsData.userData.totalOntimeRate}}%
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="10"><strong>本月/历史退单率:</strong></el-col>
                 <el-col :span="14">
-                  {{detailsData.userData.monthCancelRate?detailsData.userData.monthCancelRate + '%' :'- -'}}
+                  {{detailsData.userData.monthCancelRate}}%
                   /
-                  {{detailsData.userData.totalCancelRate?detailsData.userData.totalCancelRate + '%' :'- -'}}
+                  {{detailsData.userData.totalCancelRate}}%
                 </el-col>
               </el-row>
               <el-row>
                 <el-col :span="10"><strong>本月佣金:</strong></el-col>
-                <el-col :span="14">{{detailsData.userData.totalOntimeRate?'￥' + detailsData.userData.totalOntimeRate :'- -'}}</el-col>
+                <el-col :span="14">￥{{detailsData.userData.totalOntimeRate}}</el-col>
               </el-row>
               <el-row>
                 <el-col :span="10"><strong>历史佣金:</strong></el-col>
-                <el-col :span="14">{{detailsData.userData.totalCommission?'￥' + detailsData.userData.totalCommission :'- -'}}</el-col>
+                <el-col :span="14">￥{{detailsData.userData.totalCommission}}</el-col>
               </el-row>
             </el-row>
           </el-col>
@@ -189,34 +191,34 @@
                 <el-table-column
                   label="订单编号"
                   align="center"
-                  width="210"
+                  min-width="210"
                   fixed>
                   <template scope="scope">{{ scope.row.orderNo }}</template>
                 </el-table-column>
                 <el-table-column
                   align="center"
-                  width="100"
+                  min-width="100"
                   prop="orderType"
                   label="订单类别">
                 </el-table-column>
                 <el-table-column
                   prop="storeName"
                   align="center"
-                  width="180"
+                  min-width="180"
                   label="提货门店"
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                   prop="receiverAddress"
                   align="center"
-                  width="180"
+                  min-width="180"
                   label="送货地点"
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                   prop="name1"
                   align="center"
-                  width="180"
+                  min-width="180"
                   label="常驻地区"
                   show-overflow-tooltip>
                 </el-table-column>
@@ -224,26 +226,26 @@
                   prop="orderTime"
                   label="订单时间"
                   align="center"
-                  width="180"
+                  min-width="180"
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                   prop="scheduledTime"
                   align="center"
-                  width="180"
+                  min-width="180"
                   label="需要送达时间"
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
                   label="订单状态"
                   align="center"
-                  width="100"
+                  min-width="100"
                   show-overflow-tooltip>
                   <template scope="scope">
                     {{scope.row.orderStatus === 10 ? '待抢单': ''}}
                     {{scope.row.orderStatus === 20 ? '抢单中': ''}}
                     {{scope.row.orderStatus === 30 ? '待拣货': ''}}
-                    {{scope.row.orderStatus === 40 ? '待验货': ''}}
+                    {{scope.row.orderStatus === 40 ? '待提货': ''}}
                     {{scope.row.orderStatus === 50 ? '送货中': ''}}
                     {{scope.row.orderStatus === 60 ? '已送达': ''}}
                     {{scope.row.orderStatus === 90 ? '已退单': ''}}
@@ -254,7 +256,7 @@
                 <el-table-column
                   label="是否异常"
                   align="center"
-                  width="100"
+                  min-width="100"
                   show-overflow-tooltip>
                   <template scope="scope">
                     <p v-if="scope.row.isAbnormal === 0">无异常</p>
@@ -269,25 +271,19 @@
                     </p>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="address"
-                  align="center"
-                  width="100"
-                  label="评价"
-                  show-overflow-tooltip>
-                </el-table-column>
                 <el-table-column label="操作"
                                  align="center"
-                                 width="100"
+                                 min-width="100"
                                  fixed="right">
                   <template scope="scope">
-                    <router-link to="/order/allDetails">查看详情</router-link>
+                    <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 1 }}">查看详情</router-link>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
             <div class="person-manage-pagination">
               <el-pagination
+                @current-change="details_personTableData"
                 :page-sizes="[20]"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="tableData.rowsCount">
@@ -326,6 +322,11 @@
       this.details_personTableData()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       resetForm () {
         this.searchData.score = ''
         this.searchData.range = ''
@@ -356,31 +357,69 @@
         })
       },
       details_handlePersonUpDown ($params) {
-        let self = this
-        apiDetails.details_handlePersonUpDown({
-          id: self.$route.query.id,
-          direction: $params
-        }).then((response) => {
-          if (Number(response.data.code) !== 1) {
-            this.$message(response.data.msg)
-          } else {
-            this.$message('操作成功！')
-            this.$router.go('-1')
-          }
+        let str = $params === 1 ? '你确定要升级该配送员?' : '你确定要降级该配送员?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          let self = this
+          apiDetails.details_handlePersonUpDown({
+            id: self.$route.query.id,
+            direction: $params
+          }).then((response) => {
+            if (Number(response.data.code) !== 1) {
+              this.$message({
+                duration: 1500,
+                message: response.data.msg
+              })
+            } else {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+              this.$router.go('-1')
+            }
+          })
+        }, () => {
+
         })
       },
       details_handlePersonEnabled ($params) {
-        let self = this
-        apiDetails.details_handlePersonEnabled({
-          id: self.$route.query.id,
-          direction: $params
-        }).then((response) => {
-          if (Number(response.data.code) !== 1) {
-            this.$message(response.data.msg)
-          } else {
-            this.$message('操作成功！')
-            this.$router.go('-1')
-          }
+        let str = $params === 0 ? '你确定要冻结该配送员?' : '你确定要解冻该配送员?'
+        swal({
+          title: str,
+          type: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定!',
+          cancelButtonText: '取消'
+        }).then(() => {
+          let self = this
+          apiDetails.details_handlePersonEnabled({
+            id: self.$route.query.id,
+            direction: $params
+          }).then((response) => {
+            if (Number(response.data.code) !== 1) {
+              this.$message({
+                duration: 1500,
+                message: response.data.msg
+              })
+            } else {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+              this.$router.go('-1')
+            }
+          })
+        }, () => {
+
         })
       }
     },
@@ -398,6 +437,7 @@
   .person-details{
     color: #666;
     font-size: 12px;
+    padding-bottom: 20px;
     .details-title{
       border-bottom: 1px #ddd solid;
       padding: 10px;

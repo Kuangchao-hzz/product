@@ -38,9 +38,7 @@
       }
     },
     methods: {
-      onSubmit () {
-        console.log('submit!')
-      }
+
     },
     beforeRouteEnter (to, from, next) {
       if (to.query) {

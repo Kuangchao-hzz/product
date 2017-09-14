@@ -64,6 +64,7 @@ const permission = {
     },
     RESET_ROUTERS (state) {
       state.addRouters = []
+      state.routers = includeRouterMap
     }
   },
   actions: {
