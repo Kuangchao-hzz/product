@@ -203,6 +203,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',

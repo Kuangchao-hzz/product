@@ -213,6 +213,8 @@
       return {
         loading: false,
         searchData: {
+          page: 0,
+          localStorage: true,
           country: [],
           userType: '',
           level: '',
@@ -231,6 +233,10 @@
       }
     },
     mounted () {
+      var $data = JSON.parse(localStorage.getItem('personManage_search'))
+      if ($data && $data.localStorage) {
+        this.searchData = $data
+      }
       this.data_table()
     },
     methods: {
@@ -247,12 +253,13 @@
         this.searchData.accountStatus = ''
         this.searchData.realName = ''
         this.searchData.phone = ''
+        this.data_table()
       },
       data_table ($page) {
         let self = this
         self.loading = true
         let $params = {
-          page: $page - 1 || 0,
+          page: $page - 1 || self.searchData.page,
           level: self.searchData.level,
           userType: self.searchData.userType,
           workStatus: self.searchData.workStatus,
@@ -273,6 +280,7 @@
         apiTable.data_personManageTable($params).then((response) => {
           self.loading = false
           if (response.data.code === 1) {
+            localStorage.setItem('personManage_search', JSON.stringify(self.searchData))
             self.tableData = response.data.dat
           }
         })
@@ -283,6 +291,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -327,6 +336,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -371,6 +381,12 @@
       submitForm () {
         alert(JSON.stringify(this.searchData))
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      if (to.path !== '/person/personDetails') {
+        localStorage.setItem('personManage_search', null)
+      }
+      next()
     }
   }
 </script>

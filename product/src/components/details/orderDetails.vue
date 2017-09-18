@@ -10,16 +10,16 @@
             <el-row class="data-item">
               <el-col :span="3"><strong>订单编号：</strong></el-col>
               <el-col :span="6">{{detailsData.orderNo?detailsData.orderNo : '- -'}}</el-col>
-              <el-col :span="4"  v-if="detailsData.abnormalInfo"><strong>异常类型：</strong></el-col>
-              <el-col :span="6"  v-if="detailsData.abnormalInfo">
-                {{detailsData.abnormalInfo.abnormalStatus === 1 ? '无人抢单': ''}}
-                {{detailsData.abnormalInfo.abnormalStatus === 2 ? '主动退单': ''}}
-                {{detailsData.abnormalInfo.abnormalStatus === 3 ? '超时未送': ''}}
-                {{detailsData.abnormalInfo.abnormalStatus === 4 ? '超时未达': ''}}
-                {{detailsData.abnormalInfo.abnormalStatus === 5 ? '商城关闭': ''}}
-                {{detailsData.abnormalInfo.abnormalStatus === 6 ? '客户拒单': ''}}
-                {{detailsData.abnormalInfo.abnormalStatus === 7 ? '商城退换货': ''}}
-              </el-col>
+              <!--<el-col :span="4"  v-if="detailsData.abnormalInfo"><strong>异常类型：</strong></el-col>-->
+              <!--<el-col :span="6"  v-if="detailsData.abnormalInfo">-->
+                <!--{{detailsData.abnormalInfo.abnormalStatus === 1 ? '无人抢单': ''}}-->
+                <!--{{detailsData.abnormalInfo.abnormalStatus === 2 ? '主动退单': ''}}-->
+                <!--{{detailsData.abnormalInfo.abnormalStatus === 3 ? '超时未送': ''}}-->
+                <!--{{detailsData.abnormalInfo.abnormalStatus === 4 ? '超时未达': ''}}-->
+                <!--{{detailsData.abnormalInfo.abnormalStatus === 5 ? '商城关闭': ''}}-->
+                <!--{{detailsData.abnormalInfo.abnormalStatus === 6 ? '客户拒单': ''}}-->
+                <!--{{detailsData.abnormalInfo.abnormalStatus === 7 ? '商城退换货': ''}}-->
+              <!--</el-col>-->
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>订单类型：</strong></el-col>
@@ -35,6 +35,7 @@
                 {{detailsData.orderStatus === 90 ? '已退单': ''}}
                 {{detailsData.orderStatus === 91 ? '已拒单': ''}}
                 {{detailsData.orderStatus === 99 ? '已关闭': ''}}
+                {{detailsData.isBack === 1 ? '(回退邮包)': ''}}
               </el-col>
             </el-row>
             <el-row class="data-item">
@@ -43,8 +44,8 @@
               <el-col :span="4"><strong>期望送达时间：</strong></el-col>
               <el-col :span="6">{{detailsData.scheduledTime?detailsData.scheduledTime:'- -'}}</el-col>
             </el-row>
-            <el-row class="data-item" v-if="detailsSource !== '1'">
-              <el-col :span="3"><strong>验货时间：</strong></el-col>
+            <el-row class="data-item">
+              <el-col :span="3"><strong>提货时间：</strong></el-col>
               <el-col :span="6">{{detailsData.checkTime}}</el-col>
               <el-col :span="4"><strong>送达时间：</strong></el-col>
               <el-col :span="6">{{detailsData.arriveTime}}</el-col>
@@ -138,12 +139,17 @@
             </div>
             <el-row class="data-item">
               <el-row :gutter="10">
-                <div v-if="detailsData.orderStatus !== 60" style="float: left;margin-right: 10px;">
-                  <el-button type="info" :disabled="!btn_auth('b_xq_htyb')" v-if="detailsData.orderStatus !== 90" @click="handleOrderBackToYb">回退邮包</el-button>
-                  <el-button type="info" :disabled="!btn_auth('b_xq_sgts')" v-if="detailsData.orderStatus === 10" @click="handleOrderRePush">手工推送</el-button>
+                <div style="float: left;margin-right: 10px;">
+                  <el-button type="info"
+                             :disabled="!btn_auth('b_xq_htyb')"
+                             v-if="detailsData.abnormalInfo && detailsData.orderStatus < 60" @click="handleOrderBackToYb">回退邮包{{detailsData.abnormalInfo.handleResult}}</el-button>
+                  <el-button type="info" :disabled="!btn_auth('b_xq_sgts')"
+                             v-if="detailsData.orderStatus　=== 10" @click="handleOrderRePush">手工推送</el-button>
                   <!--<el-button type="info" :disabled="!btn_auth('b_xq_td')" v-if="detailsData.orderStatus < 90" @click="outOrderDialog = true">退单</el-button>-->
-                  <el-button type="info" :disabled="!btn_auth('b_xq_gbdd')" v-if="detailsData.orderStatus < 90" @click="closeOrderDialog = true">关闭订单</el-button>
-                  <el-button type="info" :disabled="!btn_auth('b_xq_rgcl')" v-if="(detailsData.abnormalInfo && detailsData.abnormalInfo.handleResult === 0)" @click="manualHandle(detailsData.id)">人工处理</el-button>
+                  <el-button type="info" :disabled="!btn_auth('b_xq_gbdd')"
+                             v-if="detailsData.abnormalInfo &&　detailsData.orderStatus < 60" @click="closeOrderDialog = true">关闭订单</el-button>
+                  <el-button type="info" :disabled="!btn_auth('b_xq_rgcl')"
+                             v-if="detailsData.abnormalInfo && detailsData.orderStatus < 60 && !(detailsData.abnormalInfo.handleResult)" @click="manualHandle(detailsData.id)">人工处理</el-button>
                 </div>
                 <el-button type="info" @click="$router.go(-1)">返回</el-button>
               </el-row>
@@ -199,7 +205,7 @@
               </el-row>
             </el-row>
             <!-- 推送记录 -->
-            <el-row class="details-notice" v-if="detailsData.pushInfo && detailsSource === '1'">
+            <el-row class="details-notice" v-if="detailsData.pushInfo">
               <el-row class="title">
                 <el-col :span="24">推送记录:</el-col>
               </el-row>
@@ -339,6 +345,7 @@
           title: '你确定要手工推送?',
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -363,6 +370,7 @@
           title: '你确定要回退邮包?',
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -407,6 +415,7 @@
           title: '你确定要人工处理?',
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',

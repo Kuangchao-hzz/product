@@ -232,7 +232,9 @@
       data_table () {
         let self = this
         apiTable.data_systemUserAll().then((response) => {
-          self.tableData = response.data.dat
+          if (response.data.code === 1) {
+            self.tableData = response.data.dat
+          }
         })
       },
       handler_dataTableLock ($row, $sta) {
@@ -241,6 +243,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -294,6 +297,7 @@
           title: '你确定要删除该用户?',
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -302,11 +306,13 @@
           apiTable.data_systemUserDel({
             userId: $id
           }).then((response) => {
-            this.data_table()
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
-            })
+            if (response.data.code === 1) {
+              this.data_table()
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+            }
           })
         }, () => {
 
@@ -331,10 +337,10 @@
                 areaIds: roleIds.join('-'),
                 roleIds: this.addUserForm.roleIds.join(',')
               }).then((response) => {
-                this.data_table()
-                this.handleClose()
                 this.$store.dispatch('fetch_allAreaAndStore')
                 if (response.data.code === 1) {
+                  this.data_table()
+                  this.handleClose()
                   this.$message({
                     duration: 1500,
                     message: '操作成功！'
@@ -375,8 +381,10 @@
       get_allAreaAndStore () {
         return new Promise(resolve => {
           apiTable.fetch_allAreaAndStore().then((response) => {
-            this.addUserForm.treeDialog.routerAuth = response.data.dat
-            resolve()
+            if (response.data.code === 1) {
+              this.addUserForm.treeDialog.routerAuth = response.data.dat
+              resolve()
+            }
           })
         })
       }

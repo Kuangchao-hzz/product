@@ -295,8 +295,6 @@
             if (response.data.code === 1) {
               self.detailsData = response.data.dat
               self.storeInfo = response.data.dat.storeInfo
-            } else {
-              this.$message(response.data.msg)
             }
           })
         })

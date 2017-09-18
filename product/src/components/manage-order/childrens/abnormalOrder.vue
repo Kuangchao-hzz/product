@@ -82,8 +82,8 @@
                 <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.orderId, detailsType: 2 }}" tag="span">查看详情</router-link>
               </el-button>
               <!--<el-button :disabled="!btn_auth('b_xq_td')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary">退单</el-button>-->
-              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
-              <el-button :disabled="!btn_auth('b_xq_rgcl')" v-if="tableRowClassName(scope.row) === 'order-abnormal' || (scope.row.abnormalInfo && scope.row.abnormalInfo.handleResult === 0)" type="primary" @click="manualHandle(scope.row.id)">人工处理</el-button>
+              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus < 60" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
+              <el-button :disabled="!btn_auth('b_xq_rgcl')" v-if="scope.row.handlerStatus === 0" type="primary" @click="manualHandle(scope.row.id)">人工处理</el-button>
             </el-form>
           </template>
         </el-table-column>
@@ -234,11 +234,13 @@
         loading: false,
         closeOrderDialog: false,
         searchData: {
+          page: 0,
           country: [],
           storeId: '',
           abnormalStatus: '',
           handlerStatus: '',
-          phone: ''
+          phone: '',
+          localStorage: true
         },
         storeData: [],
         tableData: [],
@@ -255,12 +257,16 @@
       }
     },
     mounted () {
+      var $data = JSON.parse(localStorage.getItem('abnormalOrder_search'))
+      if ($data && $data.localStorage) {
+        this.searchData = $data
+      }
       this.data_table()
     },
     methods: {
       tableRowClassName ($row) {
         let now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
-        if (moment(now).diff(moment($row.scheduledTime)) > 3600000) {
+        if (moment(now).diff(moment($row.scheduledTime)) > 3600000 && $row.handlerStatus === 0) {
           return 'order-abnormal'
         }
       },
@@ -315,6 +321,7 @@
         this.searchData.handlerStatus = ''
         this.searchData.phone = ''
         this.searchData.storeId = ''
+        this.data_table()
       },
       closeOrder () {
         apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
@@ -341,7 +348,7 @@
       data_table ($page) {
         let self = this
         let $params = {
-          page: $page - 1 || 0,
+          page: $page - 1 || self.searchData.page,
           storeId: self.searchData.storeId,
           abnormalStatus: self.searchData.abnormalStatus,
           handlerStatus: self.searchData.handlerStatus,
@@ -361,6 +368,7 @@
         apiTable.data_orderAbnormalTable($params).then((response) => {
           self.loading = false
           if (response.data.code === 1) {
+            localStorage.setItem('abnormalOrder_search', JSON.stringify(self.searchData))
             self.tableData = response.data.dat
           }
         })
@@ -368,6 +376,12 @@
       lookDetails ($item) {
         this.$router.push('/order/abnormalDetails')
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      if (to.path !== '/order/orderDetails') {
+        localStorage.setItem('abnormalOrder_search', null)
+      }
+      next()
     }
   }
 </script>

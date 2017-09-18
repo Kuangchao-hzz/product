@@ -1,4 +1,5 @@
 import { asyncRouterMap, includeRouterMap } from '../../router'
+const asyncRouterMapJSON = JSON.stringify(asyncRouterMap)
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -73,9 +74,9 @@ const permission = {
         const { roles } = data
         let accessedRouters
         if (roles.some((role) => role === 'admin')) {
-          accessedRouters = asyncRouterMap
+          accessedRouters = JSON.parse(asyncRouterMapJSON)
         } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+          accessedRouters = filterAsyncRouter(JSON.parse(asyncRouterMapJSON), roles)
         }
         commit('SET_ROUTERS', accessedRouters)
         resolve(accessedRouters)

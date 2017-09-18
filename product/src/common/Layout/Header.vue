@@ -13,6 +13,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="loginout">退出</el-dropdown-item>
+          <el-dropdown-item command="editPwd">修改密码</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -42,6 +43,8 @@
               this.$router.push('/login')
             }
           })
+        } else if (command === 'editPwd') {
+          this.$router.push('/resetPassword')
         }
       }
     }

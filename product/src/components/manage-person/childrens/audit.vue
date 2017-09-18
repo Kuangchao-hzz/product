@@ -122,7 +122,7 @@
         <el-table-column
           align="center"
           prop="regIp"
-          label="ip"
+          label="IP"
           width="200"
           show-overflow-tooltip>
         </el-table-column>
@@ -174,6 +174,8 @@
       return {
         loading: false,
         searchData: {
+          page: 0,
+          localStorage: true,
           country: [],
           userType: '',
           realName: '',
@@ -190,6 +192,10 @@
       }
     },
     mounted () {
+      var $data = JSON.parse(localStorage.getItem('personAudit_search'))
+      if ($data && $data.localStorage) {
+        this.searchData = $data
+      }
       this.data_table()
     },
     methods: {
@@ -203,6 +209,8 @@
         this.searchData.personNum = ''
         this.searchData.category = ''
         this.searchData.personIdCard = ''
+        this.searchData.userType = ''
+        this.data_table()
       },
       handleSelectionChange ($row) {
         this.multipleSelection = $row
@@ -213,6 +221,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -280,10 +289,17 @@
         apiTable.data_tableAuditTable($params).then((response) => {
           self.loading = false
           if (response.data.code === 1) {
+            localStorage.setItem('personAudit_search', JSON.stringify(self.searchData))
             self.tableData = response.data.dat
           }
         })
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      if (to.path !== '/person/auditDetails') {
+        localStorage.setItem('personAudit_search', null)
+      }
+      next()
     }
   }
 </script>

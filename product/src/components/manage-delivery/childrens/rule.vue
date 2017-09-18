@@ -50,8 +50,8 @@
           align="center"
           label="员工(分钟)">
           <template scope="scope">
-            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].config.sh"></el-input>
-            <span v-show="!scope.row.editable">{{scope.row.config.sh}}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].config.yg"></el-input>
+            <span v-show="!scope.row.editable">{{scope.row.config.yg}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -66,8 +66,8 @@
           align="center"
           label="社会(分钟)">
           <template scope="scope">
-            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].config.yg"></el-input>
-            <span v-show="!scope.row.editable">{{scope.row.config.yg}}</span>
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].config.sh"></el-input>
+            <span v-show="!scope.row.editable">{{scope.row.config.sh}}</span>
           </template>
         </el-table-column>
       </el-table-column>
@@ -188,6 +188,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',

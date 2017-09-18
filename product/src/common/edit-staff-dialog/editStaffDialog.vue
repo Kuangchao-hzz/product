@@ -249,11 +249,6 @@
             this.editCalendarShow = false
             this.edit_table(date)
             this.editStatus = !this.editStatus
-          } else {
-            this.$message({
-              duration: 1500,
-              message: response.data.msg
-            })
           }
         })
       },

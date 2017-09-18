@@ -139,19 +139,19 @@ const select = {
       label: '等级'
     }, {
       value: '1',
-      label: '1星'
+      label: '1级'
     }, {
       value: '2',
-      label: '2星'
+      label: '2级'
     }, {
       value: '3',
-      label: '3星'
+      label: '3级'
     }, {
       value: '4',
-      label: '4星'
+      label: '4级'
     }, {
       value: '5',
-      label: '5星'
+      label: '5级'
     }],
     category: [{
       value: '',
@@ -249,6 +249,10 @@ const select = {
     },
     SET_AREA ($state, $data) {
       $state.country = $data
+    },
+    RESET_ALLAREAANDSTORE ($state, $data) {
+      $state.country = []
+      $state.treeCountry = []
     }
   },
   actions: {
@@ -267,6 +271,9 @@ const select = {
           }
         })
       })
+    },
+    reset_allAreaAndStore ({ commit }) {
+      commit('RESET_ALLAREAANDSTORE')
     }
   }
 }

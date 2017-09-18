@@ -162,7 +162,9 @@
             self.$refs.tree.setCheckedKeys([])
           }
           apiTable.data_systemRoleDate().then((response) => {
-            self.roleList.routerAuth = response.data.dat
+            if (response.data.code === 1) {
+              self.roleList.routerAuth = response.data.dat
+            }
           })
         })
       },
@@ -218,8 +220,6 @@
                 duration: 1500,
                 message: '删除成功！'
               })
-            } else {
-              swal(response.data.code)
             }
           })
         }, () => {

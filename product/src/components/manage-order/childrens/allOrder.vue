@@ -123,7 +123,7 @@
                 <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 3 }}" tag="span">订单详情</router-link>
               </el-button>
               <el-button :disabled="!btn_auth('b_xq_td')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary">退单</el-button>
-              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
+              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus < 60" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
             </el-form>
           </template>
         </el-table-column>
@@ -211,15 +211,7 @@
           show-overflow-tooltip>
           <template scope="scope">
             <p v-if="scope.row.isAbnormal === 0">无异常</p>
-            <p v-else>
-              {{scope.row.isAbnormal === 1 ? '无人抢单': ''}}
-              {{scope.row.isAbnormal === 2 ? '主动退出': ''}}
-              {{scope.row.isAbnormal === 3 ? '超时未送': ''}}
-              {{scope.row.isAbnormal === 4 ? '超时未达': ''}}
-              {{scope.row.isAbnormal === 5 ? '商城关闭': ''}}
-              {{scope.row.isAbnormal === 6 ? '客户拒单': ''}}
-              {{scope.row.isAbnormal === 7 ? '商城退换货': ''}}
-            </p>
+            <p v-else>异常</p>
           </template>
         </el-table-column>
         <el-table-column
@@ -275,6 +267,7 @@
       return {
         loading: false,
         searchData: {
+          page: 0,
           country: [],
           orderNo: '',
           orderType: '',
@@ -283,8 +276,8 @@
           arriveTime: [],
           grabStatus: '',
           orderStatus: '',
-          // markScore: '',
-          phone: ''
+          phone: '',
+          localStorage: true
         },
         tableData: [],
         closeOrderForm: {
@@ -301,6 +294,10 @@
       }
     },
     mounted () {
+      var $data = JSON.parse(localStorage.getItem('allOrder_search'))
+      if ($data && $data.localStorage) {
+        this.searchData = $data
+      }
       this.data_table()
     },
     methods: {
@@ -326,12 +323,14 @@
       },
       closeOrder () {
         apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
-          this.$message({
-            duration: 1500,
-            message: '操作成功！'
-          })
-          this.data_table()
-          this.handleClose()
+          if (response.data.code === 1) {
+            this.$message({
+              duration: 1500,
+              message: '操作成功！'
+            })
+            this.data_table()
+            this.handleClose()
+          }
         })
       },
       resetForm () {
@@ -363,7 +362,7 @@
       data_table ($page) {
         let self = this
         let $params = {
-          page: $page - 1 || 0,
+          page: $page - 1 || self.searchData.page,
           orderNo: self.searchData.orderNo,
           orderType: self.searchData.orderType,
           storeId: self.searchData.storeId,
@@ -402,6 +401,7 @@
         apiTable.data_orderAllTable($params).then((response) => {
           self.loading = false
           if (response.data.code === 1) {
+            localStorage.setItem('allOrder_search', JSON.stringify(self.searchData))
             self.tableData = response.data.dat
           }
         })
@@ -423,6 +423,12 @@
         }
         return fmt
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      if (to.path !== '/order/orderDetails') {
+        localStorage.setItem('allOrder_search', null)
+      }
+      next()
     }
   }
 </script>

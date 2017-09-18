@@ -37,7 +37,7 @@
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>设备型号：</strong></el-col>
-              <el-col :span="6">{{}}</el-col>
+              <el-col :span="6">{{detailsData.device}}</el-col>
               <el-col :span="3"><strong>注册时间：</strong></el-col>
               <el-col :span="6">{{detailsData.regTime}}</el-col>
             </el-row>
@@ -45,7 +45,7 @@
               <el-col :span="3"><strong>注册ip：</strong></el-col>
               <el-col :span="6">{{detailsData.regIp}}</el-col>
               <el-col :span="3"><strong>ip地区：</strong></el-col>
-              <el-col :span="6">{{detailsData.ip}}</el-col>
+              <el-col :span="6">{{detailsData.ipCity}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="3">身份证：</el-col>
@@ -74,7 +74,7 @@
                class="demo-form-inline">
         <el-form-item label="密码："
                       prop="password">
-          <el-input type="password" v-model="passwordDialog.password" placeholder="请输入密码"></el-input>
+          <el-input type="password" v-model="passwordDialog.password" placeholder="请输入登录密码"></el-input>
         </el-form-item>
         <el-form-item label="身份证："
                       v-if="idCarUrlHandle !== ''"

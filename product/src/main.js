@@ -15,7 +15,7 @@ import 'element-ui/lib/theme-default/index.css'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-awesome/icons'
 /* eslint-disable no-duplicate-imports */
-import { asyncRouterMap } from './router'
+import {asyncRouterMap} from './router'
 import Cookies from 'js-cookie'
 
 Vue.config.productionTip = false
@@ -27,12 +27,12 @@ AMap.initAMapApiLoader({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path !== '/login' && to.path !== '/forget') {
+  if (to.path !== '/login' && to.path !== '/forget' && to.path !== '/resetPassword') {
     if (store.state.select.treeCountry.length < 1) {
       store.dispatch('fetch_allAreaAndStore')
     }
     // 如果当前地址不是登录页 并且没有路由权限 则跳转到登录页
-    if (!localStorage.getItem('ms_authId')) {
+    if (!localStorage.getItem('ms_authId') || store.getters.authIds === 'null') {
       next({path: '/login'})
     } else {
       // 当地址不是登录页 但是有路由权限 则生成路由表
@@ -41,9 +41,13 @@ router.beforeEach((to, from, next) => {
           // 将路由字段转成数组
           let roles = store.getters.authIds.split(',')
           // 生成路由表 并添加到router实例里面
-          store.dispatch('GenerateRoutes', { roles }).then(() => {
-            router.addRoutes(store.getters.addRouters)
-            next({...to})
+          store.dispatch('GenerateRoutes', {roles}).then(() => {
+            var routerJSON = JSON.parse(JSON.stringify(store.getters.addRouters))
+            if (routerJSON) {
+              router.addRoutes(asyncRouterMap)
+              router.addRoutes(routerJSON)
+              next({...to})
+            }
             // 获取浏览器尺寸 计算布局
             if (store.state.include.tableWidth === '' && store.state.include.tableHeight === '') {
               store.dispatch('captureBrowserSize')
@@ -56,9 +60,10 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     localStorage.setItem('ms_authId', null)
+    store.dispatch('ResetCurrentRouter')
+    store.dispatch('reset_allAreaAndStore')
     store.dispatch('handlerLoginInfo')
     // 跳转到登录页是 重置路由表
-    console.log(asyncRouterMap)
     next()
   }
 })
@@ -76,5 +81,5 @@ new Vue({
   router,
   axios,
   template: '<App/>',
-  components: { App }
+  components: {App}
 })

@@ -138,8 +138,10 @@
       return {
         loading: false,
         searchData: {
+          page: 0,
           country: [],
-          orderType: ''
+          orderType: '',
+          localStorage: true
         },
         tableData: [],
         multipleSelection: []
@@ -151,6 +153,10 @@
       }
     },
     mounted () {
+      var $data = JSON.parse(localStorage.getItem('sendOrder_search'))
+      if ($data && $data.localStorage) {
+        this.searchData = $data
+      }
       this.data_table()
     },
     methods: {
@@ -170,6 +176,7 @@
           title: '你确定要回退邮包?',
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -214,6 +221,7 @@
       resetForm () {
         this.searchData.country = []
         this.searchData.orderType = ''
+        this.data_table()
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
@@ -228,7 +236,7 @@
       data_table ($page) {
         let self = this
         let $params = {
-          page: $page - 1 || 0,
+          page: $page - 1 || this.searchData.page,
           city: '',
           province: '',
           district: '',
@@ -244,12 +252,18 @@
         self.loading = true
         apiTable.data_orderSendTable($params).then((response) => {
           self.loading = false
-          console.log(response)
           if (response.data.code === 1) {
+            localStorage.setItem('sendOrder_search', JSON.stringify(self.searchData))
             self.tableData = response.data.dat
           }
         })
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      if (to.path !== '/order/orderDetails') {
+        localStorage.setItem('sendOrder_search', null)
+      }
+      next()
     }
   }
 </script>

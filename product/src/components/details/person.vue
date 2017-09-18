@@ -61,9 +61,9 @@
               <el-col :span="6">{{detailsData.month}}月</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="4"><strong>注册ip：</strong></el-col>
+              <el-col :span="4"><strong>注册IP：</strong></el-col>
               <el-col :span="7">{{detailsData.regIp?detailsData.regIp:'- -'}}</el-col>
-              <el-col :span="4"><strong>ip地区：</strong></el-col>
+              <el-col :span="4"><strong>IP地区：</strong></el-col>
               <el-col :span="6">{{detailsData.ipCity?detailsData.ipCity:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
@@ -129,18 +129,6 @@
             <div class="search-table">
               <el-form :inline="true" ref="form">
                 <el-row :gutter="10">
-                  <el-col :span="3">
-                    <el-form-item>
-                      <el-select v-model="searchData.score" placeholder="等级">
-                        <el-option
-                          v-for="item in this.$store.state.select.orderLevel"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
                   <el-col :span="3">
                     <el-form-item>
                       <el-select v-model="searchData.isAbnormal" placeholder="异常状态">
@@ -362,6 +350,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -395,6 +384,7 @@
           title: str,
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',

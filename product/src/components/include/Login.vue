@@ -7,7 +7,10 @@
       <div class="ms-login">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
           <el-form-item prop="username">
-            <el-input v-model="ruleForm.username" placeholder="手机号/邮箱">
+            <el-input
+              v-model="ruleForm.username"
+              auto-complete="off"
+              placeholder="手机号/邮箱">
               <template slot="prepend">
                 <img src="../../assets/img/user.png">
               </template>
@@ -16,6 +19,7 @@
           <el-form-item prop="password">
             <el-input type="password"
                       v-model="ruleForm.password"
+                      auto-complete="off"
                       @keyup.enter.native="submitForm('ruleForm')"
                       placeholder="密码">
               <template slot="prepend">

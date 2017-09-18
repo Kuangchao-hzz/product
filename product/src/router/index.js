@@ -54,6 +54,9 @@ export const includeRouterMap = [
   }, {
     path: '/forget',
     component: resolve => require(['../components/include/forget-login.vue'], resolve)
+  }, {
+    path: '/resetPassword',
+    component: resolve => require(['../components/include/reset-login.vue'], resolve)
   }
 ]
 

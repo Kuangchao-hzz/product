@@ -142,9 +142,11 @@
       return {
         loading: false,
         searchData: {
+          page: 0,
           orderType: '',
           country: [],
-          storeId: ''
+          storeId: '',
+          localStorage: true
         },
         storeData: [],
         tableData: [],
@@ -158,6 +160,10 @@
       }
     },
     mounted () {
+      var $data = JSON.parse(localStorage.getItem('pushOrder_search'))
+      if ($data && $data.localStorage) {
+        this.searchData = $data
+      }
       this.data_table()
     },
     methods: {
@@ -191,9 +197,10 @@
       },
       handleOrderBackToYb () {
         swal({
-          title: '你确定要手工推送?',
+          title: '你确定要回退邮包?',
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -209,11 +216,11 @@
           }
           if (this.multipleSelection.length === 1) {
             $params = Object.assign({}, $params, {
-              id: this.multipleSelection[0].id
+              id: this.multipleSelection[0].orderId
             })
           } else {
             let ids = this.multipleSelection.map(($item) => {
-              return $item.id
+              return $item.orderId
             })
             $params = Object.assign({}, $params, {
               ids: ids
@@ -234,9 +241,10 @@
       },
       handleOrderRePush () {
         swal({
-          title: '你确定要回退邮包?',
+          title: '你确定要手工推送?',
           type: 'warning',
           showCancelButton: true,
+          reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定!',
@@ -263,11 +271,13 @@
             })
           }
           apiDetails.details_handleOrderRePush($params).then((response) => {
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
-            })
-            this.data_table()
+            if (response.data.code === 1) {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+              this.data_table()
+            }
           })
         }, () => {
 
@@ -281,6 +291,7 @@
         this.searchData.country = []
         this.searchData.orderType = ''
         this.searchData.storeId = ''
+        this.data_table()
       },
       downloadExcel () {
         if (this.tableData.details.length < 1) {
@@ -295,7 +306,7 @@
       data_table ($page) {
         let self = this
         let $params = {
-          page: $page - 1 || 0,
+          page: $page - 1 || this.searchData.page,
           orderType: this.searchData.orderType,
           storeId: this.searchData.storeId,
           city: '',
@@ -313,6 +324,7 @@
         apiTable.data_orderPushTable($params).then((response) => {
           self.loading = false
           if (response.data.code === 1) {
+            localStorage.setItem('pushOrder_search', JSON.stringify(self.searchData))
             self.tableData = response.data.dat
           }
         })
@@ -320,6 +332,12 @@
       lookDetails ($item) {
         this.$router.push('/order/details')
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      if (to.path !== '/order/orderDetails') {
+        localStorage.setItem('pushOrder_search', null)
+      }
+      next()
     }
   }
 </script>
