@@ -2,6 +2,12 @@
   <div class="delivery-store">
     <div class="search-table">
       <el-form>
+        <el-row :gutter="10" style="margin-bottom: 15px">
+          <el-col :span="5">
+            <el-button :disabled="!btn_auth('b_mdry_xz')">
+              <router-link :to="{path: '/delivery/storeDetails'}" tag="span">新增门店</router-link></el-button>
+          </el-col>
+        </el-row>
         <el-row :gutter="10">
           <el-col :span="5">
             <el-form-item>
@@ -25,6 +31,13 @@
                   :label="$item.label"
                   :value="$item.val"></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item>
+              <el-input
+                v-model="searchData.name"
+                placeholder="请输入门店名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="4">
@@ -119,7 +132,8 @@
         loading: false,
         searchData: {
           country: [],
-          storeId: ''
+          storeId: '',
+          name: ''
         },
         storeData: [],
         tableData: []
@@ -134,9 +148,15 @@
       this.data_table()
     },
     methods: {
+      btn_auth ($btn) {
+        return this.$store.state.user.AUTHIDS.split(',').some(a => {
+          return a === $btn
+        })
+      },
       resetForm () {
         this.searchData.country = []
         this.searchData.storeId = ''
+        this.searchData.name = ''
       },
       fetchStoreData ($country) {
         this.get_storeOfArea($country[$country.length - 1])
@@ -162,7 +182,8 @@
           province: '',
           city: '',
           district: '',
-          storeId: self.searchData.storeId
+          storeId: self.searchData.storeId,
+          name: self.searchData.name
         }
         if (self.searchData.country.length > 0) {
           Object.assign($params, {

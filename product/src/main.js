@@ -10,7 +10,6 @@ import ElementUI from 'element-ui'
 /* eslint-disable no-unused-vars */
 import Swal from 'sweetalert2'
 import Icon from 'vue-awesome/components/Icon'
-import AMap from 'vue-amap'
 import 'element-ui/lib/theme-default/index.css'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-awesome/icons'
@@ -21,16 +20,14 @@ import Cookies from 'js-cookie'
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(common)
-Vue.use(AMap)
-AMap.initAMapApiLoader({
-  key: '4f77fb55df2ea2d761581bf83ff57acc'
-})
 
 router.beforeEach((to, from, next) => {
   if (to.path !== '/login' && to.path !== '/forget' && to.path !== '/resetPassword') {
     if (store.state.select.treeCountry.length < 1) {
       store.dispatch('fetch_allAreaAndStore')
     }
+    // store.dispatch('setSidebarStatus', false)
+    // store.dispatch('captureBrowserSize', 240)
     // 如果当前地址不是登录页 并且没有路由权限 则跳转到登录页
     if (!localStorage.getItem('ms_authId') || store.getters.authIds === 'null') {
       next({path: '/login'})

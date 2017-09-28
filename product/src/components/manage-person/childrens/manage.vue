@@ -127,13 +127,12 @@
         </el-table-column>
         <el-table-column
           align="center"
-          min-width="100"
-          label="工作状态"
-          >
+          min-width="150"
+          label="工作状态">
           <template scope="scope">
-            {{ scope.row.workStatus == '1'? '抢单中' : '' }}
-            {{ scope.row.workStatus == '2'? '休息中' : '' }}
-            {{ scope.row.workStatus == '3'? '配送中' : '' }}
+            {{ scope.row.workStatus == '1'? '休息中' : '' }}
+            {{ scope.row.workStatus == '2'? '配送中' : '' }}
+            {{ scope.row.limitText? '('+scope.row.limitText+')' : '' }}
           </template>
         </el-table-column>
         <el-table-column
@@ -294,7 +293,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           let $params = {
@@ -320,11 +319,13 @@
             })
           }
           apiDetails.details_handlePersonUpDown($params).then((response) => {
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
-            })
-            this.data_table()
+            if (response.data.code === 1) {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+              this.data_table()
+            }
           })
         }, () => {
 
@@ -339,7 +340,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           let $params = {
@@ -365,11 +366,13 @@
             })
           }
           apiDetails.details_handlePersonEnabled($params).then((response) => {
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
-            })
-            this.data_table()
+            if (response.data.code === 1) {
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+              this.data_table()
+            }
           })
         }, () => {
 

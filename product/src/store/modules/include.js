@@ -4,6 +4,7 @@ const include = {
     tableWidth: '',
     tableHeight: '',
     sidebarWidth: 240,
+    sidebarStatus: false,
     areaAndStore: {}
   },
   mutations: {
@@ -15,6 +16,9 @@ const include = {
     },
     SET_SIDEBARWIDTH ($state, $width) {
       $state.sidebarWidth = $width
+    },
+    SET_SETSIDEBARSTATUS ($state, $status) {
+      $state.sidebarStatus = $status
     }
   },
   actions: {
@@ -27,6 +31,9 @@ const include = {
         commit('SET_SIDEBARWIDTH', sideBarSize)
         resolve()
       })
+    },
+    setSidebarStatus ({ commit }, $status) {
+      commit('SET_SETSIDEBARSTATUS', $status)
     }
   }
 }

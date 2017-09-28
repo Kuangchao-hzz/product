@@ -20,7 +20,7 @@
               <el-date-picker
                 v-model="searchData.mallTime"
                 type="daterange"
-                placeholder="订单时间">
+                placeholder="用户下单时间">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -60,7 +60,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="6">
             <el-form-item>
               <el-select v-model="searchData.orderStatus" placeholder="订单状态">
                 <el-option
@@ -72,18 +72,18 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
-            <el-form-item>
-              <el-select v-model="searchData.grabStatus" placeholder="抢单状态">
-                <el-option
-                  v-for="item in this.$store.state.select.pushOrderType"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          <!--<el-col :span="4">-->
+            <!--<el-form-item>-->
+              <!--<el-select v-model="searchData.grabStatus" placeholder="抢单状态">-->
+                <!--<el-option-->
+                  <!--v-for="item in this.$store.state.select.pushOrderType"-->
+                  <!--:key="item.value"-->
+                  <!--:label="item.label"-->
+                  <!--:value="item.value">-->
+                <!--</el-option>-->
+              <!--</el-select>-->
+            <!--</el-form-item>-->
+          <!--</el-col>-->
           <!--<el-col :span="3">
             <el-form-item>
               <el-select v-model="searchData.markScore" placeholder="订单评价">
@@ -119,11 +119,13 @@
         <el-table-column type="expand">
           <template scope="scope">
             <el-form label-position="left" inline class="demo-table-expand">
-              <el-button type="primary">
-                <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 3 }}" tag="span">订单详情</router-link>
-              </el-button>
-              <el-button :disabled="!btn_auth('b_xq_td')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary">退单</el-button>
-              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus < 60" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
+              <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 3 }}" tag="span">
+                <el-button type="primary">订单详情</el-button>
+              </router-link>
+              <!--异常订单下面的订单状态返回85,显示退单中,按钮显示关闭订单和回退邮包-->
+              <el-button :disabled="!btn_auth('b_xq_td')" v-if="scope.row.orderStatus === 85 || scope.row.orderStatus < 60" @click="handleOrderBackToYb(scope.row.id)" type="primary">回退邮包</el-button>
+              <!--异常订单下面的订单状态返回85,显示退单中,按钮显示关闭订单和回退邮包-->
+              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus === 85 || scope.row.orderStatus < 60" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
             </el-form>
           </template>
         </el-table-column>
@@ -154,17 +156,24 @@
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
+          prop="orderTime"
+          align="center"
+          min-width="180"
+          label="用户下单时间"
+          show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
           align="center"
           min-width="180"
           prop="orderTime"
-          label="订单时间"
+          label="邮包推送时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           align="center"
           min-width="180"
           prop="scheduledTime"
-          label="需要送达时间"
+          label="期望送达时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
@@ -179,6 +188,7 @@
             {{scope.row.orderStatus === 40 ? '待提货': ''}}
             {{scope.row.orderStatus === 50 ? '送货中': ''}}
             {{scope.row.orderStatus === 60 ? '已送达': ''}}
+            {{scope.row.orderStatus === 85 ? '退单中': ''}}
             {{scope.row.orderStatus === 90 ? '已退单': ''}}
             {{scope.row.orderStatus === 91 ? '已拒单': ''}}
             {{scope.row.orderStatus === 99 ? '已关闭': ''}}
@@ -214,15 +224,6 @@
             <p v-else>异常</p>
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          min-width="100"
-          fixed="right"
-          label="操作">
-          <template scope="scope">
-            <router-link :to="{path: '/order/orderDetails', query: { orderId: scope.row.id, detailsType: 3 }}">查看详情</router-link>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
     <div class="wait-send-pagination">
@@ -241,18 +242,24 @@
       :visible.sync="closeOrderDialog"
       size="small"
       :before-close="handleClose">
-      <el-form ref="form" :model="closeOrderForm" label-width="80px">
-        <el-form-item label="关闭原因">
+      <el-form ref="closeOrderForm"
+               :rules="rules"
+               :model="closeOrderForm" label-width="80px">
+        <el-form-item
+          label="关闭原因">
           <el-select v-model="closeOrderForm.reason" placeholder="请选择活动区域">
             <el-option label="客户拒单" value="1"></el-option>
+            <el-option label="其他原因" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关闭备注">
+        <el-form-item
+          prop="remake"
+          label="关闭备注">
           <el-input type="textarea" v-model="closeOrderForm.remake"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="closeOrder">确定</el-button>
-          <el-button @click="closeOrderDialog = false">取消</el-button>
+          <el-button @click="handleClose">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -274,7 +281,6 @@
           storeId: '',
           mallTime: [],
           arriveTime: [],
-          grabStatus: '',
           orderStatus: '',
           phone: '',
           localStorage: true
@@ -285,7 +291,12 @@
           remake: '',
           id: ''
         },
-        closeOrderDialog: false
+        closeOrderDialog: false,
+        rules: {
+          remake: [
+            { required: true, message: '请输入关闭备注', trigger: 'blur' }
+          ]
+        }
       }
     },
     computed: {
@@ -301,6 +312,29 @@
       this.data_table()
     },
     methods: {
+      handleOrderBackToYb ($id) {
+        swal({
+          title: '你确定要回退邮包?',
+          type: 'warning',
+          showCancelButton: true,
+          reverseButtons: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiDetails.details_handleOrderBackToYb({
+            id: $id
+          }).then((response) => {
+            if (response.data.code === 1) {
+              this.$message('操作成功！')
+              this.data_table()
+            }
+          })
+        }, () => {
+
+        })
+      },
       tableRowClassName ($row) {
         if ($row.isAbnormal === 1) {
           return 'order-abnormal'
@@ -320,16 +354,23 @@
         this.closeOrderForm.reason = '1'
         this.closeOrderForm.remake = ''
         this.closeOrderForm.id = ''
+        this.$refs['closeOrderForm'].resetFields()
       },
       closeOrder () {
-        apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
-          if (response.data.code === 1) {
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
+        this.$refs['closeOrderForm'].validate((valid) => {
+          if (valid) {
+            apiDetails.details_handleOrderClose(this.closeOrderForm).then((response) => {
+              if (response.data.code === 1) {
+                this.$message({
+                  duration: 1500,
+                  message: '操作成功！'
+                })
+                this.data_table()
+                this.handleClose()
+              }
             })
-            this.data_table()
-            this.handleClose()
+          } else {
+            return false
           }
         })
       },
@@ -340,7 +381,6 @@
         this.searchData.storeId = ''
         this.searchData.mallTime = []
         this.searchData.arriveTime = []
-        this.searchData.grabStatus = ''
         this.searchData.orderStatus = ''
         // this.searchData.markScore = ''
         this.searchData.phone = ''
@@ -366,7 +406,6 @@
           orderNo: self.searchData.orderNo,
           orderType: self.searchData.orderType,
           storeId: self.searchData.storeId,
-          grabStatus: self.searchData.grabStatus,
           orderStatus: self.searchData.orderStatus,
           arriveTimeBegin: '',
           arriveTimeEnd: '',

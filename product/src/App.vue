@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view></router-view>
+    <resetLogin></resetLogin>
     <div class="copyright-box">
       © 2017 Carrefour China Inc.All
     </div>
@@ -8,7 +9,7 @@
 </template>
 
 <script>
-
+import resetLogin from './components/include/reset-login.vue'
 export default {
   name: 'app',
   data () {
@@ -16,6 +17,9 @@ export default {
       screenHeight: window.innerHeight,
       screenWidth: window.innerWidth
     }
+  },
+  methods: {
+
   },
   mounted () {
     const that = this
@@ -43,6 +47,9 @@ export default {
       return format
     }
   },
+  components: {
+    resetLogin
+  },
   watch: {
     screenHeight (val) {
       if (!this.timer) {
@@ -50,7 +57,11 @@ export default {
         let that = this
         that.timer = false
         setTimeout(function () {
-          that.$store.dispatch('captureBrowserSize')
+          if (that.$store.state.include.sidebarStatus) {
+            that.$store.dispatch('captureBrowserSize', 64)
+          } else {
+            that.$store.dispatch('captureBrowserSize', 240)
+          }
         }, 300)
       }
     },
@@ -60,7 +71,11 @@ export default {
         let that = this
         that.timer = false
         setTimeout(function () {
-          that.$store.dispatch('captureBrowserSize')
+          if (that.$store.state.include.sidebarStatus) {
+            that.$store.dispatch('captureBrowserSize', 64)
+          } else {
+            that.$store.dispatch('captureBrowserSize', 240)
+          }
         }, 300)
       }
     }

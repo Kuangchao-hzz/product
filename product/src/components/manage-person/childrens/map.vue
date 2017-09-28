@@ -1,120 +1,121 @@
 <template>
   <div class="person-map">
-    <div class="country-select">
-      <span>请选择区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
-      <a href="javascript:;" @click="treeDialog.type = true">切换</a>
-    </div>
-    <div class="content-map">
-      <div class="map-box-card">
-        <el-card class="box-card">
-          <div class="card-content">
-            <div class="card-item">
-              <label>待配送订单：</label>
-              <span>{{mapData.dpsCount}}</span>
-            </div>
-            <div class="card-item">
-              <label>配送中订单：</label>
-              <span>{{mapData.pszCount}}</span>
-            </div>
-            <div class="card-item">
-              <label>今日已送达订单：</label>
-              <span>{{mapData.psyCount}}</span>
-            </div>
-          </div>
-        </el-card>
-      </div>
-      <div class="map-box-content">
-        <div class="box-content-win">
-          <div class="amap-wrapper">
-            <el-amap :vid="'amap-vue'"
-                     :zoom="zoom"
-                     :center="center">
-              <el-amap-marker v-if="userPoints.length > 0" v-for="(marker, $index) in userPoints"
-                              :position="marker.position"
-                              :events="marker.events"
-                              :visible="marker.visible"
-                              :draggable="marker.draggable"
-                              :key="$index"></el-amap-marker>
-            </el-amap>
-          </div>
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <div class="country-select">
+          <span>请选择区域 : {{handlerCountryText}}&nbsp;&nbsp;</span>
         </div>
-        <div class="box-content-info" v-if="personInfoData.id">
-          <h5>配送员信息</h5>
-          <div class="info-item">
-            <label>配送:</label>
-            <span>
+        <div>
+          <el-form
+            :model="treeDialog"
+            label-width="0">
+            <el-form-item class="area-box">
+              <el-tree
+                :data="this.treeCountry"
+                node-key="id"
+                ref="tree"
+                default-expand-all
+                show-checkbox
+                :props="defaultProps">
+              </el-tree>
+            </el-form-item>
+            <el-form-item style="text-align: right">
+              <el-button @click="resetCheckedNodes">重置</el-button>
+              <el-button @click="setAllCheckedNodes">全选</el-button>
+              <el-button type="primary" @click="getCheckedNodes">确定</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-col>
+      <el-col :span="18">
+        <div class="content-map">
+          <div class="map-box-card">
+            <el-card class="box-card">
+              <div class="card-content">
+                <div class="card-item">
+                  <label>待配送订单：</label>
+                  <span>{{mapData.dpsCount}}</span>
+                </div>
+                <div class="card-item">
+                  <label>配送中订单：</label>
+                  <span>{{mapData.pszCount}}</span>
+                </div>
+                <div class="card-item">
+                  <label>今日已送达订单：</label>
+                  <span>{{mapData.psyCount}}</span>
+                </div>
+                <div class="card-item">
+                  <label>配送员数量：</label>
+                  <span>{{mapData.psyCount}}</span>
+                </div>
+              </div>
+            </el-card>
+          </div>
+          <div class="map-box-content">
+            <div class="box-content-win">
+              <div class="amap-wrapper" id="container"></div>
+            </div>
+            <div class="box-content-info" v-if="personInfoData.id">
+              <h5>配送员信息</h5>
+              <div class="info-item">
+                <label>配送:</label>
+                <span>
               <router-link :to="{ path: '/person/personDetails', query: { id: personInfoData.id }}">{{personInfoData.realName}}</router-link>
             </span>
-          </div>
-          <div class="info-item">
-            <label>手机:</label>
-            <span>{{personInfoData.phone}}</span>
-          </div>
-          <div class="info-item">
-            <label>等级:</label>
-            <span>{{personInfoData.level + '级'}}</span>
-          </div>
-          <div class="info-item">
-            <label>当前状态:</label>
-            <span v-if="personInfoData.workStatus">
+              </div>
+              <div class="info-item">
+                <label>手机:</label>
+                <span>{{personInfoData.phone}}</span>
+              </div>
+              <div class="info-item">
+                <label>等级:</label>
+                <span>{{personInfoData.level + '级'}}</span>
+              </div>
+              <div class="info-item">
+                <label>当前状态:</label>
+                <span v-if="personInfoData.workStatus">
             {{ personInfoData.workStatus == '1'? '抢单中' : '' }}
             {{ personInfoData.workStatus == '2'? '休息中' : '' }}
             {{ personInfoData.workStatus == '3'? '配送中' : '' }}
             </span>
-            <span v-else="">- -</span>
-          </div>
-          <div class="info-item">
-            <label>当前订单:</label>
-            <span v-for="($item, $index) in personInfoData.orders">
+                <span v-else="">- -</span>
+              </div>
+              <div class="info-item">
+                <label>当前订单:</label>
+                <span v-for="($item, $index) in personInfoData.orders">
               <router-link :to="{path: '/order/orderDetails', query: { orderId: $item.orderId, detailsType: 1 }}">{{$item.orderNo}}</router-link>
             </span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <el-dialog
-      title="选择区域"
-      :visible.sync="treeDialog.type"
-      size="small"
-      :before-close="handleClose">
-      <el-form
-        :model="treeDialog"
-        label-width="80px">
-        <el-form-item label="选择区域: " class="area-box">
-          <el-tree
-            :data="this.routerAuthData"
-            show-checkbox
-            node-key="id"
-            ref="tree"
-            check-strictly
-            default-expand-all
-            show-checkbox
-            :props="defaultProps">
-          </el-tree>
-        </el-form-item>
-        <el-form-item style="text-align: right">
-          <el-button @click="handleClose">取消</el-button>
-          <el-button type="primary" @click="getCheckedNodes">确定</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+  import AMap from 'AMap'
+  import AMapUI from 'AMapUI'
   import apiTable from '@/api/table'
+  var setTime
+  var map
+  /* eslint-disable no-unused-vars */
+  var infoWindow
   export default {
     data () {
       return {
-        country: [],
-        center: [121.5273285, 31.21515044],
-        zoom: 14,
         mapData: {},
+        country: [],
+        defaultInitStatus: true,
+        change: 1,
+        mapReqDataParams: {},
         personInfoData: {},
         countryText: [],
         checkedNodesData: [],
         defaultTreeData: [],
         treeDefaultChecked: [],
+        copyMapData: [],
         treeDialog: {
           type: false,
           name: '',
@@ -127,82 +128,66 @@
       }
     },
     computed: {
-      routerAuthData () {
-        let $data = this.$store.state.select.country
+      handlerCountryText () {
+        return this.countryText.join(',')
+      },
+      treeCountry () {
+        let $data = this.$store.state.select.treeCountry
         this.defaultTreeData = $data
         return $data
       },
-      handlerCountryText () {
-        return this.countryText.join('/')
-      },
       amapMapData () {
         return this.mapData
-      },
-      userPoints () {
-        let self = this
-        let userPointsArr = []
-        if (this.amapMapData && this.amapMapData.userPoints) {
-          this.amapMapData.userPoints.forEach(function ($item, $index) {
-            userPointsArr.push({
-              position: [$item.loc.x, $item.loc.y],
-              events: {
-                click: () => {
-                  self.fetch_Data($item.id)
-                },
-                dragend: (e) => {
-                  this.markers[$index].position = [e.lnglat.lng, e.lnglat.lat]
-                }
-              },
-              visible: true,
-              draggable: false
-            })
-          })
-        }
-        return userPointsArr
-      },
-      orderLength () {
-        /* eslint-disable no-unneeded-ternary */
-        if (this.personInfoData.orders) {
-          return this.personInfoData.orders.length > '0' ? true : false
-        }
       }
     },
     mounted () {
-      this.data_table({
-        provinces: [],
-        cities: [],
-        districts: [],
-        storeIds: []
-      })
-      this.defaultCountryText(this.defaultTreeData)
+      localStorage.setItem('map_zoom', 12)
+      this.setAllCheckedNodes()
+      setTime = setInterval(() => {
+        this.change = 0
+        this.defaultInit()
+        this.init()
+        this.fetch_mapData()
+      }, 1200 * 1000)
     },
     methods: {
-      defaultCountryText ($data) {
-        let self = this
-        $data.forEach(($item, $index) => {
-          this.countryText.push($item.label)
-          this.treeDefaultChecked.push($item.id)
-          if ($item.children) {
-            self.defaultCountryText($item.children)
-          }
+      setAllCheckedNodes () {
+        this.$nextTick(() => {
+          this.$refs['tree'].setCheckedNodes(this.$store.state.select.treeCountry)
+          this.getCheckedNodes()
         })
       },
+      resetCheckedNodes () {
+        this.$refs.tree.setCheckedKeys([])
+        this.getCheckedNodes()
+      },
       getCheckedNodes () {
+        this.change = 1
         this.checkedNodesData = this.$refs.tree.getCheckedNodes()
+        this.countryText = []
+        var ids = []
+        this.checkedNodesData.forEach(($item, $index) => {
+          ids.push($item.id)
+        })
+        this.checkedNodesData.forEach(($item, $index) => {
+          if (ids.indexOf($item.pid) === -1) {
+            this.countryText.push($item.label)
+          }
+        })
         this.fetch_mapData()
       },
-      fetch_mapData () {
+      fetch_mapData (mynode) {
         let self = this
-        let $params = {
+        let $params = Object.assign({}, this.mapReqDataParams, {
           provinces: [],
           cities: [],
           districts: [],
-          storeIds: []
-        }
-        self.countryText = []
+          storeIds: [],
+          change: this.change
+        })
+        self.treeDefaultChecked = []
         self.checkedNodesData.forEach(function ($item, $index) {
-          self.countryText.push($item.label)
-          self.handleClose()
+          self.treeDefaultChecked.push($item.id)
           if ($item.id <= 200) {
             $params.provinces.push($item.id)
           } else if ($item.id <= 2000 && $item.id > 200) {
@@ -215,22 +200,143 @@
         })
         self.data_table($params)
       },
-      handleClose (done) {
-        this.treeDialog.type = false
+      fetchStoreData ($country) {
+        this.defaultInitStatus = true
       },
-      fetchCityData ($country) {
-        this.data_table()
+      defaultInit () {
+        var $mapData = this.mapData
+        map = new AMap.Map('container', {
+          center: [$mapData.point.x, $mapData.point.y],
+          zoom: 12
+        })
+        let mapBounds = map.getBounds()
+        let Center = map.getCenter()
+        localStorage.setItem('map_zoom', map.getZoom())
+        let $params = {
+          lng: Center.lng,
+          lat: Center.lat,
+          lng1: mapBounds.southwest.lng,
+          lat1: mapBounds.southwest.lat,
+          lng2: mapBounds.northeast.lng,
+          lat2: mapBounds.northeast.lat
+        }
+        Object.assign(this.mapReqDataParams, $params)
+        this.change = 0
+        AMap.event.addListener(map, 'dragend', (e) => {
+          let mapBounds = map.getBounds()
+          let Center = map.getCenter()
+          localStorage.setItem('map_zoom', map.getZoom())
+          let $params = {
+            lng: Center.lng,
+            lat: Center.lat,
+            lng1: mapBounds.southwest.lng,
+            lat1: mapBounds.southwest.lat,
+            lng2: mapBounds.northeast.lng,
+            lat2: mapBounds.northeast.lat
+          }
+          Object.assign(this.mapReqDataParams, $params)
+          this.change = 0
+          this.fetch_mapData()
+        })
+        this.defaultInitStatus = false
+      },
+      init: function () {
+        var $mapData = this.mapData
+        AMapUI.loadUI(['overlay/SimpleInfoWindow', 'overlay/SimpleMarker'], (SimpleInfoWindow, SimpleMarker) => {
+          map.setZoom(localStorage.getItem('map_zoom'))
+          if ($mapData.userPoints.length > 0) {
+            $mapData.userPoints.forEach(($item, $index) => {
+              let $color = 'green'
+              let $label = ''
+              switch ($item.workStatus) {
+                case 3 :
+                  $color = 'green'
+                  $label = '限'
+                  break
+                case 2 :
+                  $color = 'blue'
+                  $label = '送'
+                  break
+                default :
+                  $color = 'gray'
+                  $label = '休'
+                  break
+              }
+              var marker = new SimpleMarker({
+                // 前景文字
+                iconLabel: {
+                  innerHTML: `<span>${$label}</span>`,
+                  style: {
+                    color: '#fff'
+                  }
+                },
+                // 图标主题
+                iconTheme: 'default',
+                // 背景图标样式
+                iconStyle: $color,
+                // ...其他Marker选项...，不包括content
+                map: map,
+                position: [$item.loc.x, $item.loc.y]
+              })
+
+              marker.setMap(map)
+
+              function openInfoWin ($data) {
+                var $workStatus = ''
+                var $orders = ''
+                switch ($data.workStatus) {
+                  case 3 :
+                    $workStatus = '抢单中'; break
+                  case 2 :
+                    $workStatus = '配送中'; break
+                  default :
+                    $workStatus = '休息中'; break
+                }
+                if ($data.orders.length > 0) {
+                  $data.orders.forEach(($orderItem, $orderIndex) => {
+                    $orders += `<a href="#/order/orderDetails?orderId=${$orderItem.orderId}">${$orderItem.orderNo}</a>`
+                  })
+                } else {
+                  $orders = '暂无订单'
+                }
+                infoWindow = new SimpleInfoWindow({
+                  // 模板, underscore
+                  infoTitle: `<strong>${$data.realName}</strong>`,
+                  infoBody:
+                    `<P><span>手机：</span><span>${$data.phone}</span></P>` +
+                    `<p><span>等级：</span><span>${$data.level}</span></p>` +
+                    `<p><span>当前状态：</span><span>${$workStatus}</span>(${$item.limitText})</p>` +
+                    `<p><span>当前订单：</span><span>${$orders}</span></p>`,
+                  // 基点指向marker的头部位置
+                  offset: new AMap.Pixel(0, -31)
+                }).open(map, marker.getPosition())
+                map.on('click', function (e) {
+                  map.clearInfoWindow()
+                })
+              }
+              // marker 点击时打开
+              AMap.event.addListener(marker, 'click', function () {
+                apiTable.data_personMapInfo({
+                  id: $item.id
+                }).then((response) => {
+                  if (response.data.code === 1) {
+                    openInfoWin(response.data.dat)
+                  }
+                })
+              })
+            })
+          }
+          AMap.plugin(['AMap.ToolBar', 'AMap.Scale'], function () {
+            map.addControl(new AMap.ToolBar())
+            map.addControl(new AMap.Scale())
+          })
+        })
       },
       data_table ($params) {
-        let self = this
         apiTable.data_personMapTable($params).then((response) => {
-          if (response.data.code !== 1) {
-            this.$message({
-              duration: 1500,
-              message: response.data.msg
-            })
-          } else {
-            self.mapData = response.data.dat
+          if (response.data.code === 1) {
+            this.mapData = response.data.dat
+            this.init()
           }
         })
       },
@@ -247,30 +353,30 @@
     },
     watch: {
       mapData () {
-        if (this.mapData && this.mapData.point.x && this.mapData.point.y) {
-          this.center = []
-          this.center.push(this.mapData.point.x)
-          this.center.push(this.mapData.point.y)
+        if (this.defaultInitStatus) {
+          this.defaultInit()
         }
-        setTimeout(() => {
-          this.fetch_mapData()
-        }, 30000)
       },
-      'treeDialog.type' () {
-        if (this.treeDialog.type) {
-          this.$nextTick(() => {
-            this.$refs['tree'].setCheckedKeys(this.treeDefaultChecked)
-          })
-        } else {
-          this.$refs['tree'].setCheckedKeys([])
-        }
+      country () {
+        this.change = 1
+        this.fetch_mapData()
       }
+    },
+    beforeRouteLeave (to, from, next) {
+      clearInterval(setTime)
+      next()
     }
   }
 </script>
 
 <style lang="scss" type="text/scss" scoped>
   .person-map{
+    .el-tree{
+      height: 600px;
+      overflow-y: auto;
+      border: 1px #ddd solid;
+      border-radius: 4px;
+    }
     .country-select{
       margin-bottom: 20px;
       span{
@@ -278,7 +384,7 @@
       }
     }
     .map-box-card{
-      width: 700px;
+      width: 900px;
       margin-bottom: 20px;
       .card-content{
         display: flex;
@@ -308,12 +414,13 @@
       display: flex;
       border-radius: 5px;
       .box-content-win{
+        width: 100%;
         overflow: hidden;
         background: #fff;
         margin-bottom: 20px;
         >div{
-          width: 700px;
-          height: 450px;
+          width: 100%;
+          height: 600px;
           border-radius: 4px;
           margin-right: 20px;
         }

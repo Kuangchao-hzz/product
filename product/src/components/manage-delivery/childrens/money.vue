@@ -206,15 +206,17 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiTable.edit_personMoneyEnable({
             id: $row.id,
             isEnabled: $type
           }).then((response) => {
-            this.$message('操作成功！')
-            this.data_table()
+            if (response.code.data === 1) {
+              this.$message('操作成功！')
+              this.data_table()
+            }
           })
         }, () => {
 

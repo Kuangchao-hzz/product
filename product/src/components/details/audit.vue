@@ -42,9 +42,9 @@
               <el-col :span="6">{{detailsData.regTime}}</el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="3"><strong>注册ip：</strong></el-col>
+              <el-col :span="3"><strong>注册IP：</strong></el-col>
               <el-col :span="6">{{detailsData.regIp}}</el-col>
-              <el-col :span="3"><strong>ip地区：</strong></el-col>
+              <el-col :span="3"><strong>IP地区：</strong></el-col>
               <el-col :span="6">{{detailsData.ipCity}}</el-col>
             </el-row>
             <el-row class="data-item">

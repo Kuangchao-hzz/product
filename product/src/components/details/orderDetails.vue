@@ -1,5 +1,5 @@
 <template>
-  <div class="order-details-box">
+  <div class="order-details-box" v-loading.body="loading">
     <div class="details-title">
       订单详情
     </div>
@@ -10,6 +10,8 @@
             <el-row class="data-item">
               <el-col :span="3"><strong>订单编号：</strong></el-col>
               <el-col :span="6">{{detailsData.orderNo?detailsData.orderNo : '- -'}}</el-col>
+              <el-col :span="4"><strong>用户下单时间：</strong></el-col>
+              <el-col :span="6">{{detailsData.orderTime?detailsData.orderTime : '- -'}}</el-col>
               <!--<el-col :span="4"  v-if="detailsData.abnormalInfo"><strong>异常类型：</strong></el-col>-->
               <!--<el-col :span="6"  v-if="detailsData.abnormalInfo">-->
                 <!--{{detailsData.abnormalInfo.abnormalStatus === 1 ? '无人抢单': ''}}-->
@@ -32,6 +34,7 @@
                 {{detailsData.orderStatus === 40 ? '待提货': ''}}
                 {{detailsData.orderStatus === 50 ? '送货中': ''}}
                 {{detailsData.orderStatus === 60 ? '已送达': ''}}
+                {{detailsData.orderStatus === 85 ? '退单中': ''}}
                 {{detailsData.orderStatus === 90 ? '已退单': ''}}
                 {{detailsData.orderStatus === 91 ? '已拒单': ''}}
                 {{detailsData.orderStatus === 99 ? '已关闭': ''}}
@@ -39,16 +42,16 @@
               </el-col>
             </el-row>
             <el-row class="data-item">
-              <el-col :span="3"><strong>订单时间：</strong></el-col>
+              <el-col :span="3"><strong>邮包推送时间：</strong></el-col>
               <el-col :span="6">{{detailsData.mallTime?detailsData.mallTime:'- -'}}</el-col>
               <el-col :span="4"><strong>期望送达时间：</strong></el-col>
               <el-col :span="6">{{detailsData.scheduledTime?detailsData.scheduledTime:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>提货时间：</strong></el-col>
-              <el-col :span="6">{{detailsData.checkTime}}</el-col>
+              <el-col :span="6">{{detailsData.checkTime ? detailsData.checkTime : '- -'}}</el-col>
               <el-col :span="4"><strong>送达时间：</strong></el-col>
-              <el-col :span="6">{{detailsData.arriveTime}}</el-col>
+              <el-col :span="6">{{detailsData.arriveTime ? detailsData.arriveTime : '- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>收货人：</strong></el-col>
@@ -58,33 +61,73 @@
             </el-row>
             <el-row class="data-item">
               <el-col :span="3"><strong>收货地址：</strong></el-col>
-              <el-col :span="18">{{detailsData.receiverAddress?detailsData.receiverAddress:'--'}}</el-col>
+              <el-col :span="18">{{detailsData.receiverAddress?detailsData.receiverAddress:'- -'}}</el-col>
             </el-row>
             <el-row class="data-item">
               <el-col :span="24"><strong>订单内容：</strong></el-col>
               <el-col :span="24" class="check-item">
-                <el-row class="check-item-row"
-                        type="flex"
-                        align="middle"
-                        v-for="($item, $index) in detailsData.details"
-                        :key="$index">
-                  <el-col :lg="8">
-                    <barcode :value="$item.barcode" :text="$item.barcode" ></barcode>
-                  </el-col>
-                  <el-col :lg="6" class="text-center">{{$item.name}}</el-col>
-                  <el-col :lg="4" class="text-center">{{$item.volume}}</el-col>
-                  <el-col :lg="2" class="text-center">x{{$item.amount}}</el-col>
-                  <el-col :lg="4" class="text-center">￥{{$item.price}}</el-col>
-                  <el-col :lg="4" class="text-center">￥{{$item.amount * $item.price}}</el-col>
-                </el-row>
+                <el-table
+                  :data="detailsData.details"
+                  :resizable=false
+                  :height="250"
+                  :max-height="250"
+                  border
+                  style="width: 100%">
+                  <el-table-column
+                    prop="date"
+                    label="条码/内部唯一码"
+                    min-width="180"
+                    align="center">
+                    <template scope="scope">
+                      <p>{{ scope.row.barcode}}</p>
+                      <p>{{ scope.row.idcode}}</p>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="品名"
+                    min-width="120"
+                    align="center">
+                    <template scope="scope">
+                      {{ scope.row.name }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="重量"
+                    align="center">
+                    <template scope="scope">
+                      {{ scope.row.volume }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="数量"
+                    align="center">
+                    <template scope="scope">
+                      {{ scope.row.amount }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="单价"
+                    align="center">
+                    <template scope="scope">
+                      {{ scope.row.price }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="总价"
+                    align="center">
+                    <template scope="scope">
+                      {{ scope.row.amount * scope.row.price }}
+                    </template>
+                  </el-table-column>
+                </el-table>
                 <el-row class="check-item-row total-row"
                         type="flex"
                         align="middle">
-                  <el-col :lg="14"><strong style="padding-left: 20px">合计</strong></el-col>
+                  <el-col :lg="8"><strong style="padding-left: 20px">合计</strong></el-col>
                   <el-col :lg="4" class="text-center">{{detailsData.weight}}KG</el-col>
-                  <el-col :lg="2" class="text-center">x{{calculateGoodAmount}}</el-col>
-                  <el-col :lg="4" class="text-center">￥{{calculateSingleGoodTotalPrice}}</el-col>
-                  <el-col :lg="4" class="text-center">￥{{calculateAllGoodTotalPrice}}</el-col>
+                  <el-col :lg="4" class="text-center">{{calculateGoodAmount}}</el-col>
+                  <el-col :lg="4" class="text-center">{{calculateSingleGoodTotalPrice}}</el-col>
+                  <el-col :lg="4" class="text-center">{{calculateAllGoodTotalPrice}}</el-col>
                 </el-row>
               </el-col>
             </el-row>
@@ -105,19 +148,20 @@
               </el-row>
               <el-row class="data-item">
                 <el-col :span="3"><strong>处理时间：</strong></el-col>
-                <el-col :span="6">{{detailsData.abnormalInfo.handleTime}}</el-col>
+                <el-col :span="6">{{detailsData.abnormalInfo.handleTime ? detailsData.abnormalInfo.handleTime : '- -'}}</el-col>
                 <el-col :span="4"><strong>处理结果：</strong></el-col>
                 <el-col :span="6">
-                  {{detailsData.abnormalInfo.handleResult === 0 ? '未处理': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 10 ? '待抢单': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 20 ? '抢单中': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 30 ? '待拣货': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 40 ? '待提货': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 50 ? '送货中': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 60 ? '已送达': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 90 ? '已退单': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 91 ? '已拒单': ''}}
-                  {{detailsData.abnormalInfo.handleResult === 99 ? '已关闭': ''}}
+                  {{detailsData.abnormalInfo.handleResultText}}
+                  <!--{{detailsData.abnormalInfo.handleResult === 0 ? '未处理': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 10 ? '待抢单': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 20 ? '抢单中': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 30 ? '待拣货': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 40 ? '待提货': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 50 ? '送货中': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 60 ? '已送达': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 90 ? '已退单': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 91 ? '已拒单': ''}}-->
+                  <!--{{detailsData.abnormalInfo.handleResult === 99 ? '已关闭': ''}}-->
                 </el-col>
               </el-row>
             </div>
@@ -142,14 +186,20 @@
                 <div style="float: left;margin-right: 10px;">
                   <el-button type="info"
                              :disabled="!btn_auth('b_xq_htyb')"
-                             v-if="detailsData.abnormalInfo && detailsData.orderStatus < 60" @click="handleOrderBackToYb">回退邮包{{detailsData.abnormalInfo.handleResult}}</el-button>
+                             v-if="detailsData.orderStatus < 60 || detailsData.abnormalInfo && !detailsData.abnormalInfo.handleResult" @click="handleOrderBackToYb">回退邮包</el-button>
+                  <!-- 手工推送,只显示在待抢单状态 -->
                   <el-button type="info" :disabled="!btn_auth('b_xq_sgts')"
                              v-if="detailsData.orderStatus　=== 10" @click="handleOrderRePush">手工推送</el-button>
                   <!--<el-button type="info" :disabled="!btn_auth('b_xq_td')" v-if="detailsData.orderStatus < 90" @click="outOrderDialog = true">退单</el-button>-->
+
                   <el-button type="info" :disabled="!btn_auth('b_xq_gbdd')"
-                             v-if="detailsData.abnormalInfo &&　detailsData.orderStatus < 60" @click="closeOrderDialog = true">关闭订单</el-button>
-                  <el-button type="info" :disabled="!btn_auth('b_xq_rgcl')"
-                             v-if="detailsData.abnormalInfo && detailsData.orderStatus < 60 && !(detailsData.abnormalInfo.handleResult)" @click="manualHandle(detailsData.id)">人工处理</el-button>
+                             v-if=" detailsData.orderStatus < 60 || detailsData.abnormalInfo && !detailsData.abnormalInfo.handleResult" @click="closeOrderDialog = true">关闭订单</el-button>
+                  <!-- 人工处理只有异常类型是3或4 并且未处理 -->
+                  <span v-if="detailsData.abnormalInfo" style="margin-left: 10px;">
+                    <el-button type="info" :disabled="!btn_auth('b_xq_rgcl')" v-if="detailsData.abnormalInfo.abnormalStatus === 3 || detailsData.abnormalInfo.abnormalStatus === 4">
+                      <span v-if="!detailsData.abnormalInfo.handleResult" @click="manualHandle(detailsData.id)">人工处理</span>
+                    </el-button>
+                  </span>
                 </div>
                 <el-button type="info" @click="$router.go(-1)">返回</el-button>
               </el-row>
@@ -214,6 +264,21 @@
                 <el-col :span="8">{{$item.pushUsers?$item.pushUsers:'- -'}}</el-col>
               </el-row>
             </el-row>
+            <!-- 订单轨迹 -->
+            <el-row class="details-notice" v-if="detailsDataRoutle" style="margin-bottom: 20px">
+              <el-row class="title">
+                <el-col :span="24">订单轨迹:</el-col>
+              </el-row>
+
+              <el-row justify="center">
+                <el-col :span="12" style="text-align: center;color: #666;"><strong>时间</strong></el-col>
+                <el-col :span="12" style="text-align: center;color: #666;"><strong>状态</strong></el-col>
+              </el-row>
+              <el-row v-for="($routle, $index) in detailsDataRoutle" justify="center" :key="$index">
+                <el-col :span="12" style="text-align: center">{{$routle.time}}</el-col>
+                <el-col :span="12" style="text-align: center">{{$routle.status}}</el-col>
+              </el-row>
+            </el-row>
           </el-col>
         </el-row>
       </div>
@@ -244,18 +309,19 @@
       :visible.sync="closeOrderDialog"
       size="small"
       :before-close="handleClose">
-      <el-form ref="form" :model="closeOrderForm" label-width="80px">
+      <el-form ref="closeOrderForm" :rules="rules" :model="closeOrderForm" label-width="80px">
         <el-form-item label="关闭原因">
           <el-select v-model="closeOrderForm.reason" placeholder="请选择活动区域">
             <el-option label="客户拒单" value="1"></el-option>
+            <el-option label="其他原因" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="关闭备注">
+        <el-form-item prop="remake" label="关闭备注">
           <el-input type="textarea" v-model="closeOrderForm.remake"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="closeOrder(detailsData.id)">确定</el-button>
-          <el-button @click="closeOrderDialog = false">取消</el-button>
+          <el-button @click="handleClose">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -276,7 +342,9 @@
   export default {
     data () {
       return {
+        loading: false,
         detailsData: {},
+        detailsDataRoutle: {},
         detailsType: 1,
         outOrderDialog: false,
         closeOrderDialog: false,
@@ -287,6 +355,11 @@
         closeOrderForm: {
           reason: '1',
           remake: ''
+        },
+        rules: {
+          remake: [
+            { required: true, message: '请输入关闭备注', trigger: 'blur' }
+          ]
         }
       }
     },
@@ -348,15 +421,13 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiDetails.details_handleOrderRePush({
             id: this.detailsData.id
           }).then((response) => {
-            if (response.data.code !== 1) {
-              this.$message(response.data.msg)
-            } else {
+            if (response.data.code === 1) {
               this.$message('操作成功！')
               this.$router.go(-1)
             }
@@ -373,15 +444,13 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiDetails.details_handleOrderBackToYb({
             id: this.detailsData.id
           }).then((response) => {
-            if (response.data.code !== 1) {
-              this.$message(response.data.msg)
-            } else {
+            if (response.data.code === 1) {
               this.$message('操作成功！')
               this.$router.go(-1)
             }
@@ -391,22 +460,23 @@
         })
       },
       closeOrder ($id) {
-        apiDetails.details_handleOrderClose({
-          id: $id,
-          reason: this.closeOrderForm.reason,
-          remake: this.closeOrderForm.remake
-        }).then((response) => {
-          if (Number(response.data.code) !== 1) {
-            this.$message({
-              duration: 1500,
-              message: response.data.msg
+        this.$refs['closeOrderForm'].validate((valid) => {
+          if (valid) {
+            apiDetails.details_handleOrderClose({
+              id: $id,
+              reason: this.closeOrderForm.reason,
+              remake: this.closeOrderForm.remake
+            }).then((response) => {
+              if (response.data.code === 1) {
+                this.$message({
+                  duration: 1500,
+                  message: '操作成功！'
+                })
+                this.$router.go('-1')
+              }
             })
           } else {
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
-            })
-            this.$router.go('-1')
+            return false
           }
         })
       },
@@ -418,18 +488,13 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiDetails.details_handleOrderManualHandle({
             id: $id
           }).then((response) => {
-            if (Number(response.data.code) !== 1) {
-              this.$message({
-                duration: 1500,
-                message: response.data.msg
-              })
-            } else {
+            if (response.data.code === 1) {
               this.$message({
                 duration: 1500,
                 message: '操作成功！'
@@ -443,9 +508,11 @@
       },
       details_tableSendTable ($params) {
         let self = this
+        this.loading = true
         apiDetails.details_tableSendTable({
           orderId: $params
         }).then((response) => {
+          this.loading = false
           if (response.data.code === 1) {
             self.$nextTick(function () {
               if (response.data.code === 1) {
@@ -457,18 +524,35 @@
           }
         })
       },
+      details_orderRoutle ($params) {
+        let self = this
+        apiDetails.details_orderRoutle({
+          orderId: $params
+        }).then((response) => {
+          if (response.data.code === 1) {
+            self.$nextTick(function () {
+              if (response.data.code === 1) {
+                self.detailsDataRoutle = response.data.dat
+              } else {
+                this.$message(response.data.msg)
+              }
+            })
+          }
+        })
+      },
       handleClose (done) {
-        this.$confirm('确认关闭？')
-          .then(_ => {
-            done()
-          })
-          .catch(_ => {})
+        this.closeOrderDialog = false
+        this.closeOrderForm.reason = '1'
+        this.closeOrderForm.remake = ''
+        this.closeOrderForm.id = ''
+        this.$refs['closeOrderForm'].resetFields()
       }
     },
     beforeRouteEnter (to, from, next) {
       if (to.query) {
         next(vm => {
           vm.details_tableSendTable(to.query.orderId)
+          vm.details_orderRoutle(to.query.orderId)
         })
       }
     }

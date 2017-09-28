@@ -1,4 +1,3 @@
-
 <template>
   <div class="header">
     <div class="logo">
@@ -24,6 +23,7 @@
   export default {
     data () {
       return {
+        dialogVisible: false,
         name: 'admin'
       }
     },
@@ -35,6 +35,9 @@
       }
     },
     methods: {
+      handleClose (done) {
+        this.dialogVisible = false
+      },
       handleCommand (command) {
         if (command === 'loginout') {
           localStorage.removeItem('ms_username')
@@ -44,7 +47,8 @@
             }
           })
         } else if (command === 'editPwd') {
-          this.$router.push('/resetPassword')
+          this.$store.dispatch('handlerPassword', true)
+          // this.$router.push('/resetPassword')
         }
       }
     }
@@ -60,16 +64,16 @@
     line-height: 50px;
     color: #666;
     background: #fff;
-    z-index: 999;
+    z-index: 2002;
     .logo {
       float: left;
       vertical-align: middle;
-      img{
+      img {
         width: 200px;
         float: left;
         margin-top: 5px;
       }
-      i{
+      i {
         float: left;
         width: 1px;
         height: 20px;
@@ -77,7 +81,7 @@
         margin: 0 20px;
         margin-top: 15px;
       }
-      span{
+      span {
         float: left;
       }
     }
@@ -91,7 +95,7 @@
         display: inline-block;
         cursor: pointer;
         vertical-align: middle;
-        .el-dropdown-link{
+        .el-dropdown-link {
           .user-logo {
             position: absolute;
             left: 0;
@@ -102,14 +106,15 @@
             border-radius: 50%;
           }
         }
-        .el-logout-link{
+        .el-logout-link {
           padding-left: 20px;
         }
       }
 
     }
   }
-  .el-dropdown-menu__item{
+
+  .el-dropdown-menu__item {
     text-align: center;
   }
 </style>

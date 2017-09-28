@@ -5,7 +5,7 @@
       <v-sidebar></v-sidebar>
       <div class="container" :style="containerStyle">
         <div :style="containerHeight">
-          <div class="breadcrumb">
+          <div class="breadcrumb" v-if="currentPath">
             <v-breadcrumb></v-breadcrumb>
           </div>
           <transition name="move" mode="out-in">
@@ -22,6 +22,14 @@
   import vBreadcrumb from '../breadcrumb/breadcrumb.vue'
   export default {
     computed: {
+      currentPath () {
+        let path = this.$route.path
+        if (path === '/delivery/storeDetails') {
+          return false
+        } else {
+          return true
+        }
+      },
       containerHeight () {
         // 设置指定路径下的页面允许滚动
         let autoPagePath = ['/order/orderDetails', '/person/personDetails', '/delivery/level', '/data/delivery', '/system/notice', '/data/people', '/person/map', '/delivery/storeDetails', '/order/waitSendOrder']

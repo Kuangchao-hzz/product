@@ -4,7 +4,7 @@
     <el-menu theme="dark"
              :unique-opened="true"
              :default-active="realTime_currentPath"
-             :collapse="isCollapse"
+             :collapse="handlerIsCollapse"
              :default-openeds="[]"
              class="side-bar-warps"
              ref="elMenu"
@@ -28,6 +28,9 @@
       realTime_currentPath () {
         return this.currentPath
       },
+      handlerIsCollapse () {
+        return this.$store.state.include.sidebarStatus
+      },
       sidebarStyle () {
         return {
           height: (this.$store.state.include.tableHeight - 50) + 'px'
@@ -39,18 +42,19 @@
     methods: {
       toggleSideBar () {
         this.isCollapse = !this.isCollapse
-      }
-    },
-    watch: {
-      isCollapse () {
         if (this.isCollapse) {
           this.currentPath = '/aaa'
           this.$store.dispatch('captureBrowserSize', 64)
+          this.$store.dispatch('setSidebarStatus', this.isCollapse)
         } else {
           this.currentPath = this.$route.path
           this.$store.dispatch('captureBrowserSize', 240)
+          this.$store.dispatch('setSidebarStatus', this.isCollapse)
         }
       }
+    },
+    watch: {
+
     },
     components: {
       sidebarItem

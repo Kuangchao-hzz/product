@@ -246,18 +246,20 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiTable.edit_systemUserHandlerLock({
             userId: $row.id,
             lock: $sta
-          }).then(() => {
-            this.data_table()
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
-            })
+          }).then((response) => {
+            if (response.data.code === 1) {
+              this.data_table()
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+            }
           })
         }, () => {
 
@@ -300,7 +302,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiTable.data_systemUserDel({
@@ -334,7 +336,7 @@
                 realName: this.addUserForm.realName,
                 phone: this.addUserForm.phone,
                 remark: this.addUserForm.remark,
-                areaIds: roleIds.join('-'),
+                areaIds: roleIds.join(','),
                 roleIds: this.addUserForm.roleIds.join(',')
               }).then((response) => {
                 this.$store.dispatch('fetch_allAreaAndStore')

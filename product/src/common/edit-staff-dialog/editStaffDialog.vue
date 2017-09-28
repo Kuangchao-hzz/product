@@ -77,13 +77,24 @@
               <el-form>
                 <el-form-item>
                   <el-time-select
+                    :editable="false"
                     v-model="dateField.timeBegin"
-                    :picker-options="initSelectStartDate"
+                    :picker-options="{
+                      start: '06:00',
+                      step: '00:30',
+                      end: '22:00'
+                    }"
                     placeholder="选择时间">
                   </el-time-select>
                   <el-time-select
+                    :editable="false"
                     v-model="dateField.timeEnd"
-                    :picker-options="initSelectEndDate"
+                    :picker-options=" {
+                      start: '06:00',
+                      step: '00:30',
+                      end: '22:00',
+                      minTime: dateField.timeBegin
+                    }"
                     placeholder="选择时间">
                   </el-time-select>
                 </el-form-item>
@@ -123,14 +134,14 @@
         },
         selectDate: {},
         selectStartDate: {
-          start: '08:30',
-          step: '00:15',
-          end: '18:30'
+          start: '06:00',
+          step: '00:30',
+          end: '22:00'
         },
         selectEndDate: {
-          start: '10:00',
-          step: '00:10',
-          end: '18:30'
+          start: '06:00',
+          step: '00:30',
+          end: '22:00'
         },
         editCalendarShow: false,
         year: now.getFullYear(),
@@ -158,12 +169,6 @@
           this.dateField.timeEnd = this.selectDate.timeEnd
           return month + '/' + day + ' ' + weeks[week]
         }
-      },
-      initSelectStartDate () {
-        return this.selectStartDate
-      },
-      initSelectEndDate () {
-        return this.selectEndDate
       }
     },
     methods: {

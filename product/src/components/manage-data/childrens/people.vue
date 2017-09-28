@@ -24,7 +24,7 @@
       </el-card>
       <el-card class="box-card">
         <div class="card-content">
-          <h5>当日新增</h5>
+          <h5>本日新增</h5>
           <div class="card-item">
             <label>本日新增注册：</label>
             <span>{{tableData.jrxz}}</span>
@@ -139,18 +139,15 @@
         <el-form-item label="选择区域: " class="area-box">
           <el-tree
             :data="this.treeCountry"
-            show-checkbox
             node-key="id"
             ref="tree"
-            check-strictly
-            default-expand-all
             show-checkbox
             :props="defaultProps">
           </el-tree>
         </el-form-item>
         <el-form-item style="text-align: right">
           <el-button @click="handleClose">取消</el-button>
-          <el-button type="primary" @click="getCheckedNodes">确定</el-button>
+          <el-button type="primary" @click="getCheckedNodes(null, 'flag')">确定</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -189,50 +186,54 @@
         return $data
       },
       handlerCountryText () {
-        return this.countryText.join('/')
+        return this.countryText.join(',')
       }
     },
     mounted () {
-      this.data_table({
-        provinces: [],
-        cities: [],
-        districts: []
-      })
-      this.defaultCountryText(this.defaultTreeData)
+      // this.defaultCountryText(this.defaultTreeData)
+      this.getCheckedNodes(this.$store.state.select.country)
     },
     methods: {
-      defaultCountryText ($data) {
-        let self = this
-        $data.forEach(($item, $index) => {
-          this.countryText.push($item.label)
-          this.treeDefaultChecked.push($item.id)
-          if ($item.children) {
-            self.defaultCountryText($item.children)
-          }
-        })
-      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
         })
       },
-      getCheckedNodes () {
-        this.handleClose()
-        this.checkedNodesData = this.$refs.tree.getCheckedNodes()
+      getAllCheckedNodes ($routerAuths) {
+        $routerAuths.forEach(($item, $index) => {
+          this.checkedNodesData.push($item)
+          if ($item.children && $item.children.length > 0) {
+            this.getAllCheckedNodes($item.children)
+          }
+        })
+      },
+      getCheckedNodes ($data, $flag) {
+        if ($flag !== 'flag') {
+          this.getAllCheckedNodes($data)
+        } else {
+          this.checkedNodesData = this.$refs.tree.getCheckedNodes()
+        }
+        this.countryText = []
+        var ids = []
+        this.checkedNodesData.forEach(($item, $index) => {
+          ids.push($item.id)
+        })
+        this.checkedNodesData.forEach(($item, $index) => {
+          if (ids.indexOf($item.pid) === -1) {
+            this.countryText.push($item.label)
+          }
+        })
         this.fetch_mapData()
       },
-      fetch_mapData () {
+      fetch_mapData (mynode) {
         let self = this
         let $params = {
           provinces: [],
           cities: [],
-          districts: [],
-          storeIds: []
+          districts: []
         }
-        self.countryText = []
         self.treeDefaultChecked = []
         self.checkedNodesData.forEach(function ($item, $index) {
-          self.countryText.push($item.label)
           self.treeDefaultChecked.push($item.id)
           if ($item.id <= 200) {
             $params.provinces.push($item.id)
@@ -240,11 +241,10 @@
             $params.cities.push($item.id)
           } else if ($item.id <= 20000 && $item.id > 2000) {
             $params.districts.push($item.id)
-          } else {
-            $params.storeIds.push($item.id)
           }
         })
         self.data_table($params)
+        self.handleClose()
       },
       handleClose (done) {
         this.treeDialog.type = false
@@ -337,7 +337,7 @@
   }
   .area-box{
     .el-tree{
-      height: 200px;
+      height: 400px;
       overflow-y: auto;
       border: 1px #ddd solid;
       border-radius: 4px;

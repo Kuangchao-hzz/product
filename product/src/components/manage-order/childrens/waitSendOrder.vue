@@ -18,6 +18,13 @@
           </el-col>
           <el-col :span="5">
             <el-form-item>
+              <el-input
+                v-model="searchData.orderNo"
+                placeholder="订单编号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item>
               <el-select v-model="searchData.orderType" placeholder="订单类型">
                 <el-option
                   v-for="item in this.$store.state.select.orderType"
@@ -83,10 +90,17 @@
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
+          prop="orderTime"
+          align="center"
+          min-width="180"
+          label="用户下单时间"
+          show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
           prop="mall_time"
           align="center"
           min-width="180"
-          label="订单时间"
+          label="邮包推送时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
@@ -100,7 +114,7 @@
           prop="scheduled_time"
           align="center"
           min-width="180"
-          label="需要送达时间"
+          label="期望送达时间"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
@@ -141,6 +155,7 @@
           page: 0,
           country: [],
           orderType: '',
+          orderNo: '',
           localStorage: true
         },
         tableData: [],
@@ -179,7 +194,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           let $params = {}
@@ -208,8 +223,8 @@
                 duration: 1500,
                 message: '操作成功！'
               })
+              this.data_table()
             }
-            this.data_table()
           })
         }, () => {
 
@@ -221,6 +236,7 @@
       resetForm () {
         this.searchData.country = []
         this.searchData.orderType = ''
+        this.searchData.orderNo = ''
         this.data_table()
       },
       downloadExcel () {
@@ -240,6 +256,7 @@
           city: '',
           province: '',
           district: '',
+          orderNo: this.searchData.orderNo,
           orderType: this.searchData.orderType
         }
         if (self.searchData.country.length > 0) {

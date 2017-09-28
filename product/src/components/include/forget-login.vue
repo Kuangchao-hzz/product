@@ -1,5 +1,5 @@
 <template>
-  <div class="login-body">
+  <div class="login-forget-body">
     <div class="login-wrap">
       <div class="ms-title">
         <img src="../../assets/img/logo.png">
@@ -42,7 +42,8 @@
           </el-form-item>
           </el-row>
           <div class="login-btn" style="margin-top: 15px">
-            <el-button type="primary" @click="submitForm('ruleForm')">确认提交</el-button>
+            <el-button type="primary" @click="goBack()">取消</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">确认</el-button>
           </div>
         </el-form>
       </div>
@@ -114,6 +115,9 @@
     mounted () {
     },
     methods: {
+      goBack () {
+        this.$router.push('/login')
+      },
       sendCode (value) {
         // 前面发送ajax请求成功之后调用this.start = true开始短信倒计时
         this.codeValid = false
@@ -162,7 +166,7 @@
 </script>
 
 <style lang="scss" type="text/scss">
-  .login-body{
+  .login-forget-body{
     width: 100%;
     height: 100%;
     background: #ddd;
@@ -200,7 +204,7 @@
           text-align: center;
         }
         .login-btn button{
-          width:50%;
+          width:120px;
           height:36px;
           border-radius: 0;
           background: #0000cc;

@@ -129,7 +129,7 @@
         <el-table-column
           align="center"
           prop="ipCity"
-          label="ip地区"
+          label="IP地区"
           width="150"
           show-overflow-tooltip>
         </el-table-column>
@@ -210,6 +210,7 @@
         this.searchData.category = ''
         this.searchData.personIdCard = ''
         this.searchData.userType = ''
+        this.searchData.country = []
         this.data_table()
       },
       handleSelectionChange ($row) {
@@ -224,7 +225,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           let $params = {

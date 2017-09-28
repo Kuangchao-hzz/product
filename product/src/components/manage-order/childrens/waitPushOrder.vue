@@ -29,6 +29,13 @@
           </el-col>
           <el-col :span="5">
             <el-form-item>
+              <el-input
+                v-model="searchData.orderNo"
+                placeholder="订单编号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item>
               <el-select v-model="searchData.orderType" placeholder="订单类型">
                 <el-option
                   v-for="($item, $index) in this.$store.state.select.orderType"
@@ -93,16 +100,23 @@
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
+          prop="orderTime"
+          align="center"
+          min-width="180"
+          label="用户下单时间"
+          show-overflow-tooltip>
+        </el-table-column>
+        <el-table-column
           align="center"
           prop="orderTime"
-          label="订单时间"
+          label="邮包推送时间"
           min-width="180"
           show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           align="center"
           prop="scheduledTime"
-          label="需要送达时间"
+          label="期望送达时间"
           min-width="180"
           show-overflow-tooltip>
         </el-table-column>
@@ -146,6 +160,7 @@
           orderType: '',
           country: [],
           storeId: '',
+          orderNo: '',
           localStorage: true
         },
         storeData: [],
@@ -203,7 +218,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           let $params = {}
@@ -232,8 +247,8 @@
                 duration: 1500,
                 message: '操作成功！'
               })
+              this.data_table()
             }
-            this.data_table()
           })
         }, () => {
 
@@ -247,7 +262,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           let $params = {}
@@ -290,6 +305,7 @@
         this.storeData = []
         this.searchData.country = []
         this.searchData.orderType = ''
+        this.searchData.orderNo = ''
         this.searchData.storeId = ''
         this.data_table()
       },
@@ -309,6 +325,7 @@
           page: $page - 1 || this.searchData.page,
           orderType: this.searchData.orderType,
           storeId: this.searchData.storeId,
+          orderNo: this.searchData.orderNo,
           city: '',
           province: '',
           district: ''

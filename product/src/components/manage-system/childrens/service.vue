@@ -41,7 +41,7 @@
       submit_data () {
         let self = this
         apiTable.edit_editService({
-          kufu: self.serviceForm.kefu
+          kefu: self.serviceForm.kefu
         }).then((response) => {
           if (response.data.code === 1) {
             this.$message({

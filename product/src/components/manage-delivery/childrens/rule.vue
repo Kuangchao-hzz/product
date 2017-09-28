@@ -2,6 +2,11 @@
   <div class="delivery-rule">
     <div class="search-table">
       <el-form label-width="90px">
+        <el-row style="margin-bottom: 20px;color: red;font-size: 14px;font-weight: 600;padding: 0 8px">
+          <el-col :span="24">
+            推送规则说明:修改后下一条订单开始生效.-1表示不推,0表示立即.
+          </el-col>
+        </el-row>
         <el-row :gutter="10">
           <el-col :span="5">
             <el-form-item label="推送时间点" align="center">
@@ -56,18 +61,18 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="三方物流(分钟)">
-          <template scope="scope">
-            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].config.wl"></el-input>
-            <span v-show="!scope.row.editable">{{scope.row.config.wl}}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
           label="社会(分钟)">
           <template scope="scope">
             <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].config.sh"></el-input>
             <span v-show="!scope.row.editable">{{scope.row.config.sh}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="回退邮包(分钟)">
+          <template scope="scope">
+            <el-input v-show="scope.row.editable" size="small" v-model="copyRow.dat[scope.$index].config.wl"></el-input>
+            <span v-show="!scope.row.editable">{{scope.row.config.wl}}</span>
           </template>
         </el-table-column>
       </el-table-column>
@@ -101,7 +106,7 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 265
+        return this.$store.state.include.tableHeight - 305
       }
     },
     mounted () {
@@ -191,7 +196,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiTable.edit_personRuleEnable({

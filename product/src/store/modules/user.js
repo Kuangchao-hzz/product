@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 
 const user = {
   state: {
+    resetLogin: false,
     USERID: Cookies.get('USERID'),
     POSSWORD: Cookies.get('POSSWORD'),
     LOGINSTATUS: localStorage.getItem('ms_loginInfo'),
@@ -23,6 +24,9 @@ const user = {
     },
     SET_AUTHIDS: (state, authids) => {
       state.AUTHIDS = authids
+    },
+    SET_RESETPASSWORD: (state, $status) => {
+      state.resetLogin = $status
     }
   },
   actions: {
@@ -49,6 +53,9 @@ const user = {
       } else {
         commit('SET_LOGINSTATUS', true)
       }
+    },
+    handlerPassword ({ commit }, $status) {
+      commit('SET_RESETPASSWORD', $status)
     },
     get_authIds ({ commit }) {
       return new Promise(resolve => {

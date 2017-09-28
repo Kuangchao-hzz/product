@@ -48,6 +48,7 @@ instanceJson.interceptors.response.use((res) => {
     return res
   } else if (res.data.code !== 1) {
     Message({
+      duration: 1500,
       showClose: true,
       message: res.data.msg,
       type: 'error'

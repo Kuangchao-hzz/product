@@ -1,48 +1,56 @@
 <template>
-  <div class="login-body">
-    <div class="login-wrap">
-      <div class="ms-title">
-        <img src="../../assets/img/logo.png">
-      </div>
-      <div class="ms-login">
-        <el-form :model="ruleForm"
-                 :rules="rules"
-                 ref="ruleForm"
-                 label-width="80px" class="demo-ruleForm">
-          <el-form-item
-            prop="pwd"
-            label="原密码" class="last-form-item">
-            <el-input type="password"
-                      v-model="ruleForm.pwd"
-                      auto-complete="off"
-                      placeholder="原密码">
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            prop="newPwd"
-            label="新密码" class="last-form-item">
-            <el-input type="password"
-                      auto-complete="off"
-                      v-model="ruleForm.newPwd"
-                      placeholder="新密码">
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            prop="checkPwd"
-            label="密码确认" class="last-form-item">
-            <el-input type="password"
-                      auto-complete="off"
-                      v-model="ruleForm.checkPwd"
-                      placeholder="密码确认">
-            </el-input>
-          </el-form-item>
-          </el-row>
-          <div class="login-btn" style="margin-top: 15px">
-            <el-button type="primary" @click="submitForm('ruleForm')">确认提交</el-button>
+  <div>
+    <el-dialog
+      title="修改密码"
+      :visible.sync="handlerResetPassword"
+      size="tiny"
+      :before-close="handleClose">
+      <div class="login-reset-body">
+        <div class="login-wrap">
+          <div class="ms-title">
+            <img src="../../assets/img/logo.png">
           </div>
-        </el-form>
+          <div class="ms-login">
+            <el-form :model="ruleForm"
+                     :rules="rules"
+                     ref="ruleForm"
+                     label-width="80px" class="demo-ruleForm">
+              <el-form-item
+                prop="pwd"
+                label="原密码" class="last-form-item">
+                <el-input type="password"
+                          v-model="ruleForm.pwd"
+                          auto-complete="off"
+                          placeholder="原密码">
+                </el-input>
+              </el-form-item>
+              <el-form-item
+                prop="newPwd"
+                label="新密码" class="last-form-item">
+                <el-input type="password"
+                          auto-complete="off"
+                          v-model="ruleForm.newPwd"
+                          placeholder="新密码">
+                </el-input>
+              </el-form-item>
+              <el-form-item
+                prop="checkPwd"
+                label="密码确认" class="last-form-item">
+                <el-input type="password"
+                          auto-complete="off"
+                          v-model="ruleForm.checkPwd"
+                          placeholder="密码确认">
+                </el-input>
+              </el-form-item>
+              </el-row>
+              <div class="login-btn" style="margin-top: 15px">
+                <el-button type="primary" @click="submitForm('ruleForm')">确认提交</el-button>
+              </div>
+            </el-form>
+          </div>
+        </div>
       </div>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -99,6 +107,16 @@
       }
     },
     computed: {
+      handlerResetPassword () {
+        if (this.$store.state.user.resetLogin) {
+          this.$nextTick(() => {
+            this.$refs.ruleForm.resetFields()
+          })
+          return true
+        } else {
+          return false
+        }
+      },
       handlerCodeValid () {
         return this.codeValid
       },
@@ -107,6 +125,9 @@
       }
     },
     methods: {
+      handleClose () {
+        this.$store.dispatch('handlerPassword', false)
+      },
       submitForm () {
         let self = this
         self.$refs['ruleForm'].validate((valid) => {
@@ -115,7 +136,6 @@
               pwd: md5(this.ruleForm.pwd),
               newPwd: md5(this.ruleForm.newPwd)
             }).then((response) => {
-              console.log(self.ruleForm)
               if (response.data.code === 1) {
                 self.$router.push('/login')
               }
@@ -129,25 +149,11 @@
   }
 </script>
 
-<style lang="scss" type="text/scss">
-  .login-body{
-    width: 100%;
-    height: 100%;
-    background: #ddd;
-    .el-form-item__error{
-      left: auto;
-      right: 20px;
-      top: 25%;
-    }
+<style lang="scss" type="text/scss" scope>
+  .login-reset-body{
     .login-wrap{
-      width:400px;
+      width: 100% ;
       padding: 40px 0;
-      background: #fff;
-      box-shadow: 0 0 20px rgba(0,0,0,.3);
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
       .ms-title{
         text-align: center;
         font-size:30px;
@@ -177,6 +183,11 @@
           margin-bottom: 0;
           border-bottom: 1px #ddd solid;
         }
+      }
+      .el-form-item__error{
+        left: auto;
+        right: 0;
+        top: 11px;
       }
       .verification-code{
         .el-col-8{

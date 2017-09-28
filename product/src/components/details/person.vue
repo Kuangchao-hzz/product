@@ -27,9 +27,9 @@
               <el-col :span="7">{{detailsData.level?detailsData.level + '级' : '- -'}}</el-col>
               <el-col :span="4"><strong>当前状态：</strong></el-col>
               <el-col :span="6">
-                {{ detailsData.workStatus == '1'? '抢单中' : '' }}
-                {{ detailsData.workStatus == '2'? '休息中' : '' }}
-                {{ detailsData.workStatus == '3'? '配送中' : '' }}
+                {{ detailsData.workStatus == '1'? '休息中' : '' }}
+                {{ detailsData.workStatus == '2'? '配送中' : '' }}
+                {{ detailsData.limitText? '('+detailsData.limitText+')' : '' }}
               </el-col>
             </el-row>
             <el-row class="data-item">
@@ -204,10 +204,10 @@
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
-                  prop="name1"
+                  prop="orderTime"
                   align="center"
                   min-width="180"
-                  label="常驻地区"
+                  label="用户下单时间"
                   show-overflow-tooltip>
                 </el-table-column>
                 <el-table-column
@@ -248,15 +248,7 @@
                   show-overflow-tooltip>
                   <template scope="scope">
                     <p v-if="scope.row.isAbnormal === 0">无异常</p>
-                    <p v-else>
-                      {{scope.row.isAbnormal === 1 ? '无人抢单': ''}}
-                      {{scope.row.isAbnormal === 2 ? '主动退出': ''}}
-                      {{scope.row.isAbnormal === 3 ? '超时未送': ''}}
-                      {{scope.row.isAbnormal === 4 ? '超时未达': ''}}
-                      {{scope.row.isAbnormal === 5 ? '商城关闭': ''}}
-                      {{scope.row.isAbnormal === 6 ? '客户拒单': ''}}
-                      {{scope.row.isAbnormal === 7 ? '商城退换货': ''}}
-                    </p>
+                    <p v-else>{{scope.row.isAbnormal === 1 ? '异常': ''}}</p>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作"
@@ -292,7 +284,7 @@
         detailsData: {},
         searchData: {
           score: '',
-          range: '',
+          range: '1',
           orderNo: '',
           isAbnormal: '',
           deliveryUserId: this.$route.query.id,
@@ -353,7 +345,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           let self = this
@@ -361,12 +353,7 @@
             id: self.$route.query.id,
             direction: $params
           }).then((response) => {
-            if (Number(response.data.code) !== 1) {
-              this.$message({
-                duration: 1500,
-                message: response.data.msg
-              })
-            } else {
+            if (response.data.code === 1) {
               this.$message({
                 duration: 1500,
                 message: '操作成功！'
@@ -380,37 +367,75 @@
       },
       details_handlePersonEnabled ($params) {
         let str = $params === 0 ? '你确定要冻结该配送员?' : '你确定要解冻该配送员?'
-        swal({
-          title: str,
-          type: 'warning',
-          showCancelButton: true,
-          reverseButtons: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
-          cancelButtonText: '取消'
-        }).then(() => {
-          let self = this
-          apiDetails.details_handlePersonEnabled({
-            id: self.$route.query.id,
-            direction: $params
-          }).then((response) => {
-            if (Number(response.data.code) !== 1) {
-              this.$message({
-                duration: 1500,
-                message: response.data.msg
-              })
-            } else {
-              this.$message({
-                duration: 1500,
-                message: '操作成功！'
-              })
-              this.$router.go('-1')
-            }
-          })
-        }, () => {
+        console.log($params)
+        if ($params === 1) {
+          swal({
+            title: str,
+            type: 'warning',
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确定',
+            cancelButtonText: '取消'
+          }).then((reason) => {
+            let self = this
+            apiDetails.details_handlePersonEnabled({
+              id: self.$route.query.id,
+              direction: $params
+            }).then((response) => {
+              if (response.data.code === 1) {
+                this.$message({
+                  duration: 1500,
+                  message: '操作成功！'
+                })
+                this.$router.go('-1')
+              }
+            })
+          }, () => {
 
-        })
+          })
+        } else {
+          swal({
+            title: str,
+            type: 'warning',
+            text: '请填写冻结原因!',
+            input: 'text',
+            showCancelButton: true,
+            reverseButtons: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            preConfirm: function (reason) {
+              return new Promise(function (resolve, reject) {
+                if (reason === '') {
+                  reject('请填写冻结原因')
+                } else {
+                  resolve()
+                }
+              })
+            },
+            allowOutsideClick: false
+          }).then((reason) => {
+            let self = this
+            apiDetails.details_handlePersonEnabled({
+              id: self.$route.query.id,
+              reason: reason,
+              direction: $params
+            }).then((response) => {
+              if (response.data.code === 1) {
+                this.$message({
+                  duration: 1500,
+                  message: '操作成功！'
+                })
+                this.$router.go('-1')
+              }
+            })
+          }, () => {
+
+          })
+        }
       }
     },
     beforeRouteEnter (to, from, next) {

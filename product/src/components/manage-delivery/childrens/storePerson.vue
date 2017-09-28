@@ -4,7 +4,7 @@
       <el-form>
         <el-row :gutter="10" style="margin-bottom: 15px">
           <el-col :span="5">
-            <el-button :disabled="!btn_auth('b_mdry_xz')" @click="handlerData_edit" style="">新增用户</el-button>
+            <el-button :disabled="!btn_auth('b_mdry_xz')" @click="handlerData_edit" style="">新增门店人员</el-button>
           </el-col>
         </el-row>
         <el-row :gutter="10">
@@ -229,17 +229,19 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiTable.data_deliveryPersonStoreDel({
             id: $row.id
           }).then((response) => {
-            this.data_table()
-            this.$message({
-              duration: 1500,
-              message: '操作成功！'
-            })
+            if (response.data.code === 1) {
+              this.data_table()
+              this.$message({
+                duration: 1500,
+                message: '操作成功！'
+              })
+            }
           })
         }, () => {
 
@@ -404,6 +406,12 @@
     }
     .is-disabled .el-input__inner{
       color: #48576a !important;
+    }
+    .el-tree{
+      height: 200px;
+      overflow-y: auto;
+      border: 1px #ddd solid;
+      border-radius: 4px;
     }
   }
 </style>

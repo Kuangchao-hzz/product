@@ -1,7 +1,7 @@
 <template>
   <div class="view-notice">
     <div class="notice-group">
-      <el-button :disabled="!btn_auth('b_yh_xzyh')" @click="createDialogForm.isShow = true">发布公告</el-button>
+      <el-button :disabled="!btn_auth('b_gg_fbgg')" @click="createDialogForm.isShow = true">发布公告</el-button>
     </div>
     <div class="system-notice-table">
       <el-table
@@ -46,9 +46,15 @@
                     align="center">
             <el-button type="text"
                        size="small"
-                       @click="localStorage_details(scope.row)"
-            >查看详情
-            </el-button>
+                       @click="localStorage_details(scope.row)">查看详情</el-button>
+            <el-button type="text"
+                       size="small"
+                       :disabled="!btn_auth('b_gg_cxts')"
+                       @click="again_push(scope.row)">重新推送</el-button>
+            <el-button type="text"
+                       size="small"
+                       :disabled="!btn_auth('b_gg_sc')"
+                       @click="delete_push(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -98,6 +104,7 @@
 
 <script>
   import apiTable from '@/api/table'
+  import apiDetails from '@/api/details'
   export default {
     data () {
       return {
@@ -119,6 +126,52 @@
       this.data_table()
     },
     methods: {
+      again_push ($row) {
+        swal({
+          title: '你确定要重新推送?',
+          type: 'warning',
+          showCancelButton: true,
+          reverseButtons: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiDetails.again_push({
+            id: $row.id
+          }).then((response) => {
+            if (response.data.code === 1) {
+              this.$message('操作成功！')
+              this.data_table()
+            }
+          })
+        }, () => {
+
+        })
+      },
+      delete_push ($row) {
+        swal({
+          title: '你确定要删除?',
+          type: 'warning',
+          showCancelButton: true,
+          reverseButtons: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          apiDetails.delete_push({
+            id: $row.id
+          }).then((response) => {
+            if (response.data.code === 1) {
+              this.$message('操作成功！')
+              this.data_table()
+            }
+          })
+        }, () => {
+
+        })
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn

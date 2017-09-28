@@ -104,6 +104,9 @@ const select = {
     }, {
       value: '99',
       label: '已关闭'
+    }, {
+      value: '85',
+      label: '退单中'
     }],
     pushOrderType: [{
       value: '',
@@ -171,12 +174,9 @@ const select = {
       label: '工作状态'
     }, {
       value: '1',
-      label: '抢单中'
-    }, {
-      value: '2',
       label: '休息中'
     }, {
-      value: '3',
+      value: '2',
       label: '配送中'
     }],
     payStatus: [{

@@ -63,7 +63,7 @@
         <el-table-column
           fixed
           align="center"
-          min-width="100"
+          min-width="200"
           label="员工号">
           <template scope="scope">{{ scope.row.employeeNo }}</template>
         </el-table-column>
@@ -131,40 +131,15 @@
         size="tiny"
         :visible.sync="exportDataIsShow">
         <el-form ref="exportData" :model="exportData" label-width="80px">
-          <el-form-item
-            label="选择城市"
-            prop="country"
-            :rules="{ type: 'array', required: true, message: '请选择城市', trigger: 'change'}">
-            <div class="country-select">
-              <div class="country-select">
-                <el-cascader
-                  v-model="exportData.country"
-                  :options="this.$store.state.select.country"
-                  :props="this.$store.state.select.defaultCountryProps"
-                  @change="fetchStoreData"
-                  placeholder="请选择区域"
-                ></el-cascader>
-              </div>
-            </div>
-          </el-form-item>
-          <el-form-item label="选择门店"
-                        prop="storeId"
-                        :rules="{ type: 'number', required: true, message: '请选择门店', trigger: 'change'}">
-            <el-select v-model="exportData.storeId" placeholder="请选择门店">
-              <el-option
-                v-for="($item, $index) in storeData"
-                :key="$index"
-                :label="$item.label"
-                :value="$item.val"></el-option>
-            </el-select>
-          </el-form-item>
           <el-upload
             class="upload-demo"
             ref="upload"
             :data="exportData"
+            accept=""
             :on-success="handleAvatarSuccess"
             action="/api/web/employeeManage/importScheduling"
             :auto-upload="false">
+            <div slot="tip" class="el-upload__tip">只能上传xlsx、xls文件，且不超过10M</div>
             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
           </el-upload>
         </el-form>
@@ -350,12 +325,18 @@
         })
       },
       handleAvatarSuccess (response) {
-        if (response.data.code === 1) {
+        if (response.code === 1) {
           this.$message({
             duration: 1500,
-            message: response.data.msg
+            message: response.msg
           })
           this.handleClose()
+        } else {
+          this.$message({
+            duration: 1500,
+            message: response.msg,
+            type: 'error'
+          })
         }
       },
       downloadExcel () {
@@ -365,6 +346,13 @@
     watch: {
       editStaffStatusCallback () {
         this.data_table()
+      },
+      exportDataIsShow () {
+        if (!this.exportDataIsShow) {
+          this.$nextTick(() => {
+            this.$refs.upload.clearFiles()
+          })
+        }
       }
     },
     components: {

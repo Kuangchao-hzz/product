@@ -3,10 +3,22 @@ import instance from './index'
 import { instanceJson } from './index'
 
 export default {
+  details_orderRoutle ($baseData) {
+    return instance.get('/web/orderManage/orderRoutle', {
+      params: $baseData
+    })
+  },
   details_tableSendTable ($baseData) {
     return instance.get('/web/orderManage/orderDetail', {
       params: $baseData
     })
+  },
+  // 配送管理 -门店管理详情提交
+  details_submitStoreAdd ($baseData) {
+    return instance.post('/web/storeManage/add', $baseData)
+  },
+  details_storeAreaData () {
+    return instance.get('/web/commData/allArea')
   },
   details_tableStoreTable ($baseData) {
     return instance.get('/web/storeManage/detail', {
@@ -77,6 +89,14 @@ export default {
    *
    * ========================================
    * */
+  // 系统管理 - 公告管理 - 重新推送
+  again_push ($baseData) {
+    return instance.post('/web/systemNotice/repush', $baseData)
+  },
+  // 系统管理 - 公告管理 - 删除
+  delete_push ($baseData) {
+    return instance.post('/web/systemNotice/del', $baseData)
+  },
   // 配送管理 -门店管理详情提交
   details_submitStore ($baseData) {
     return instance.post('/web/storeManage/edit', $baseData)

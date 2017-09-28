@@ -70,6 +70,8 @@
           </el-tree>
         </el-form-item>
         <el-form-item>
+          <el-button @click="resetCheckedNodes">重置</el-button>
+          <el-button @click="setAllCheckedNodes">全选</el-button>
           <el-button type="primary" @click="edit_roleData">确定</el-button>
           <el-button @click="handleClose">取消</el-button>
         </el-form-item>
@@ -100,12 +102,13 @@
         },
         rules: {
           name: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' }
+            { required: true, message: '请输入角色名称', trigger: 'blur' }
           ],
           checkedValue: [
-            { type: 'array', required: true, message: '请选择活动区域', trigger: 'change' }
+            { type: 'array', required: true, message: '请选择操作权限', trigger: 'change' }
           ]
-        }
+        },
+        routerAuths: []
       }
     },
     computed: {
@@ -122,6 +125,23 @@
       this.data_table()
     },
     methods: {
+      getAllCheckedNodes ($routerAuths) {
+        $routerAuths.forEach(($item, $index) => {
+          this.routerAuths.push($item)
+          if ($item.children && $item.children.length > 0) {
+            this.getAllCheckedNodes($item.children)
+          }
+        })
+      },
+      setAllCheckedNodes () {
+        this.getAllCheckedNodes(this.roleList.routerAuth)
+        this.$nextTick(() => {
+          this.$refs['tree'].setCheckedNodes(this.routerAuths)
+        })
+      },
+      resetCheckedNodes () {
+        this.$refs.tree.setCheckedKeys([])
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
@@ -208,7 +228,7 @@
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: '确定!',
+          confirmButtonText: '确定',
           cancelButtonText: '取消'
         }).then(() => {
           apiTable.data_systemRoleDel({
