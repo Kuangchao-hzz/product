@@ -183,7 +183,7 @@
             </div>
             <el-row class="data-item">
               <el-row :gutter="10">
-                <div style="float: left;margin-right: 10px;">
+                <div style="float: left;margin-right: 5px;">
                   <el-button type="info"
                              :disabled="!btn_auth('b_xq_htyb')"
                              v-if="detailsData.orderStatus < 60 || detailsData.abnormalInfo && !detailsData.abnormalInfo.handleResult" @click="handleOrderBackToYb">回退邮包</el-button>
@@ -316,6 +316,12 @@
             <el-option label="其他原因" value="2"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="结算佣金">
+          <el-radio-group v-model="closeOrderForm.isSettle">
+            <el-radio label="0">不接算</el-radio>
+            <el-radio label="1">结算</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item prop="remake" label="关闭备注">
           <el-input type="textarea" v-model="closeOrderForm.remake"></el-input>
         </el-form-item>
@@ -354,6 +360,7 @@
         },
         closeOrderForm: {
           reason: '1',
+          isSettle: '0',
           remake: ''
         },
         rules: {
@@ -465,7 +472,8 @@
             apiDetails.details_handleOrderClose({
               id: $id,
               reason: this.closeOrderForm.reason,
-              remake: this.closeOrderForm.remake
+              remake: this.closeOrderForm.remake,
+              isSettle: this.closeOrderForm.isSettle
             }).then((response) => {
               if (response.data.code === 1) {
                 this.$message({
@@ -544,6 +552,7 @@
         this.closeOrderDialog = false
         this.closeOrderForm.reason = '1'
         this.closeOrderForm.remake = ''
+        this.closeOrderForm.isSettle = '0'
         this.closeOrderForm.id = ''
         this.$refs['closeOrderForm'].resetFields()
       }

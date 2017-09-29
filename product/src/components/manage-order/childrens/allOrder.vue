@@ -252,6 +252,12 @@
             <el-option label="其他原因" value="2"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="结算佣金">
+          <el-radio-group v-model="closeOrderForm.isSettle">
+            <el-radio label="0">不接算</el-radio>
+            <el-radio label="1">结算</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item
           prop="remake"
           label="关闭备注">
@@ -288,6 +294,7 @@
         tableData: [],
         closeOrderForm: {
           reason: '1',
+          isSettle: '0',
           remake: '',
           id: ''
         },
@@ -353,6 +360,7 @@
         this.closeOrderDialog = false
         this.closeOrderForm.reason = '1'
         this.closeOrderForm.remake = ''
+        this.closeOrderForm.isSettle = '0'
         this.closeOrderForm.id = ''
         this.$refs['closeOrderForm'].resetFields()
       },

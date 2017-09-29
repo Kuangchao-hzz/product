@@ -336,6 +336,9 @@
         apiTable.data_personMapTable($params).then((response) => {
           if (response.data.code === 1) {
             this.mapData = response.data.dat
+            if ($params.change === 1) {
+              this.defaultInit()
+            }
             this.init()
           }
         })
