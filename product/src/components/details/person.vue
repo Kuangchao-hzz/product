@@ -53,7 +53,9 @@
             <el-row class="data-item">
               <el-col :span="4"><strong>设备型号：</strong></el-col>
               <el-col :span="7">{{detailsData.device?detailsData.device:'- -'}}</el-col>
-            </el-row5
+              <el-col :span="4"><strong>冻结原因：</strong></el-col>
+              <el-col :span="6">{{detailsData.lockReason?detailsData.lockReason:'- -'}}</el-col>
+            </el-row>
             <el-row class="data-item">
               <el-col :span="4"><strong>注册时间：</strong></el-col>
               <el-col :span="7">{{detailsData.regTime?detailsData.regTime:'- -'}}</el-col>

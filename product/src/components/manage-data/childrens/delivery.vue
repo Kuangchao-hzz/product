@@ -36,25 +36,25 @@
             <el-col :span="24">
               <el-card class="box-card">
                 <el-row>
-                  <el-col :span="6">
+                  <el-col :span="6" title="邮包推送过来的订单数">
                     <div class="card-item">
                       <label>今日订单总数：</label>
                       <span>{{deliveryData.jrAmount}}</span>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="6" title="状态待抢单,未提货的订单数">
                     <div class="card-item">
                       <label>待配送订单：</label>
                       <span>{{deliveryData.dpsAmount}}</span>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="6" title="送货中的订单数">
                     <div class="card-item">
                       <label>配送中订单：</label>
                       <span>{{deliveryData.pszAmount}}</span>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="6" title="已签收的订单数">
                     <div class="card-item">
                       <label>今日已送达订单：</label>
                       <span>{{deliveryData.ysdAmount}}</span>
@@ -66,25 +66,25 @@
             <el-col :span="24">
               <el-card class="box-card">
                 <el-row>
-                  <el-col :span="6">
+                  <el-col :span="6" title="已关闭的订单数">
                     <div class="card-item">
                       <label>已关闭订单：</label>
                       <span>{{deliveryData.ygbAmount}}</span>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="6" title="回退邮包的订单数">
                     <div class="card-item">
                       <label>今日回退邮包：</label>
                       <span>{{deliveryData.htybAmount}}</span>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="6" title="今日接单后未提货的订单数">
                     <div class="card-item">
                       <label>今日超时未送：</label>
                       <span>{{deliveryData.cswsAmount}}</span>
                     </div>
                   </el-col>
-                  <el-col :span="6">
+                  <el-col :span="6" title="超过期望送达时间10分钟后还未送达的订单数">
                     <div class="card-item">
                       <label>今日超时未达：</label>
                       <span>{{deliveryData.cswdAmount}}</span>
@@ -112,7 +112,7 @@
           <el-row style="margin-top: 20px">
             <el-col :span="24">
               <el-row :gutter="20">
-                <el-col :lg="12">
+                <el-col :lg="12" title="除去待抢单的订单占订单总数的百分比">
                   <div class="statistics-list">
                     <div class="statistics-content">
                       {{deliveryData.jrqdRate ? deliveryData.jrqdRate : '0'}}%
@@ -120,7 +120,7 @@
                     <p>抢单率</p>
                   </div>
                 </el-col>
-                <el-col :lg="12">
+                <el-col :lg="12" title="准时送达的订单数占送达订单总数的百分比">
                   <div class="statistics-list">
                     <div class="statistics-content">
                       {{deliveryData.jrzdRate ? deliveryData.jrzdRate : '0' }}%
@@ -128,7 +128,7 @@
                     <p>准达率</p>
                   </div>
                 </el-col>
-                <el-col :lg="12">
+                <el-col :lg="12" title="7天内的统计数据">
                   <div class="statistics-list">
                     <div class="statistics-content">
                       {{deliveryData.lsqdRate ? deliveryData.lsqdRate : '0' }}%
@@ -136,7 +136,7 @@
                     <p>历史抢单率</p>
                   </div>
                 </el-col>
-                <el-col :lg="12">
+                <el-col :lg="12" title="7天内的统计数据">
                   <div class="statistics-list">
                     <div class="statistics-content">
                       {{deliveryData.lszdRate ? deliveryData.lszdRate : '0' }}%
@@ -146,26 +146,6 @@
                 </el-col>
               </el-row>
             </el-col>
-          </el-row>
-          <el-row class="explain">
-            <el-col :span="12">
-              <h4>工作台说明:</h4>
-              <p>1.今日订单总数:邮包推送过来的订单数.</p>
-              <p>2.待配送订单:状态待抢单,未提货的订单数.</p>
-              <p>3.配送中订单数:送货中的订单数.</p>
-              <p>4.已送达订单:已签收的订单数.</p>
-              <p>5.已关闭订单:已关闭的订单数.</p>
-              <p>6.回退邮包:回退邮包的订单数.</p>
-              <p>7.超时未送:今日接单后未提货的订单数.</p>
-              <p>8.超时未达:超过期望送达时间10分钟后还未送达的订单数.</p>
-            </el-col>
-            <el-col :span="12">
-              <h4>经营简报说明:</h4>
-              <p>1.抢单率:除去待抢单的订单占订单总数的百分比.</p>
-              <p>2.准达率:准时送达的订单数占送达订单总数的百分比.</p>
-              <p>3.历史抢单率/历史准达率:7天内的统计数据.</p>
-            </el-col>
-
           </el-row>
         </div>
       </el-col>

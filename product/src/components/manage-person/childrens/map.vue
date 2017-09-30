@@ -51,6 +51,13 @@
               </div>
             </el-card>
           </div>
+          <el-col :span="24" style="margin-bottom: 15px;">
+            <el-checkbox-group v-model="mapFilter">
+              <el-checkbox label="1">休息中</el-checkbox>
+              <el-checkbox label="2">配送中</el-checkbox>
+              <el-checkbox label="3">禁止接单</el-checkbox>
+            </el-checkbox-group>
+          </el-col>
           <div class="map-box-content">
             <div class="box-content-win">
               <div class="amap-wrapper" id="container"></div>
@@ -60,7 +67,8 @@
               <div class="info-item">
                 <label>配送:</label>
                 <span>
-              <router-link :to="{ path: '/person/personDetails', query: { id: personInfoData.id }}">{{personInfoData.realName}}</router-link>
+              <router-link
+                :to="{ path: '/person/personDetails', query: { id: personInfoData.id }}">{{personInfoData.realName}}</router-link>
             </span>
               </div>
               <div class="info-item">
@@ -74,16 +82,17 @@
               <div class="info-item">
                 <label>当前状态:</label>
                 <span v-if="personInfoData.workStatus">
-            {{ personInfoData.workStatus == '1'? '抢单中' : '' }}
-            {{ personInfoData.workStatus == '2'? '休息中' : '' }}
-            {{ personInfoData.workStatus == '3'? '配送中' : '' }}
-            </span>
+                  {{ personInfoData.workStatus == '1' ? '抢单中' : '' }}
+                  {{ personInfoData.workStatus == '2' ? '休息中' : '' }}
+                  {{ personInfoData.workStatus == '3' ? '配送中' : '' }}
+                </span>
                 <span v-else="">- -</span>
               </div>
               <div class="info-item">
                 <label>当前订单:</label>
                 <span v-for="($item, $index) in personInfoData.orders">
-              <router-link :to="{path: '/order/orderDetails', query: { orderId: $item.orderId, detailsType: 1 }}">{{$item.orderNo}}</router-link>
+              <router-link
+                :to="{path: '/order/orderDetails', query: { orderId: $item.orderId, detailsType: 1 }}">{{$item.orderNo}}</router-link>
             </span>
               </div>
             </div>
@@ -98,6 +107,7 @@
   import AMap from 'AMap'
   import AMapUI from 'AMapUI'
   import apiTable from '@/api/table'
+
   var setTime
   var map
   /* eslint-disable no-unused-vars */
@@ -105,6 +115,7 @@
   export default {
     data () {
       return {
+        mapFilter: ['1', '2', '3'],
         mapData: {},
         country: [],
         defaultInitStatus: true,
@@ -241,10 +252,24 @@
         this.defaultInitStatus = false
       },
       init: function () {
+        var that = this
         var $mapData = this.mapData
         AMapUI.loadUI(['overlay/SimpleInfoWindow', 'overlay/SimpleMarker'], (SimpleInfoWindow, SimpleMarker) => {
           map.setZoom(localStorage.getItem('map_zoom'))
           if ($mapData.userPoints.length > 0) {
+            var userPoints = $mapData.userPoints.filter($point => {
+              var $p = 1
+              if ($point.workStatus === null) {
+                $p = 1
+              } else {
+                $p = $point.workStatus
+              }
+              console.log(that.mapFilter)
+              if (that.mapFilter.indexOf(String($p)) !== -1) {
+                return true
+              }
+            })
+            console.log(userPoints)
             $mapData.userPoints.forEach(($item, $index) => {
               let $color = 'green'
               let $label = ''
@@ -286,11 +311,14 @@
                 var $orders = ''
                 switch ($data.workStatus) {
                   case 3 :
-                    $workStatus = '抢单中'; break
+                    $workStatus = '禁止接单'
+                    break
                   case 2 :
-                    $workStatus = '配送中'; break
+                    $workStatus = '配送中'
+                    break
                   default :
-                    $workStatus = '休息中'; break
+                    $workStatus = '休息中'
+                    break
                 }
                 if ($data.orders.length > 0) {
                   $data.orders.forEach(($orderItem, $orderIndex) => {
@@ -303,10 +331,10 @@
                   // 模板, underscore
                   infoTitle: `<strong>${$data.realName}</strong>`,
                   infoBody:
-                    `<P><span>手机：</span><span>${$data.phone}</span></P>` +
-                    `<p><span>等级：</span><span>${$data.level}</span></p>` +
-                    `<p><span>当前状态：</span><span>${$workStatus}</span>(${$item.limitText})</p>` +
-                    `<p><span>当前订单：</span><span>${$orders}</span></p>`,
+                  `<P><span>手机：</span><span>${$data.phone}</span></P>` +
+                  `<p><span>等级：</span><span>${$data.level}</span></p>` +
+                  `<p><span>当前状态：</span><span>${$workStatus}</span>(${$item.limitText})</p>` +
+                  `<p><span>当前订单：</span><span>${$orders}</span></p>`,
                   // 基点指向marker的头部位置
                   offset: new AMap.Pixel(0, -31)
                 }).open(map, marker.getPosition())
@@ -314,6 +342,7 @@
                   map.clearInfoWindow()
                 })
               }
+
               // marker 点击时打开
               AMap.event.addListener(marker, 'click', function () {
                 apiTable.data_personMapInfo({
@@ -373,35 +402,35 @@
 </script>
 
 <style lang="scss" type="text/scss" scoped>
-  .person-map{
-    .el-tree{
+  .person-map {
+    .el-tree {
       height: 600px;
       overflow-y: auto;
       border: 1px #ddd solid;
       border-radius: 4px;
     }
-    .country-select{
+    .country-select {
       margin-bottom: 20px;
-      span{
+      span {
         color: #666;
       }
     }
-    .map-box-card{
+    .map-box-card {
       width: 900px;
       margin-bottom: 20px;
-      .card-content{
+      .card-content {
         display: flex;
-        .card-item{
+        .card-item {
           width: 200px;
           display: table;
           box-sizing: border-box;
           padding: 5px 20px;
-          label{
+          label {
             display: table-cell;
             vertical-align: middle;
             text-align: left;
           }
-          span{
+          span {
             display: table-cell;
             position: relative;
             float: left;
@@ -412,33 +441,33 @@
         }
       }
     }
-    .map-box-content{
+    .map-box-content {
       width: 100%;
       display: flex;
       border-radius: 5px;
-      .box-content-win{
+      .box-content-win {
         width: 100%;
         overflow: hidden;
         background: #fff;
         margin-bottom: 20px;
-        >div{
+        > div {
           width: 100%;
           height: 600px;
           border-radius: 4px;
           margin-right: 20px;
         }
       }
-      .box-content-info{
+      .box-content-info {
         width: 280px;
         height: 300px;
         background: #c2e1f7;
         color: #012b6b;
-        h5{
+        h5 {
           padding: 20px 0 20px 20px;
           font-size: 18px;
           position: relative;
           font-weight: normal;
-          &::before{
+          &::before {
             content: '';
             display: block;
             width: 4px;
@@ -450,16 +479,16 @@
             transform: translateY(-50%);
           }
         }
-        .info-item{
+        .info-item {
           display: table;
           padding: 5px 10px;
           overflow: hidden;
           vertical-align: middle;
-          label{
+          label {
             width: 100px;
             display: table-cell;
           }
-          span{
+          span {
             display: block;
           }
         }

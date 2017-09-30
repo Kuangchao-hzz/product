@@ -71,6 +71,8 @@
                   :resizable=false
                   :height="250"
                   :max-height="250"
+                  :summary-method="getSummaries"
+                  show-summary
                   border
                   style="width: 100%">
                   <el-table-column
@@ -85,6 +87,7 @@
                   </el-table-column>
                   <el-table-column
                     label="品名"
+                    prop="name"
                     min-width="120"
                     align="center">
                     <template scope="scope">
@@ -92,6 +95,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
+                    prop="volume"
                     label="重量"
                     align="center">
                     <template scope="scope">
@@ -99,6 +103,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
+                    prop="amount"
                     label="数量"
                     align="center">
                     <template scope="scope">
@@ -106,6 +111,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
+                    prop="price"
                     label="单价"
                     align="center">
                     <template scope="scope">
@@ -114,21 +120,22 @@
                   </el-table-column>
                   <el-table-column
                     label="总价"
+                    prop="price"
                     align="center">
                     <template scope="scope">
                       {{ scope.row.amount * scope.row.price }}
                     </template>
                   </el-table-column>
                 </el-table>
-                <el-row class="check-item-row total-row"
-                        type="flex"
-                        align="middle">
-                  <el-col :lg="8"><strong style="padding-left: 20px">合计</strong></el-col>
-                  <el-col :lg="4" class="text-center">{{detailsData.weight}}KG</el-col>
-                  <el-col :lg="4" class="text-center">{{calculateGoodAmount}}</el-col>
-                  <el-col :lg="4" class="text-center">{{calculateSingleGoodTotalPrice}}</el-col>
-                  <el-col :lg="4" class="text-center">{{calculateAllGoodTotalPrice}}</el-col>
-                </el-row>
+                <!--<el-row class="check-item-row total-row"-->
+                        <!--type="flex"-->
+                        <!--align="middle">-->
+                  <!--<el-col :lg="8"><strong style="padding-left: 20px">合计</strong></el-col>-->
+                  <!--<el-col :lg="4" class="text-center">{{detailsData.weight}}KG</el-col>-->
+                  <!--<el-col :lg="4" class="text-center">{{calculateGoodAmount}}</el-col>-->
+                  <!--<el-col :lg="4" class="text-center">{{calculateSingleGoodTotalPrice}}</el-col>-->
+                  <!--<el-col :lg="4" class="text-center">{{calculateAllGoodTotalPrice}}</el-col>-->
+                <!--</el-row>-->
               </el-col>
             </el-row>
             <div class="abnormal-row" v-if="detailsData.abnormalInfo">
@@ -339,7 +346,6 @@
   * =======================================
   *
   * detailsData: 详情数据
-  * detailsType:     详情页类型 1 => 推送、待抢订单详情。 2 => 异常订单详情。 3 => 全部订单详情
   *
   * =======================================
   * */
@@ -351,7 +357,6 @@
         loading: false,
         detailsData: {},
         detailsDataRoutle: {},
-        detailsType: 1,
         outOrderDialog: false,
         closeOrderDialog: false,
         outOrderForm: {
@@ -378,10 +383,6 @@
             return true
           }
         }
-      },
-      // 判断详情来源
-      detailsSource () {
-        return this.$route.query.detailsType.toString()
       },
       // 计算商品个数
       calculateGoodAmount () {
@@ -415,6 +416,36 @@
       }
     },
     methods: {
+      getSummaries (param) {
+        if (this.detailsData.details && this.detailsData.details.length < 1) {
+          return false
+        }
+        const { columns, data } = param
+        const sums = []
+        columns.forEach((column, index) => {
+          if (index === 0) {
+            sums[index] = '总价'
+            return
+          }
+          const values = data.map(item => Number(item[column.property]))
+          if (!values.every(value => isNaN(value))) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr)
+              if (!isNaN(value)) {
+                return prev + curr
+              } else {
+                return prev
+              }
+            }, 0)
+            sums[index] += ' 元'
+          } else {
+            sums[index] = 'N/A'
+          }
+        })
+        sums[2] = this.detailsData.weight + 'KG'
+        sums[4] = '/'
+        return sums
+      },
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
