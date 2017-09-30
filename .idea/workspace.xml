@@ -2,9 +2,80 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="742b7a42-088c-40d5-ae2a-b0c8f2c85f7a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/product/src/components/details/orderDetails.vue" afterPath="$PROJECT_DIR$/product/src/components/details/orderDetails.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/product/src/components/details/person.vue" afterPath="$PROJECT_DIR$/product/src/components/details/person.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/product/src/components/manage-data/childrens/delivery.vue" afterPath="$PROJECT_DIR$/product/src/components/manage-data/childrens/delivery.vue" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/css/app.89bdb1516c7320bba9b8e04b652400be.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/css/app.89bdb1516c7320bba9b8e04b652400be.css.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/0.e472e8ed8b488052dc72.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/0.e472e8ed8b488052dc72.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/1.2ba05ec8a1087f1172e2.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/1.2ba05ec8a1087f1172e2.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/10.d81f4a8cdaa048870d79.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/10.d81f4a8cdaa048870d79.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/11.0f6e07dc41d99d37c5fd.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/11.0f6e07dc41d99d37c5fd.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/12.04c42168d79af32d3848.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/12.04c42168d79af32d3848.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/13.767cf0de07d1eceddd4c.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/13.767cf0de07d1eceddd4c.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/14.eaf93f8e26fd435258d3.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/14.eaf93f8e26fd435258d3.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/15.d485b58cdd82e0f47ed3.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/15.d485b58cdd82e0f47ed3.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/16.2a6f1d269e4f59928abd.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/16.2a6f1d269e4f59928abd.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/17.826daecdf985f41248da.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/17.826daecdf985f41248da.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/18.7326e09fd3d99b99c14e.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/18.7326e09fd3d99b99c14e.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/19.76dc7adeb717aca2894e.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/19.76dc7adeb717aca2894e.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/2.3a83da610a1fbff45ad1.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/2.3a83da610a1fbff45ad1.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/20.7f7c691c0a7a6e8150f6.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/20.7f7c691c0a7a6e8150f6.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/21.547002c848f616790883.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/21.547002c848f616790883.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/22.cce32fee7d39a561e450.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/22.cce32fee7d39a561e450.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/23.a8ec55e9e8f26497776c.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/23.a8ec55e9e8f26497776c.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/24.2c288fb605ae24ebcb8c.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/24.2c288fb605ae24ebcb8c.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/25.024cb8544c7cd9e754d1.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/25.024cb8544c7cd9e754d1.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/26.e26a98c9347d7937436a.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/26.e26a98c9347d7937436a.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/27.827d685efeba44f4b2d1.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/27.827d685efeba44f4b2d1.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/28.2e5f81c27e4c49962a62.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/28.2e5f81c27e4c49962a62.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/29.3256e45328625a17d1ca.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/29.3256e45328625a17d1ca.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/3.0ad0172593629faf2fd1.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/3.0ad0172593629faf2fd1.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/30.71252059ba06b274fd2d.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/30.71252059ba06b274fd2d.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/31.8178a0f91e1436f7991b.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/31.8178a0f91e1436f7991b.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/4.5041383d656292214ca4.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/4.5041383d656292214ca4.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/5.08dd6b48fde7abdeeebd.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/5.08dd6b48fde7abdeeebd.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/6.86e4cb72dfa842c5ff44.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/6.86e4cb72dfa842c5ff44.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/7.379df14cae39bbb165a7.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/7.379df14cae39bbb165a7.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/8.81fa88d29065d9c4957a.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/8.81fa88d29065d9c4957a.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/9.1cdeadb15dbcf9414b18.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/9.1cdeadb15dbcf9414b18.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/app.ab3608f20e70043e5849.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/app.ab3608f20e70043e5849.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/manifest.10f8f0442f36937104bc.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/manifest.10f8f0442f36937104bc.js.map" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/vendor.685558c6666f018cad43.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/product/dist/static/js/vendor.685558c6666f018cad43.js.map" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/product/dist/index.html" afterPath="$PROJECT_DIR$/product/dist/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/product/src/components/manage-person/childrens/map.vue" afterPath="$PROJECT_DIR$/product/src/components/manage-person/childrens/map.vue" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -65,8 +136,8 @@
       <file leaf-file-name="map.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/product/src/components/manage-person/childrens/map.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="640">
-              <caret line="295" column="19" lean-forward="true" selection-start-line="295" selection-start-column="19" selection-end-line="295" selection-end-column="19" />
+            <state relative-caret-position="394">
+              <caret line="280" column="24" lean-forward="false" selection-start-line="280" selection-start-column="24" selection-end-line="280" selection-end-column="24" />
               <folding>
                 <element signature="n#style#0;n#el-col#0;n#div#0;n#el-col#1;n#el-row#0;n#div#0;n#template#0;n#!!top" expanded="true" />
               </folding>
@@ -78,7 +149,7 @@
         <entry file="file://$PROJECT_DIR$/product/src/components/manage-data/childrens/delivery.vue">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="621">
-              <caret line="163" column="24" lean-forward="true" selection-start-line="163" selection-start-column="24" selection-end-line="163" selection-end-column="24" />
+              <caret line="163" column="24" lean-forward="false" selection-start-line="163" selection-start-column="24" selection-end-line="163" selection-end-column="24" />
               <folding>
                 <element signature="n#style#0;n#el-col#1;n#el-row#0;n#div#1;n#el-col#1;n#el-row#0;n#div#0;n#template#0;n#!!top" expanded="true" />
               </folding>
@@ -116,6 +187,7 @@
       <find>getCheckedNodes</find>
       <find>init</find>
       <find>ini</find>
+      <find>console</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -306,16 +378,15 @@
       <updated>1506652540113</updated>
       <workItem from="1506652542983" duration="2427000" />
       <workItem from="1506655494966" duration="23000" />
-      <workItem from="1506738420380" duration="7390000" />
+      <workItem from="1506738420380" duration="11095000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9840000" />
+    <option name="totallyTimeSpent" value="13545000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -323,7 +394,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -464,7 +535,7 @@
     <entry file="file://$PROJECT_DIR$/product/src/components/manage-data/childrens/delivery.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="621">
-          <caret line="163" column="24" lean-forward="true" selection-start-line="163" selection-start-column="24" selection-end-line="163" selection-end-column="24" />
+          <caret line="163" column="24" lean-forward="false" selection-start-line="163" selection-start-column="24" selection-end-line="163" selection-end-column="24" />
           <folding>
             <element signature="n#style#0;n#el-col#1;n#el-row#0;n#div#1;n#el-col#1;n#el-row#0;n#div#0;n#template#0;n#!!top" expanded="true" />
           </folding>
@@ -500,8 +571,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/product/src/components/manage-person/childrens/map.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
-          <caret line="295" column="19" lean-forward="true" selection-start-line="295" selection-start-column="19" selection-end-line="295" selection-end-column="19" />
+        <state relative-caret-position="394">
+          <caret line="280" column="24" lean-forward="false" selection-start-line="280" selection-start-column="24" selection-end-line="280" selection-end-column="24" />
           <folding>
             <element signature="n#style#0;n#el-col#0;n#div#0;n#el-col#1;n#el-row#0;n#div#0;n#template#0;n#!!top" expanded="true" />
           </folding>

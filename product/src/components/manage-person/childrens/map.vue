@@ -52,7 +52,7 @@
             </el-card>
           </div>
           <el-col :span="24" style="margin-bottom: 15px;">
-            <el-checkbox-group v-model="mapFilter">
+            <el-checkbox-group v-model="mapFilter" @change="mapFilterFn">
               <el-checkbox label="1">休息中</el-checkbox>
               <el-checkbox label="2">配送中</el-checkbox>
               <el-checkbox label="3">禁止接单</el-checkbox>
@@ -162,6 +162,12 @@
       }, 1200 * 1000)
     },
     methods: {
+      mapFilterFn () {
+        this.change = 0
+        this.defaultInit()
+        this.init()
+        this.fetch_mapData()
+      },
       setAllCheckedNodes () {
         this.$nextTick(() => {
           this.$refs['tree'].setCheckedNodes(this.$store.state.select.treeCountry)
@@ -264,13 +270,11 @@
               } else {
                 $p = $point.workStatus
               }
-              console.log(that.mapFilter)
               if (that.mapFilter.indexOf(String($p)) !== -1) {
                 return true
               }
             })
-            console.log(userPoints)
-            $mapData.userPoints.forEach(($item, $index) => {
+            userPoints.forEach(($item, $index) => {
               let $color = 'green'
               let $label = ''
               switch ($item.workStatus) {
@@ -303,9 +307,7 @@
                 map: map,
                 position: [$item.loc.x, $item.loc.y]
               })
-
               marker.setMap(map)
-
               function openInfoWin ($data) {
                 var $workStatus = ''
                 var $orders = ''
