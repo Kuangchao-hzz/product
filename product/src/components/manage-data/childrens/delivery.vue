@@ -128,7 +128,7 @@
                     <p>准达率</p>
                   </div>
                 </el-col>
-                <el-col :lg="12" title="7天内的统计数据">
+                <el-col :lg="12" title="7天内抢单率">
                   <div class="statistics-list">
                     <div class="statistics-content">
                       {{deliveryData.lsqdRate ? deliveryData.lsqdRate : '0' }}%
@@ -136,7 +136,7 @@
                     <p>历史抢单率</p>
                   </div>
                 </el-col>
-                <el-col :lg="12" title="7天内的统计数据">
+                <el-col :lg="12" title="7天内准达率">
                   <div class="statistics-list">
                     <div class="statistics-content">
                       {{deliveryData.lszdRate ? deliveryData.lszdRate : '0' }}%
@@ -242,11 +242,11 @@
         self.treeDefaultChecked = []
         self.checkedNodesData.forEach(function ($item, $index) {
           self.treeDefaultChecked.push($item.id)
-          if ($item.id <= 200) {
+          if ($item.id <= 99 && $item.id >= 10) {
             $params.provinces.push($item.id)
-          } else if ($item.id <= 2000 && $item.id > 200) {
+          } else if ($item.id <= 9999 && $item.id >= 1000) {
             $params.cities.push($item.id)
-          } else if ($item.id <= 20000 && $item.id > 2000) {
+          } else if ($item.id <= 999999 && $item.id >= 100000) {
             $params.districts.push($item.id)
           } else {
             $params.storeIds.push($item.id)

@@ -235,12 +235,14 @@
         self.treeDefaultChecked = []
         self.checkedNodesData.forEach(function ($item, $index) {
           self.treeDefaultChecked.push($item.id)
-          if ($item.id <= 200) {
+          if ($item.id <= 99 && $item.id >= 10) {
             $params.provinces.push($item.id)
-          } else if ($item.id <= 2000 && $item.id > 200) {
+          } else if ($item.id <= 9999 && $item.id >= 1000) {
             $params.cities.push($item.id)
-          } else if ($item.id <= 20000 && $item.id > 2000) {
+          } else if ($item.id <= 999999 && $item.id >= 100000) {
             $params.districts.push($item.id)
+          } else {
+            $params.storeIds.push($item.id)
           }
         })
         self.data_table($params)

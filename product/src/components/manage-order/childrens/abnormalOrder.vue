@@ -5,13 +5,6 @@
         <el-row :gutter="10">
           <el-col :span="6">
             <el-form-item>
-              <el-input
-                v-model="searchData.orderNo"
-                placeholder="订单编号"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item>
               <div class="country-select">
                 <el-cascader
                   v-model="searchData.country"
@@ -25,13 +18,20 @@
           </el-col>
           <el-col :span="6">
             <el-form-item>
-              <el-select v-model="searchData.storeId" placeholder="请选择门店">
-                <el-option
-                  v-for="($item, $index) in storeData"
-                  :key="$index"
-                  :label="$item.label"
-                  :value="$item.val"></el-option>
-              </el-select>
+              <el-cascader
+                v-model="searchData.storeId"
+                :props="defaultProps"
+                :options="storeData"
+                placeholder="请选择区域"
+                style="width: 100%;"
+              ></el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-input
+                v-model="searchData.orderNo"
+                placeholder="订单编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -51,6 +51,18 @@
               <el-select v-model="searchData.handlerStatus" placeholder="处理状态">
                 <el-option
                   v-for="item in this.$store.state.select.disposeType"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item>
+              <el-select v-model="searchData.orderType" placeholder="订单类型">
+                <el-option
+                  v-for="item in this.$store.state.select.orderType"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
@@ -89,8 +101,7 @@
                 <el-button type="primary">查看详情</el-button>
               </router-link>
               <!--<el-button :disabled="!btn_auth('b_xq_td')" v-if="scope.row.orderStatus !== 60 && scope.row.orderStatus < 90" type="primary">退单</el-button>-->
-              <!-- 人工处理只有异常类型是3或4 并且未处理 -->
-              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus === 85 || scope.row.orderStatus < 60 && scope.row.handlerStatus === 0" type="primary" @click="HandleCloseOrder(scope.row.id)">关闭订单</el-button>
+              <el-button :disabled="!btn_auth('b_xq_gbdd')" v-if="scope.row.orderStatus === 85 || scope.row.orderStatus < 60 && scope.row.handlerStatus === 0" type="primary" @click="HandleCloseOrder(scope.row.orderId)">关闭订单</el-button>
               <!-- 人工处理只有异常类型是3或4 并且未处理 -->
               <span v-if="scope.row.handlerStatus === 0">
                 <el-button :disabled="!btn_auth('b_xq_rgcl')" v-if="scope.row.abnormalStatus === 3 || scope.row.abnormalStatus === 4" type="primary" @click="manualHandle(scope.row.id)">人工处理</el-button>
@@ -225,8 +236,8 @@
             <el-radio label="1">结算</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item prop="remake" label="关闭备注">
-          <el-input type="textarea" v-model="closeOrderForm.remake"></el-input>
+        <el-form-item prop="remark" label="关闭备注">
+          <el-input type="textarea" v-model="closeOrderForm.remark"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="closeOrder">确定</el-button>
@@ -252,6 +263,7 @@
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
   import moment from 'moment'
+  import qs from 'qs'
   var setTime
   export default {
     data () {
@@ -261,23 +273,29 @@
         searchData: {
           page: 0,
           country: [],
-          storeId: '',
+          storeId: [],
+          orderType: '',
           orderNo: '',
           abnormalStatus: '',
           handlerStatus: '0',
           phone: '',
           localStorage: true
         },
+        defaultProps: {
+          value: 'val',
+          label: 'label',
+          children: 'children'
+        },
         storeData: [],
         tableData: [],
         closeOrderForm: {
           reason: '1',
           isSettle: '0',
-          remake: '',
+          remark: '',
           id: ''
         },
         rules: {
-          remake: [
+          remark: [
             { required: true, message: '请输入关闭备注', trigger: 'blur' }
           ]
         }
@@ -285,13 +303,14 @@
     },
     computed: {
       tabHeight () {
-        return this.$store.state.include.tableHeight - 305
+        return this.$store.state.include.tableHeight - 365
       }
     },
     mounted () {
       var $data = JSON.parse(localStorage.getItem('abnormalOrder_search'))
       if ($data && $data.localStorage) {
         this.searchData = $data
+        this.storeData = JSON.parse(localStorage.getItem('ms_storeIds'))
       }
       this.data_table()
       setTime = setInterval(() => {
@@ -318,7 +337,7 @@
           district: $district
         }).then((response) => {
           if (response.data.code === 1) {
-            this.searchData.storeId = ''
+            this.searchData.storeId = []
             this.storeData = [{
               value: '',
               label: '请选择门店'
@@ -359,7 +378,7 @@
       handleClose (done) {
         this.closeOrderDialog = false
         this.closeOrderForm.reason = '1'
-        this.closeOrderForm.remake = ''
+        this.closeOrderForm.remark = ''
         this.closeOrderForm.isSettle = '0'
         this.closeOrderForm.id = ''
         this.$refs['closeOrderForm'].resetFields()
@@ -370,7 +389,8 @@
         this.searchData.abnormalStatus = ''
         this.searchData.handlerStatus = '0'
         this.searchData.phone = ''
-        this.searchData.storeId = ''
+        this.searchData.storeId = []
+        this.searchData.orderType = ''
         this.searchData.orderNo = ''
         this.data_table()
       },
@@ -393,21 +413,34 @@
         })
       },
       downloadExcel () {
-        if (this.tableData.details.length < 1) {
-          this.$message({
-            duration: 1500,
-            message: '无数据可导出！'
+//        if (this.tableData.details.length < 1) {
+//          this.$message({
+//            duration: 1500,
+//            message: '无数据可导出！'
+//          })
+//          return false
+//        }
+        let $params = Object.assign({}, this.searchData, {
+          city: '',
+          province: '',
+          district: ''
+        })
+        if (this.searchData.country.length > 0) {
+          Object.assign($params, {
+            city: this.searchData.country[1],
+            province: this.searchData.country[0],
+            district: this.searchData.country[2]
           })
-          return false
         }
-        window.location.href = '/api/web/orderManage/exportAbnormal?'
+        window.location.href = '/api/web/orderManage/exportAbnormal?' + qs.stringify($params)
       },
       data_table ($page) {
         let self = this
         let $params = {
           page: $page - 1 || self.searchData.page,
-          storeId: self.searchData.storeId,
+          storeId: self.searchData.storeId.join(','),
           orderNo: self.searchData.orderNo,
+          orderType: self.searchData.orderType,
           abnormalStatus: self.searchData.abnormalStatus,
           handlerStatus: self.searchData.handlerStatus,
           phone: self.searchData.phone,
@@ -427,6 +460,7 @@
           self.loading = false
           if (response.data.code === 1) {
             localStorage.setItem('abnormalOrder_search', JSON.stringify(self.searchData))
+            localStorage.setItem('ms_storeIds', JSON.stringify(self.storeData))
             self.tableData = response.data.dat
           }
         })

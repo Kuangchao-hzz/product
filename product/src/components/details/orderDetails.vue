@@ -171,6 +171,17 @@
                   <!--{{detailsData.abnormalInfo.handleResult === 99 ? '已关闭': ''}}-->
                 </el-col>
               </el-row>
+              <el-row class="data-item" v-if="detailsData.closeInfo">
+                <el-col :span="3"><strong>关闭时间：</strong></el-col>
+                <el-col :span="6">{{detailsData.closeInfo.closeTime ? detailsData.closeInfo.closeTime : '- -'}}</el-col>
+                <el-col :span="3"><strong>关闭原因：</strong></el-col>
+                <el-col :span="12" v-if="detailsData.closeInfo.closeReason">
+                  <span v-if="detailsData.closeInfo.closeReason === 1">客户拒单</span>
+                  <span v-else>其它原因</span>
+                </el-col>
+                <el-col :span="3"><strong>关闭备注：</strong></el-col>
+                <el-col :span="21">{{detailsData.closeInfo.closeRemark ? detailsData.closeInfo.closeRemark : '- -'}}</el-col>
+              </el-row>
             </div>
             <div class="closeOrder-row" v-if="detailsData.cancelInfo">
               <el-row class="data-item">
@@ -200,11 +211,11 @@
                   <!--<el-button type="info" :disabled="!btn_auth('b_xq_td')" v-if="detailsData.orderStatus < 90" @click="outOrderDialog = true">退单</el-button>-->
 
                   <el-button type="info" :disabled="!btn_auth('b_xq_gbdd')"
-                             v-if=" detailsData.orderStatus < 60 || detailsData.abnormalInfo && !detailsData.abnormalInfo.handleResult" @click="closeOrderDialog = true">关闭订单</el-button>
+                             v-if=" detailsData.orderStatus < 60 || (detailsData.abnormalInfo && !detailsData.abnormalInfo.handleResult)" @click="closeOrderDialog = true">关闭订单</el-button>
                   <!-- 人工处理只有异常类型是3或4 并且未处理 -->
-                  <span v-if="detailsData.abnormalInfo" style="margin-left: 10px;">
+                  <span v-if="detailsData.abnormalInfo &&　!detailsData.abnormalInfo.handleResult" style="margin-left: 10px;">
                     <el-button type="info" :disabled="!btn_auth('b_xq_rgcl')" v-if="detailsData.abnormalInfo.abnormalStatus === 3 || detailsData.abnormalInfo.abnormalStatus === 4">
-                      <span v-if="!detailsData.abnormalInfo.handleResult" @click="manualHandle(detailsData.id)">人工处理</span>
+                      <span @click="manualHandle(detailsData.id)">人工处理</span>
                     </el-button>
                   </span>
                 </div>
@@ -303,7 +314,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="退单备注">
-          <el-input type="textarea" v-model="outOrderForm.remake"></el-input>
+          <el-input type="textarea" v-model="outOrderForm.remark"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary">确定</el-button>
@@ -329,8 +340,8 @@
             <el-radio label="1">结算</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item prop="remake" label="关闭备注">
-          <el-input type="textarea" v-model="closeOrderForm.remake"></el-input>
+        <el-form-item prop="remark" label="关闭备注">
+          <el-input type="textarea" v-model="closeOrderForm.remark"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="closeOrder(detailsData.id)">确定</el-button>
@@ -361,15 +372,15 @@
         closeOrderDialog: false,
         outOrderForm: {
           send: '1',
-          remake: ''
+          remark: ''
         },
         closeOrderForm: {
           reason: '1',
           isSettle: '0',
-          remake: ''
+          remark: ''
         },
         rules: {
-          remake: [
+          remark: [
             { required: true, message: '请输入关闭备注', trigger: 'blur' }
           ]
         }
@@ -424,7 +435,7 @@
         const sums = []
         columns.forEach((column, index) => {
           if (index === 0) {
-            sums[index] = '总价'
+            sums[index] = '合计'
             return
           }
           const values = data.map(item => Number(item[column.property]))
@@ -437,13 +448,13 @@
                 return prev
               }
             }, 0)
-            sums[index] += ' 元'
+            sums[index] += ''
           } else {
-            sums[index] = 'N/A'
+            sums[index] = ''
           }
         })
         sums[2] = this.detailsData.weight + 'KG'
-        sums[4] = '/'
+        sums[4] = ''
         return sums
       },
       btn_auth ($btn) {
@@ -503,7 +514,7 @@
             apiDetails.details_handleOrderClose({
               id: $id,
               reason: this.closeOrderForm.reason,
-              remake: this.closeOrderForm.remake,
+              remark: this.closeOrderForm.remark,
               isSettle: this.closeOrderForm.isSettle
             }).then((response) => {
               if (response.data.code === 1) {
@@ -582,7 +593,7 @@
       handleClose (done) {
         this.closeOrderDialog = false
         this.closeOrderForm.reason = '1'
-        this.closeOrderForm.remake = ''
+        this.closeOrderForm.remark = ''
         this.closeOrderForm.isSettle = '0'
         this.closeOrderForm.id = ''
         this.$refs['closeOrderForm'].resetFields()

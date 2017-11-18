@@ -18,13 +18,13 @@
           </el-col>
           <el-col :span="5">
             <el-form-item>
-              <el-select v-model="searchData.storeId" placeholder="请选择门店">
-                <el-option
-                  v-for="($item, $index) in storeData"
-                  :key="$index"
-                  :label="$item.label"
-                  :value="$item.val"></el-option>
-              </el-select>
+              <el-cascader
+                v-model="searchData.storeId"
+                :props="defaultProps"
+                :options="storeData"
+                placeholder="请选择区域"
+                style="width: 100%;"
+              ></el-cascader>
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -151,6 +151,7 @@
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
   import moment from 'moment'
+  import qs from 'qs'
   export default {
     data () {
       return {
@@ -159,9 +160,14 @@
           page: 0,
           orderType: '',
           country: [],
-          storeId: '',
+          storeId: [],
           orderNo: '',
           localStorage: true
+        },
+        defaultProps: {
+          value: 'val',
+          label: 'label',
+          children: 'children'
         },
         storeData: [],
         tableData: [],
@@ -178,6 +184,7 @@
       var $data = JSON.parse(localStorage.getItem('pushOrder_search'))
       if ($data && $data.localStorage) {
         this.searchData = $data
+        this.storeData = JSON.parse(localStorage.getItem('ms_storeIds'))
       }
       this.data_table()
     },
@@ -201,7 +208,7 @@
           district: $district
         }).then((response) => {
           if (response.data.code === 1) {
-            this.searchData.storeId = ''
+            this.searchData.storeId = []
             this.storeData = [{
               value: '',
               label: '请选择门店'
@@ -306,7 +313,7 @@
         this.searchData.country = []
         this.searchData.orderType = ''
         this.searchData.orderNo = ''
-        this.searchData.storeId = ''
+        this.searchData.storeId = []
         this.data_table()
       },
       downloadExcel () {
@@ -317,14 +324,26 @@
           })
           return false
         }
-        window.location.href = '/api/web/orderManage/exportDqOrder?'
+        let $params = Object.assign({}, this.searchData, {
+          city: '',
+          province: '',
+          district: ''
+        })
+        if (this.searchData.country.length > 0) {
+          Object.assign($params, {
+            city: this.searchData.country[1],
+            province: this.searchData.country[0],
+            district: this.searchData.country[2]
+          })
+        }
+        window.location.href = '/api/web/orderManage/exportDqOrder?' + qs.stringify($params)
       },
       data_table ($page) {
         let self = this
         let $params = {
           page: $page - 1 || this.searchData.page,
           orderType: this.searchData.orderType,
-          storeId: this.searchData.storeId,
+          storeId: self.searchData.storeId.join(','),
           orderNo: this.searchData.orderNo,
           city: '',
           province: '',
@@ -342,6 +361,7 @@
           self.loading = false
           if (response.data.code === 1) {
             localStorage.setItem('pushOrder_search', JSON.stringify(self.searchData))
+            localStorage.setItem('ms_storeIds', JSON.stringify(self.storeData))
             self.tableData = response.data.dat
           }
         })

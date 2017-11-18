@@ -35,7 +35,7 @@
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item>
               <div class="country-select">
                 <el-cascader
@@ -43,12 +43,23 @@
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
                   placeholder="请选择区域"
-                  change-on-select
+                  @change="fetchStoreData"
                 ></el-cascader>
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
+            <el-form-item>
+              <el-cascader
+                v-model="searchData.storeId"
+                :props="defaultProps"
+                :options="storeData"
+                placeholder="请选择区域"
+                style="width: 100%;"
+              ></el-cascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
             <el-form-item>
               <el-select v-model="searchData.orderType" placeholder="订单类型">
                 <el-option
@@ -60,7 +71,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="5">
             <el-form-item>
               <el-select v-model="searchData.orderStatus" placeholder="订单状态">
                 <el-option
@@ -275,21 +286,28 @@
 <script>
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
+  import qs from 'qs'
   export default {
     data () {
       return {
         loading: false,
+        storeData: [],
         searchData: {
           page: 0,
           country: [],
           orderNo: '',
           orderType: '',
-          storeId: '',
+          storeId: [],
           mallTime: [],
           arriveTime: [],
           orderStatus: '',
           phone: '',
           localStorage: true
+        },
+        defaultProps: {
+          value: 'val',
+          label: 'label',
+          children: 'children'
         },
         tableData: [],
         closeOrderForm: {
@@ -315,6 +333,7 @@
       var $data = JSON.parse(localStorage.getItem('allOrder_search'))
       if ($data && $data.localStorage) {
         this.searchData = $data
+        this.storeData = JSON.parse(localStorage.getItem('ms_storeIds'))
       }
       this.data_table()
     },
@@ -352,6 +371,23 @@
           return a === $btn
         })
       },
+      fetchStoreData ($country) {
+        this.get_storeOfArea($country[$country.length - 1])
+      },
+      get_storeOfArea ($district) {
+        apiTable.fetch_storeOfArea({
+          district: $district
+        }).then((response) => {
+          if (response.data.code === 1) {
+            this.searchData.storeId = []
+            this.storeData = [{
+              value: '',
+              label: '请选择门店'
+            }]
+            this.storeData = this.storeData.concat(response.data.dat)
+          }
+        })
+      },
       HandleCloseOrder ($id) {
         this.closeOrderDialog = true
         this.closeOrderForm.id = $id
@@ -386,7 +422,7 @@
         this.searchData.country = []
         this.searchData.orderType = ''
         this.searchData.orderNo = ''
-        this.searchData.storeId = ''
+        this.searchData.storeId = []
         this.searchData.mallTime = []
         this.searchData.arriveTime = []
         this.searchData.orderStatus = ''
@@ -402,7 +438,35 @@
           })
           return false
         }
-        window.location.href = '/api/web/orderManage/exportAllOrder?'
+        let $params = Object.assign({}, this.searchData, {
+          city: '',
+          province: '',
+          district: '',
+          arriveTimeBegin: '',
+          arriveTimeEnd: '',
+          mallTimeBegin: '',
+          mallTimeEnd: ''
+        })
+        if (this.searchData.arriveTime.length > 0) {
+          Object.assign($params, {
+            arriveTimeBegin: new Date(this.searchData.arriveTime[1]).Format('yyyy-MM-dd'),
+            arriveTimeEnd: new Date(this.searchData.arriveTime[0]).Format('yyyy-MM-dd')
+          })
+        }
+        if (this.searchData.mallTime.length > 0) {
+          Object.assign($params, {
+            mallTimeBegin: new Date(this.searchData.mallTime[1]).Format('yyyy-MM-dd'),
+            mallTimeEnd: new Date(this.searchData.mallTime[0]).Format('yyyy-MM-dd')
+          })
+        }
+        if (this.searchData.country.length > 0) {
+          Object.assign($params, {
+            city: this.searchData.country[1],
+            province: this.searchData.country[0],
+            district: this.searchData.country[2]
+          })
+        }
+        window.location.href = '/api/web/orderManage/exportAllOrder?' + qs.stringify($params)
       },
       lookDetails ($item) {
         this.$router.push('/order/allDetails')
@@ -413,7 +477,7 @@
           page: $page - 1 || self.searchData.page,
           orderNo: self.searchData.orderNo,
           orderType: self.searchData.orderType,
-          storeId: self.searchData.storeId,
+          storeId: self.searchData.storeId.join(','),
           orderStatus: self.searchData.orderStatus,
           arriveTimeBegin: '',
           arriveTimeEnd: '',
@@ -449,6 +513,7 @@
           self.loading = false
           if (response.data.code === 1) {
             localStorage.setItem('allOrder_search', JSON.stringify(self.searchData))
+            localStorage.setItem('ms_storeIds', JSON.stringify(self.storeData))
             self.tableData = response.data.dat
           }
         })

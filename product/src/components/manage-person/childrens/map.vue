@@ -107,7 +107,6 @@
   import AMap from 'AMap'
   import AMapUI from 'AMapUI'
   import apiTable from '@/api/table'
-
   var setTime
   var map
   /* eslint-disable no-unused-vars */
@@ -116,7 +115,12 @@
     data () {
       return {
         mapFilter: ['1', '2', '3'],
-        mapData: {},
+        mapData: {
+          point: {
+            x: 121.418286,
+            y: 31.302316
+          }
+        },
         country: [],
         defaultInitStatus: true,
         change: 1,
@@ -156,22 +160,26 @@
       this.setAllCheckedNodes()
       setTime = setInterval(() => {
         this.change = 0
-        this.defaultInit()
-        this.init()
-        this.fetch_mapData()
+        this.defaultInit().then(() => {
+          this.init()
+          this.fetch_mapData()
+        })
       }, 1200 * 1000)
     },
     methods: {
       mapFilterFn () {
         this.change = 0
-        this.defaultInit()
-        this.init()
-        this.fetch_mapData()
+        this.defaultInit().then(() => {
+          this.init()
+          this.fetch_mapData()
+        })
       },
       setAllCheckedNodes () {
         this.$nextTick(() => {
           this.$refs['tree'].setCheckedNodes(this.$store.state.select.treeCountry)
-          this.getCheckedNodes()
+          this.defaultInit().then(() => {
+            this.getCheckedNodes()
+          })
         })
       },
       resetCheckedNodes () {
@@ -195,6 +203,8 @@
       },
       fetch_mapData (mynode) {
         let self = this
+        console.log(JSON.stringify(this.mapReqDataParams))
+        var a = this.mapReqDataParams
         let $params = Object.assign({}, this.mapReqDataParams, {
           provinces: [],
           cities: [],
@@ -205,11 +215,11 @@
         self.treeDefaultChecked = []
         self.checkedNodesData.forEach(function ($item, $index) {
           self.treeDefaultChecked.push($item.id)
-          if ($item.id <= 200) {
+          if ($item.id <= 99 && $item.id >= 10) {
             $params.provinces.push($item.id)
-          } else if ($item.id <= 2000 && $item.id > 200) {
+          } else if ($item.id <= 9999 && $item.id >= 1000) {
             $params.cities.push($item.id)
-          } else if ($item.id <= 20000 && $item.id > 2000) {
+          } else if ($item.id <= 999999 && $item.id >= 100000) {
             $params.districts.push($item.id)
           } else {
             $params.storeIds.push($item.id)
@@ -221,25 +231,12 @@
         this.defaultInitStatus = true
       },
       defaultInit () {
-        var $mapData = this.mapData
-        map = new AMap.Map('container', {
-          center: [$mapData.point.x, $mapData.point.y],
-          zoom: 12
-        })
-        let mapBounds = map.getBounds()
-        let Center = map.getCenter()
-        localStorage.setItem('map_zoom', map.getZoom())
-        let $params = {
-          lng: Center.lng,
-          lat: Center.lat,
-          lng1: mapBounds.southwest.lng,
-          lat1: mapBounds.southwest.lat,
-          lng2: mapBounds.northeast.lng,
-          lat2: mapBounds.northeast.lat
-        }
-        Object.assign(this.mapReqDataParams, $params)
-        this.change = 0
-        AMap.event.addListener(map, 'dragend', (e) => {
+        return new Promise(resolve => {
+          var $mapData = this.mapData
+          map = new AMap.Map('container', {
+            center: [$mapData.point.x, $mapData.point.y],
+            zoom: 12
+          })
           let mapBounds = map.getBounds()
           let Center = map.getCenter()
           localStorage.setItem('map_zoom', map.getZoom())
@@ -253,9 +250,25 @@
           }
           Object.assign(this.mapReqDataParams, $params)
           this.change = 0
-          this.fetch_mapData()
+          AMap.event.addListener(map, 'dragend', (e) => {
+            let mapBounds = map.getBounds()
+            let Center = map.getCenter()
+            localStorage.setItem('map_zoom', map.getZoom())
+            let $params = {
+              lng: Center.lng,
+              lat: Center.lat,
+              lng1: mapBounds.southwest.lng,
+              lat1: mapBounds.southwest.lat,
+              lng2: mapBounds.northeast.lng,
+              lat2: mapBounds.northeast.lat
+            }
+            Object.assign(this.mapReqDataParams, $params)
+            this.change = 0
+            this.fetch_mapData()
+          })
+          this.defaultInitStatus = false
+          resolve()
         })
-        this.defaultInitStatus = false
       },
       init: function () {
         var that = this

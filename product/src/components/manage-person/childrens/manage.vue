@@ -336,13 +336,25 @@
         swal({
           title: str,
           type: 'warning',
+          text: '请填写冻结原因!',
+          input: 'text',
           showCancelButton: true,
           reverseButtons: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: '确定',
-          cancelButtonText: '取消'
-        }).then(() => {
+          cancelButtonText: '取消',
+          preConfirm: function (reason) {
+            return new Promise(function (resolve, reject) {
+              if (reason === '') {
+                reject('请填写冻结原因')
+              } else {
+                resolve()
+              }
+            })
+          },
+          allowOutsideClick: false
+        }).then((reason) => {
           let $params = {
             direction: $type
           }
@@ -355,14 +367,16 @@
           }
           if (this.multipleSelection.length === 1) {
             $params = Object.assign({}, $params, {
-              id: this.multipleSelection[0].id
+              id: this.multipleSelection[0].id,
+              reason: reason
             })
           } else {
             let ids = this.multipleSelection.map(($item) => {
               return $item.id
             })
             $params = Object.assign({}, $params, {
-              ids: ids
+              ids: ids,
+              reason: reason
             })
           }
           apiDetails.details_handlePersonEnabled($params).then((response) => {

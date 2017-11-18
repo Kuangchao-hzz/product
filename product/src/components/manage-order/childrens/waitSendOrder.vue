@@ -11,9 +11,20 @@
                   :options="this.$store.state.select.country"
                   :props="this.$store.state.select.defaultCountryProps"
                   placeholder="请选择区域"
-                  change-on-select
+                  @change="fetchStoreData"
                 ></el-cascader>
               </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item>
+              <el-cascader
+                v-model="searchData.storeId"
+                :props="defaultProps"
+                :options="storeData"
+                placeholder="请选择区域"
+                style="width: 100%;"
+              ></el-cascader>
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -147,16 +158,24 @@
   import apiTable from '@/api/table'
   import apiDetails from '@/api/details'
   import moment from 'moment'
+  import qs from 'qs'
   export default {
     data () {
       return {
         loading: false,
+        storeData: [],
         searchData: {
           page: 0,
+          storeId: [],
           country: [],
           orderType: '',
           orderNo: '',
           localStorage: true
+        },
+        defaultProps: {
+          value: 'val',
+          label: 'label',
+          children: 'children'
         },
         tableData: [],
         multipleSelection: []
@@ -171,6 +190,7 @@
       var $data = JSON.parse(localStorage.getItem('sendOrder_search'))
       if ($data && $data.localStorage) {
         this.searchData = $data
+        this.storeData = JSON.parse(localStorage.getItem('ms_storeIds'))
       }
       this.data_table()
     },
@@ -184,6 +204,23 @@
       btn_auth ($btn) {
         return this.$store.state.user.AUTHIDS.split(',').some(a => {
           return a === $btn
+        })
+      },
+      fetchStoreData ($country) {
+        this.get_storeOfArea($country[$country.length - 1])
+      },
+      get_storeOfArea ($district) {
+        apiTable.fetch_storeOfArea({
+          district: $district
+        }).then((response) => {
+          if (response.data.code === 1) {
+            this.searchData.storeId = []
+            this.storeData = [{
+              value: '',
+              label: '请选择门店'
+            }]
+            this.storeData = this.storeData.concat(response.data.dat)
+          }
         })
       },
       handleOrderBackToYb () {
@@ -237,6 +274,7 @@
         this.searchData.country = []
         this.searchData.orderType = ''
         this.searchData.orderNo = ''
+        this.searchData.storeId = []
         this.data_table()
       },
       downloadExcel () {
@@ -247,7 +285,19 @@
           })
           return false
         }
-        window.location.href = '/api/web/orderManage/exportDtOrder?'
+        let $params = Object.assign({}, this.searchData, {
+          city: '',
+          province: '',
+          district: ''
+        })
+        if (this.searchData.country.length > 0) {
+          Object.assign($params, {
+            province: this.searchData.country[0],
+            city: this.searchData.country[1],
+            district: this.searchData.country[2]
+          })
+        }
+        window.location.href = '/api/web/orderManage/exportDtOrder?' + qs.stringify($params)
       },
       data_table ($page) {
         let self = this
@@ -255,6 +305,7 @@
           page: $page - 1 || this.searchData.page,
           city: '',
           province: '',
+          storeId: self.searchData.storeId.join(','),
           district: '',
           orderNo: this.searchData.orderNo,
           orderType: this.searchData.orderType
@@ -271,6 +322,7 @@
           self.loading = false
           if (response.data.code === 1) {
             localStorage.setItem('sendOrder_search', JSON.stringify(self.searchData))
+            localStorage.setItem('ms_storeIds', JSON.stringify(self.storeData))
             self.tableData = response.data.dat
           }
         })

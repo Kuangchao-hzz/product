@@ -32,7 +32,7 @@
               <el-input v-model="searchData.employeeId" placeholder="工号"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="6" style="min-width: 230px;">
             <el-form-item>
               <el-date-picker
                 v-model="searchData.mallTime"
@@ -205,6 +205,7 @@
 
 <script>
   import apiTable from '@/api/table'
+  import qs from 'qs'
   export default {
     data () {
       return {
@@ -323,7 +324,27 @@
         }
       },
       downloadExcel () {
-        window.location.href = '/api/web/settlement/exportData?'
+        let $params = Object.assign({}, this.searchData, {
+          city: '',
+          province: '',
+          district: '',
+          timeBegin: '',
+          timeEnd: ''
+        })
+        if (this.searchData.mallTime.length > 0) {
+          Object.assign($params, {
+            timeBegin: new Date(this.searchData.mallTime[1]).Format('yyyy-MM-dd'),
+            timeEnd: new Date(this.searchData.mallTime[0]).Format('yyyy-MM-dd')
+          })
+        }
+        if (this.searchData.country.length > 0) {
+          Object.assign($params, {
+            city: this.searchData.country[0],
+            province: this.searchData.country[1],
+            district: this.searchData.country[2]
+          })
+        }
+        window.location.href = '/api/web/settlement/exportData?' + qs.stringify($params)
       },
       submitUpload () {
         if (this.$refs.upload.uploadFiles.length > 0) {

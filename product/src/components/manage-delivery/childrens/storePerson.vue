@@ -340,7 +340,7 @@
       },
       iterationTree ($data) {
         $data.forEach(($item, $index) => {
-          if ($item.id < 20000) {
+          if ($item.id < 999999) {
             Object.assign($item, {
               disabled: true
             })
