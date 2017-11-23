@@ -215,7 +215,7 @@
                   <!-- 人工处理只有异常类型是3或4 并且未处理 -->
                   <span v-if="detailsData.abnormalInfo &&　!detailsData.abnormalInfo.handleResult" style="margin-left: 10px;">
                     <el-button type="info" :disabled="!btn_auth('b_xq_rgcl')" v-if="detailsData.abnormalInfo.abnormalStatus === 3 || detailsData.abnormalInfo.abnormalStatus === 4">
-                      <span @click="manualHandle(detailsData.id)">人工处理</span>
+                      <span @click="manualHandle(detailsData.abnormalInfo.id)">人工处理</span>
                     </el-button>
                   </span>
                 </div>
@@ -336,7 +336,7 @@
         </el-form-item>
         <el-form-item label="结算佣金">
           <el-radio-group v-model="closeOrderForm.isSettle">
-            <el-radio label="0">不接算</el-radio>
+            <el-radio label="0">不结算</el-radio>
             <el-radio label="1">结算</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -455,6 +455,7 @@
         })
         sums[2] = this.detailsData.weight + 'KG'
         sums[4] = ''
+        sums[5] = this.detailsData.orderTotal
         return sums
       },
       btn_auth ($btn) {

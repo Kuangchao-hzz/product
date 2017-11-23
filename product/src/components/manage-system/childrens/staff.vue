@@ -85,7 +85,7 @@
         </el-table-column>
         <el-table-column
           v-for="($item, $index) in handleTableHeaderList"
-          :label="$item.month + '/' + $item.day + ' ' + $item.week"
+          :label="($item.month + 1) + '/' + $item.day + ' ' + $item.week"
           min-width="150"
           align="center"
           :key="$index"

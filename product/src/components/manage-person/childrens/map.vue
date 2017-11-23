@@ -41,11 +41,7 @@
                   <span>{{mapData.pszCount}}</span>
                 </div>
                 <div class="card-item">
-                  <label>今日已送达订单：</label>
-                  <span>{{mapData.psyCount}}</span>
-                </div>
-                <div class="card-item">
-                  <label>配送员数量：</label>
+                  <label>附近快递员：</label>
                   <span>{{mapData.psyCount}}</span>
                 </div>
               </div>

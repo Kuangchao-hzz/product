@@ -7,7 +7,7 @@
     <div class="box-card-group">
       <el-card class="box-card">
         <div class="card-content">
-          <h5>本地新增</h5>
+          <h5>本地注册</h5>
           <div class="card-item">
             <label>本地注册配送员：</label>
             <span>{{tableData.all}}</span>

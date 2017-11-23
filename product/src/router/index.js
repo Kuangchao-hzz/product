@@ -277,15 +277,15 @@ export const asyncRouterMap = [
           role: ['m_kfgl', 'b_kf_bj']
         },
         component: resolve => require(['../components/manage-system/childrens/service.vue'], resolve)
-      },
-      {
-        path: 'app',
-        name: 'APP版本管理',
-        meta: {
-          role: ['m_appbbgl', 'b_app_tjxbb']
-        },
-        component: resolve => require(['../components/manage-system/childrens/app.vue'], resolve)
       }
+      // {
+      //   path: 'app',
+      //   name: 'APP版本管理',
+      //   meta: {
+      //     role: ['m_appbbgl', 'b_app_tjxbb']
+      //   },
+      //   component: resolve => require(['../components/manage-system/childrens/app.vue'], resolve)
+      // }
       // {
       //   path: 'help',
       //   name: '使用帮助',
