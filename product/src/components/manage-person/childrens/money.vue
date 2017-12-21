@@ -295,8 +295,8 @@
         }
         if (this.searchData.country.length > 0) {
           Object.assign($params, {
-            city: this.searchData.country[0],
-            province: this.searchData.country[1],
+            city: this.searchData.country[1],
+            province: this.searchData.country[0],
             district: this.searchData.country[2]
           })
         }
@@ -339,8 +339,8 @@
         }
         if (this.searchData.country.length > 0) {
           Object.assign($params, {
-            city: this.searchData.country[0],
-            province: this.searchData.country[1],
+            city: this.searchData.country[1],
+            province: this.searchData.country[0],
             district: this.searchData.country[2]
           })
         }

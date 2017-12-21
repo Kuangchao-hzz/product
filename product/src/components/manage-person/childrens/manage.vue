@@ -180,9 +180,7 @@
           fixed="right"
           label="操作">
           <template scope="scope">
-            <el-button type="text"
-                       size="small"
-            ><router-link :to="{ path: '/person/personDetails', query: { id: scope.row.id }}" >查看详情</router-link></el-button>
+            <router-link :to="{ path: '/person/personDetails', query: { id: scope.row.id }}" >查看详情</router-link>
           </template>
         </el-table-column>
       </el-table>
@@ -271,8 +269,8 @@
         }
         if (this.searchData.country.length > 0) {
           Object.assign($params, {
-            city: this.searchData.country[0],
-            province: this.searchData.country[1],
+            city: this.searchData.country[1],
+            province: this.searchData.country[0],
             district: this.searchData.country[2]
           })
         }

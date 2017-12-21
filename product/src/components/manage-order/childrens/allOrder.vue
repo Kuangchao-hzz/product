@@ -270,9 +270,9 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          prop="remake"
+          prop="remark"
           label="关闭备注">
-          <el-input type="textarea" v-model="closeOrderForm.remake"></el-input>
+          <el-input type="textarea" v-model="closeOrderForm.remark"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="closeOrder">确定</el-button>
@@ -313,12 +313,12 @@
         closeOrderForm: {
           reason: '1',
           isSettle: '0',
-          remake: '',
+          remark: '',
           id: ''
         },
         closeOrderDialog: false,
         rules: {
-          remake: [
+          remark: [
             { required: true, message: '请输入关闭备注', trigger: 'blur' }
           ]
         }
@@ -395,7 +395,7 @@
       handleClose (done) {
         this.closeOrderDialog = false
         this.closeOrderForm.reason = '1'
-        this.closeOrderForm.remake = ''
+        this.closeOrderForm.remark = ''
         this.closeOrderForm.isSettle = '0'
         this.closeOrderForm.id = ''
         this.$refs['closeOrderForm'].resetFields()

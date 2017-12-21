@@ -105,6 +105,7 @@
   import apiTable from '@/api/table'
   var setTime
   var map
+  var marker = []
   /* eslint-disable no-unused-vars */
   var infoWindow
   export default {
@@ -300,7 +301,7 @@
                   $label = '休'
                   break
               }
-              var marker = new SimpleMarker({
+              marker = new SimpleMarker({
                 // 前景文字
                 iconLabel: {
                   innerHTML: `<span>${$label}</span>`,
@@ -376,6 +377,7 @@
         apiTable.data_personMapTable($params).then((response) => {
           if (response.data.code === 1) {
             this.mapData = response.data.dat
+            map.remove(marker)
             if ($params.change === 1) {
               this.defaultInit()
             }
@@ -427,7 +429,6 @@
       }
     }
     .map-box-card {
-      width: 900px;
       margin-bottom: 20px;
       .card-content {
         display: flex;

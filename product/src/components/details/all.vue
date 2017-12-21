@@ -193,7 +193,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="退单备注">
-          <el-input type="textarea" v-model="outOrderForm.remake"></el-input>
+          <el-input type="textarea" v-model="outOrderForm.remark"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">确定</el-button>
@@ -213,7 +213,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="关闭备注">
-          <el-input type="textarea" v-model="closeOrderForm.remake"></el-input>
+          <el-input type="textarea" v-model="closeOrderForm.remark"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">确定</el-button>
@@ -235,11 +235,11 @@
         closeOrderDialog: false,
         outOrderForm: {
           send: '1',
-          remake: ''
+          remark: ''
         },
         closeOrderForm: {
           send: '1',
-          remake: ''
+          remark: ''
         }
       }
     },

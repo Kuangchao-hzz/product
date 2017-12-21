@@ -39,11 +39,7 @@
           label="操作">
           <template
             scope="scope">
-            <el-button
-              type="text"
-              size="small">
-              <a href="javascript:" @click="edit_tableDialog(scope.row)">编辑</a>
-            </el-button>
+            <a href="javascript:" @click="edit_tableDialog(scope.row)">编辑</a>
           </template>
         </el-table-column>
       </el-table>
@@ -96,10 +92,7 @@
           align="center"
           label="操作">
           <template scope="scope">
-            <el-button type="text"
-                       size="small"
-                       disabled
-            ><a href="javascript:" @click="edit_tableDialogAuto(scope.row, scope.$index)" disabled>编辑</a></el-button>
+            <a href="javascript:" @click="edit_tableDialogAuto(scope.row, scope.$index)" disabled>编辑</a>
           </template>
         </el-table-column>
       </el-table>

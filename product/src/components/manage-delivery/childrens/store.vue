@@ -4,8 +4,8 @@
       <el-form>
         <el-row :gutter="10" style="margin-bottom: 15px">
           <el-col :span="5">
-            <el-button :disabled="!btn_auth('b_mdry_xz')">
-              <router-link :to="{path: '/delivery/storeDetails'}" tag="span">新增门店</router-link></el-button>
+            <el-button :disabled="!btn_auth('b_mdry_xz')" @click="$router.push({path: '/delivery/storeDetails'})">
+              新增门店</el-button>
           </el-col>
         </el-row>
         <el-row :gutter="10">
@@ -105,9 +105,7 @@
           align="center"
           label="操作">
           <template scope="scope">
-            <el-button type="text"
-                       size="small"
-            ><router-link :to="{path: '/delivery/storeDetails',  query: { id: scope.row.id }}">编辑</router-link></el-button>
+            <router-link :to="{path: '/delivery/storeDetails',  query: { id: scope.row.id }}">编辑</router-link>
           </template>
         </el-table-column>
       </el-table>

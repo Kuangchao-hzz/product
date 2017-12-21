@@ -191,7 +191,9 @@
     },
     mounted () {
       // this.defaultCountryText(this.defaultTreeData)
-      this.getCheckedNodes(this.$store.state.select.country)
+      this.$nextTick(() => {
+        this.getCheckedNodes(this.$store.state.select.country)
+      })
     },
     methods: {
       btn_auth ($btn) {
